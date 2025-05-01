@@ -1,11 +1,12 @@
 from django.db import models
+import uuid
 
 
 
 # Create your models here.
 
 class Persona(models.Model):
-    num_rut = models.UUIDField(primary_key=True, editable=False)
+    num_rut = models.CharField(max_length=15, primary_key=True, editable=False)
     p_nombre= models.CharField(max_length=15)
     s_nombre= models.CharField(max_length=15, blank=True)
     p_apellido= models.CharField(max_length=15)
@@ -28,7 +29,7 @@ class Persona(models.Model):
         return f'{self.p_nombre} {self.s_nombre} {self.p_apellido} {self.s_apellido}'
     
 
-class cliente(models.Model):
+class Cliente(models.Model):
     id_cliente = models.UUIDField(primary_key=True, editable=False)
     num_rut = models.ForeignKey(Persona, on_delete=models.CASCADE, related_name='cliente')
     
@@ -54,7 +55,7 @@ class Administrador(models.Model):
         return f'{self.num_rut.p_nombre} {self.num_rut.s_nombre} {self.num_rut.p_apellido} {self.num_rut.s_apellido} {self.num_rut.fecha_nacimiento} {self.num_rut.direccion} {self.num_rut.telefono} {self.num_rut.email} {self.num_rut.fecha_creacion} {self.num_rut.fecha_modificacion} {self.num_rut.fecha_eliminacion} {self.num_rut.estado}'
 
 
-class personalAseo(models.Model):
+class PersonalAseo(models.Model):
     id_personal_aseo = models.UUIDField(primary_key=True, editable=False)
     num_rut = models.ForeignKey(Persona, on_delete=models.CASCADE, related_name='personal_aseo')
   
@@ -66,7 +67,7 @@ class personalAseo(models.Model):
         return f'{self.num_rut.p_nombre} {self.num_rut.s_nombre} {self.num_rut.p_apellido} {self.num_rut.s_apellido} {self.num_rut.fecha_nacimiento} {self.num_rut.direccion} {self.num_rut.telefono} {self.num_rut.email} {self.num_rut.estado}'
 
 
-class recepcionista(models.Model):
+class Recepcionista(models.Model):
     id_recepcionista = models.UUIDField(primary_key=True, editable=False)
     num_rut = models.ForeignKey(Persona, on_delete=models.CASCADE, related_name='recepcionista')
 
@@ -96,7 +97,7 @@ class Departamento(models.Model):
         return f'{self.num_depto} {self.cant_dormitorios} {self.cant_banos} {self.piso} {self.cant_personas} {self.imagen} {self.mantenimiento}'
     
 
-class reserva(models.Model):
+class Reserva(models.Model):
     id_reserva = models.UUIDField(primary_key=True, editable=False)
     id_depto = models.ForeignKey(Departamento, on_delete=models.CASCADE, related_name='reserva')
     fecha_inicio = models.DateTimeField()
@@ -108,10 +109,10 @@ class reserva(models.Model):
         return f'{self.id_depto.num_depto} {self.fecha_inicio} {self.fecha_fin} {self.valor}'
     
 
-class reservaPresencial(models.Model):
-    id_reserva = models.ForeignKey(reserva, on_delete=models.CASCADE, related_name='reservaPresencial')
-    id_cliente = models.ForeignKey(cliente, on_delete=models.CASCADE, related_name='reservaPresencial')
-    id_recepcionista = models.ForeignKey(recepcionista, on_delete=models.CASCADE, related_name='reservaPresencial')
+class ReservaPresencial(models.Model):
+    id_reserva = models.ForeignKey(Reserva, on_delete=models.CASCADE, related_name='reservaPresencial')
+    id_cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='reservaPresencial')
+    id_recepcionista = models.ForeignKey(Recepcionista, on_delete=models.CASCADE, related_name='reservaPresencial')
 
     class Meta:
         verbose_name = 'Reserva Presencial'        
@@ -129,3 +130,121 @@ class reservaPresencial(models.Model):
                 f'{self.id_recepcionista.num_rut.num_rut} {self.id_recepcionista.num_rut.p_nombre} {self.id_recepcionista.num_rut.p_apellido} {self.id_recepcionista.num_rut.s_apellido}'
                 )
     
+class ReservaOnline(models.Model):
+    id_reserva = models.ForeignKey(Reserva, on_delete=models.CASCADE, related_name='reservaOnline')
+    id_cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='reservaOnline')
+
+    class Meta:
+        verbose_name = 'Reserva Online'        
+        ordering = ['id_cliente', 'id_reserva']
+
+    def __str__(self):
+                ##En este caso se retornan los datos indispensables del cliente##
+        return (f'{self.id_cliente.num_rut.num_rut} {self.id_cliente.num_rut.p_nombre} {self.id_cliente.num_rut.s_nombre}'
+                f'{self.id_cliente.num_rut.p_apellido} {self.id_cliente.num_rut.s_apellido}'
+                
+                ##datos reserva##
+                f'{self.id_reserva.id_depto.num_depto} {self.id_reserva.fecha_inicio} {self.id_reserva.fecha_fin} {self.id_reserva.valor}'
+                )
+    
+class CheckIn(models.Model):
+    id_checkin = models.UUIDField(primary_key=True, editable=False)
+    id_cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='checkIn')
+    id_reserva = models.ForeignKey(Reserva, on_delete=models.CASCADE, related_name='checkIn')  
+    tipo_reserva = models.CharField(max_length=10, choices=[('presencial', 'Presencial'), ('online', 'Online')])  
+    id_recepcionista = models.ForeignKey(Recepcionista, on_delete=models.CASCADE, related_name='checkIn')
+    
+    class Meta:
+        verbose_name = 'Check In'        
+        ordering = ['id_cliente', 'id_reserva', 'id_recepcionista']
+
+
+    
+
+    def __str__(self):
+                ##En este caso se retornan los datos indispensables del cliente##
+        return (f'{self.id_cliente.num_rut.num_rut} {self.id_cliente.num_rut.p_nombre} {self.id_cliente.num_rut.s_nombre}'
+                f'{self.id_cliente.num_rut.p_apellido} {self.id_cliente.num_rut.s_apellido}'
+                
+                ##datos reserva ##
+                f'{self.id_reserva.id_depto.num_depto} {self.id_reserva.fecha_inicio} {self.id_reserva.fecha_fin} {self.id_reserva.valor}'
+                )
+    
+class Arriendo(models.Model):
+    id_arriendo = models.UUIDField(primary_key=True, editable=False)
+    id_checkin = models.ForeignKey(CheckIn, on_delete=models.CASCADE, related_name='arriendo')
+
+    class Meta:
+        verbose_name = 'Arriendo'        
+        
+
+    def __str__(self):
+        return (f'{self.id_checkin.id_cliente.num_rut.num_rut} {self.id_checkin.id_cliente.num_rut.p_nombre} {self.id_checkin.id_cliente.num_rut.s_nombre} {self.id_checkin.id_cliente.num_rut.p_apellido} {self.id_checkin.id_cliente.num_rut.s_apellido}'
+                f'{self.id_checkin.id_cliente.num_rut.telefono} {self.id_checkin.id_cliente.num_rut.email}'
+                f'{self.id_checkin.id_reserva.id_depto.num_depto} {self.id_checkin.id_recepcionista.num_rut.num_rut}{self.id_checkin.id_recepcionista.num_rut.p_nombre}{self.id_checkin.id_recepcionista.num_rut.p_apellido} {self.id_checkin.id_recepcionista.num_rut.s_apellido}'
+
+        )
+    
+class TipoServicioAdicional(models.Model):
+    id_tipo_servicio = models.UUIDField(primary_key=True, editable=False)
+    nombre_servicio = models.CharField(max_length=50, unique=True)
+    descripcion = models.CharField(max_length=100, blank=True)
+    valor_servicio = models.IntegerField(10)
+
+    class Meta:
+        verbose_name = 'Tipo Servicio Adicional'        
+        
+
+    def __str__(self):
+        return f'{self.nombre_servicio} {self.descripcion} {self.valor_servicio}'
+    
+class ServicioAdicional(models.Model):
+    id_servicio = models.UUIDField(primary_key=True, editable=False)
+    id_tipo_servicio = models.ForeignKey(TipoServicioAdicional, on_delete=models.CASCADE, related_name='tipoServicioAdicional')
+    cant_personas = models.IntegerField(2, blank=True)
+    hora_inicio = models.DateTimeField()
+    hora_fin = models.DateTimeField()
+    valor_servicio = models.IntegerField(10)
+
+    class Meta:
+        verbose_name = 'Servicio Adicional'        
+        
+
+    def __str__(self):
+        return (f'{self.id_tipo_servicio.nombre_servicio} {self.id_tipo_servicio.descripcion} {self.id_tipo_servicio.valor_servicio} {self.cant_personas}'
+                f'{self.hora_inicio} {self.hora_fin} {self.valor_servicio}'
+        )
+    
+class DetalleServicios(models.Model):
+    id_servicio_extra = models.UUIDField(primary_key=True, editable=False)
+    id_arriendo = models.ForeignKey(Arriendo, on_delete=models.CASCADE, related_name='detalleServicios')
+    id_servicio_adicional = models.ForeignKey(ServicioAdicional, on_delete=models.CASCADE, related_name='detalleServicios')
+    
+
+    class Meta:
+        verbose_name = 'Detalle Servicios'        
+        
+
+    def __str__(self):
+        return (f'{self.id_arriendo.id_checkin.id_reserva.id_depto.num_depto} {self.id_arriendo.id_checkin.id_cliente.num_rut.num_rut}' 
+                f'{self.id_arriendo.id_checkin.id_cliente.num_rut.p_nombre} {self.id_arriendo.id_checkin.id_cliente.num_rut.p_apellido}'
+                f'{self.id_arriendo.id_checkin.id_cliente.num_rut.s_apellido}'
+                
+        )
+    
+    class Pago(models.Model):
+        id_pago = models.UUIDField(primary_key=True, editable=False)
+        forma_de_pago = models.CharField(max_length=20, choices=[('efectivo', 'Efectivo'), ('tarjeta', 'Tarjeta'), ('transferencia', 'Transferencia')])
+        id_arriendo = models.ForeignKey(Arriendo, on_delete=models.CASCADE, related_name='pago')
+        total_pago = models.IntegerField(10)
+        fecha_pago = models.DateTimeField(auto_now_add=True)
+        estado_pago = models.BooleanField(default=False)
+
+        class Meta:
+            verbose_name = 'Pago'
+            
+        def __str__(self):
+            return (f'{self.id_arriendo.id_checkin.id_reserva.id_depto.num_depto} {self.id_arriendo.id_checkin.id_cliente.num_rut.num_rut}'
+                    f'{self.id_arriendo.id_checkin.id_cliente.num_rut.p_nombre} {self.id_arriendo.id_checkin.id_cliente.num_rut.p_apellido}'
+                    f'{self.id_arriendo.id_checkin.id_cliente.num_rut.s_apellido} {self.forma_de_pago} {self.total_pago} {self.fecha_pago} {self.estado_pago}'
+            )

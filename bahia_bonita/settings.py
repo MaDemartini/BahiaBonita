@@ -79,12 +79,13 @@ WSGI_APPLICATION = 'bahia_bonita.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
         'USER': 'postgres.rcsczjxxvdhwilxxdgna',
         'PASSWORD': '*Yt7pb2iLQSt*@Z',
         'HOST': 'aws-0-us-east-1.pooler.supabase.com',
         'PORT': '5432',
-        'NAME': 'postgres',
+        
     }
 }
 
