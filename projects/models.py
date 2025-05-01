@@ -232,19 +232,19 @@ class DetalleServicios(models.Model):
                 
         )
     
-    class Pago(models.Model):
-        id_pago = models.UUIDField(primary_key=True, editable=False)
-        forma_de_pago = models.CharField(max_length=20, choices=[('efectivo', 'Efectivo'), ('tarjeta', 'Tarjeta'), ('transferencia', 'Transferencia')])
-        id_arriendo = models.ForeignKey(Arriendo, on_delete=models.CASCADE, related_name='pago')
-        total_pago = models.IntegerField(10)
-        fecha_pago = models.DateTimeField(auto_now_add=True)
-        estado_pago = models.BooleanField(default=False)
+class Pago(models.Model):
+    id_pago = models.UUIDField(primary_key=True, editable=False)
+    forma_de_pago = models.CharField(max_length=20, choices=[('efectivo', 'Efectivo'), ('tarjeta', 'Tarjeta'), ('transferencia', 'Transferencia')])
+    id_arriendo = models.ForeignKey(Arriendo, on_delete=models.CASCADE, related_name='pago')
+    total_pago = models.IntegerField(10)
+    fecha_pago = models.DateTimeField(auto_now_add=True)
+    estado_pago = models.BooleanField(default=False)
 
-        class Meta:
-            verbose_name = 'Pago'
-            
-        def __str__(self):
-            return (f'{self.id_arriendo.id_checkin.id_reserva.id_depto.num_depto} {self.id_arriendo.id_checkin.id_cliente.num_rut.num_rut}'
-                    f'{self.id_arriendo.id_checkin.id_cliente.num_rut.p_nombre} {self.id_arriendo.id_checkin.id_cliente.num_rut.p_apellido}'
-                    f'{self.id_arriendo.id_checkin.id_cliente.num_rut.s_apellido} {self.forma_de_pago} {self.total_pago} {self.fecha_pago} {self.estado_pago}'
-            )
+    class Meta:
+        verbose_name = 'Pago'
+
+    def __str__(self):
+        return (f'{self.id_arriendo.id_checkin.id_reserva.id_depto.num_depto} {self.id_arriendo.id_checkin.id_cliente.num_rut.num_rut}'
+                f'{self.id_arriendo.id_checkin.id_cliente.num_rut.p_nombre} {self.id_arriendo.id_checkin.id_cliente.num_rut.p_apellido}'
+                f'{self.id_arriendo.id_checkin.id_cliente.num_rut.s_apellido} {self.forma_de_pago} {self.total_pago} {self.fecha_pago} {self.estado_pago}'
+        )
