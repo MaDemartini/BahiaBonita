@@ -1,12 +1,19 @@
+from django.conf import settings
 from django.db import models
 import uuid
+
+
 
 
 
 # Create your models here.
 
 class Persona(models.Model):
-    id_persona = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)    
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        primary_key=True
+    )   
     num_rut = models.CharField(max_length=15, unique=True)
     p_nombre= models.CharField(max_length=15)
     s_nombre= models.CharField(max_length=15, blank=True)
@@ -17,7 +24,7 @@ class Persona(models.Model):
     telefono= models.CharField(max_length=15)
     email= models.EmailField(max_length=100, unique=True)
     password= models.CharField(max_length=100)
-    re-password= models.CharField(max_length=100)
+    re_password= models.CharField(max_length=100)
     fecha_creacion= models.DateTimeField(auto_now_add=True)
     
 
