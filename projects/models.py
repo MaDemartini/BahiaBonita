@@ -6,7 +6,8 @@ import uuid
 # Create your models here.
 
 class Persona(models.Model):
-    num_rut = models.CharField(max_length=15, primary_key=True, unique=True)
+    id_persona = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)    
+    num_rut = models.CharField(max_length=15, unique=True)
     p_nombre= models.CharField(max_length=15)
     s_nombre= models.CharField(max_length=15, blank=True)
     p_apellido= models.CharField(max_length=15)
@@ -15,11 +16,10 @@ class Persona(models.Model):
     direccion= models.CharField(max_length=100)
     telefono= models.CharField(max_length=15)
     email= models.EmailField(max_length=100, unique=True)
-
+    password= models.CharField(max_length=100)
+    re-password= models.CharField(max_length=100)
     fecha_creacion= models.DateTimeField(auto_now_add=True)
-    fecha_modificacion= models.DateTimeField(auto_now=True)
-    fecha_eliminacion= models.DateTimeField(null=True, blank=True)
-    estado= models.BooleanField(default=True)
+    
 
     class Meta:
         verbose_name = 'Persona'        
@@ -48,7 +48,7 @@ class Cliente(models.Model):
         
 
     def __str__(self):
-        return f'{self.num_rut.p_nombre}' 
+        return f'{self.num_rut.num_rut}' 
     
 
 class Administrador(models.Model):
