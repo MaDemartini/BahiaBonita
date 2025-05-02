@@ -10,12 +10,11 @@ from .serializers import (PersonaSerializer,ClienteSerializer,AdministradorSeria
 
 class PersonaViewSet(viewsets.ModelViewSet):
     queryset = Persona.objects.all()
-    serializer_class = PersonaSerializer
-    lookup_field = 'num_rut'
+    serializer_class = PersonaSerializer    
     permission_classes = [permissions.AllowAny]  ##todos pueden acceder
 
 class ClienteViewSet(viewsets.ModelViewSet):
-    queryset = Persona.objects.all()
+    queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
     permission_classes = [permissions.AllowAny]  ##todos pueden acceder
 
