@@ -10,7 +10,8 @@ from .serializers import (PersonaSerializer,ClienteSerializer,AdministradorSeria
 
 class PersonaViewSet(viewsets.ModelViewSet):
     queryset = Persona.objects.all()
-    serializer_class = PersonaSerializer    
+    serializer_class = PersonaSerializer 
+    lookup_field = 'num_rut' ##buscar por rut
     permission_classes = [permissions.AllowAny]  ##todos pueden acceder
 
 class ClienteViewSet(viewsets.ModelViewSet):

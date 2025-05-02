@@ -6,7 +6,7 @@ import uuid
 # Create your models here.
 
 class Persona(models.Model):
-    num_rut = models.CharField(max_length=15, primary_key=True)
+    num_rut = models.CharField(max_length=15, primary_key=True, unique=True)
     p_nombre= models.CharField(max_length=15)
     s_nombre= models.CharField(max_length=15, blank=True)
     p_apellido= models.CharField(max_length=15)
