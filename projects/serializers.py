@@ -8,11 +8,14 @@ class PersonaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Persona
         fields = '__all__'
+        read_only_fields = ('fecha_creacion', 'fecha_modificacion', 'fecha_eliminacion' ,)  # Solo lectura para el campo
 
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
         fields = '__all__'
+
+    
 
 class AdministradorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -40,14 +43,18 @@ class ReservaSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ReservaPresencialSerializer(serializers.ModelSerializer):
+    num_rut = serializers.SerializerMethodField()
     class Meta:
         model = ReservaPresencial
         fields = '__all__'
 
+
+
+
 class ReservaOnlineSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReservaOnline
-        fields = '__all__'
+        fields = 'id_cliente.'
 
 class CheckInSerializer(serializers.ModelSerializer):
     class Meta:
@@ -78,3 +85,5 @@ class PagoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pago
         fields = '__all__'
+
+

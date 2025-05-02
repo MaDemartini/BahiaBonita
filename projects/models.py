@@ -6,7 +6,7 @@ import uuid
 # Create your models here.
 
 class Persona(models.Model):
-    num_rut = models.CharField(max_length=15, primary_key=True, editable=False)
+    num_rut = models.CharField(max_length=15, primary_key=True)
     p_nombre= models.CharField(max_length=15)
     s_nombre= models.CharField(max_length=15, blank=True)
     p_apellido= models.CharField(max_length=15)
@@ -23,27 +23,36 @@ class Persona(models.Model):
 
     class Meta:
         verbose_name = 'Persona'        
-        ordering = ['p_nombre', 's_nombre', 'p_apellido', 's_apellido']
+        ordering = 'num_rut','p_nombre', 's_nombre', 'p_apellido', 's_apellido'
 
     def __str__(self):
-        return f'{self.p_nombre} {self.s_nombre} {self.p_apellido} {self.s_apellido}'
+        return f'{self.num_rut}'
     
 
 class Cliente(models.Model):
-    id_cliente = models.UUIDField(primary_key=True, editable=False)
-    num_rut = models.ForeignKey(Persona, on_delete=models.CASCADE, related_name='cliente')
-    
+    id_cliente = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    num_rut = models.ForeignKey(Persona, on_delete=models.CASCADE, related_name='cliente')     
+    p_nombre= models.CharField(max_length=15)
+    s_nombre= models.CharField(max_length=15, blank=True)
+    p_apellido= models.CharField(max_length=15)
+    s_apellido= models.CharField(max_length=15, blank=True)
+    fecha_nacimiento= models.DateField()
+    direccion= models.CharField(max_length=100)
+    telefono= models.CharField(max_length=15)
+    email= models.EmailField(max_length=100, unique=True)
+    fecha_creacion= models.DateTimeField(auto_now_add=True)    
 
     class Meta:
-        verbose_name = 'Cliente'        
+        verbose_name = 'Cliente' 
+        ordering = ['num_rut','p_nombre', 's_nombre', 'p_apellido', 's_apellido']       
         
 
     def __str__(self):
-        return f'{self.num_rut.p_nombre} {self.num_rut.s_nombre} {self.num_rut.p_apellido} {self.num_rut.s_apellido} {self.num_rut.fecha_nacimiento} {self.num_rut.direccion} {self.num_rut.telefono} {self.num_rut.email} {self.num_rut.fecha_creacion} {self.num_rut.fecha_modificacion} {self.num_rut.fecha_eliminacion} {self.num_rut.estado}' 
+        return f'{self.num_rut.p_nombre}' 
     
 
 class Administrador(models.Model):
-    id_administrador = models.UUIDField(primary_key=True, editable=False)
+    id_administrador = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     num_rut = models.ForeignKey(Persona, on_delete=models.CASCADE, related_name='administrador')
     
 
@@ -56,7 +65,7 @@ class Administrador(models.Model):
 
 
 class PersonalAseo(models.Model):
-    id_personal_aseo = models.UUIDField(primary_key=True, editable=False)
+    id_personal_aseo = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     num_rut = models.ForeignKey(Persona, on_delete=models.CASCADE, related_name='personal_aseo')
   
     class Meta:
@@ -68,7 +77,7 @@ class PersonalAseo(models.Model):
 
 
 class Recepcionista(models.Model):
-    id_recepcionista = models.UUIDField(primary_key=True, editable=False)
+    id_recepcionista = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     num_rut = models.ForeignKey(Persona, on_delete=models.CASCADE, related_name='recepcionista')
 
     class Meta:
@@ -80,7 +89,7 @@ class Recepcionista(models.Model):
 
 
 class Departamento(models.Model):
-    id_depto = models.UUIDField(primary_key=True, editable=False)
+    id_depto = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     num_depto = models.IntegerField(3, unique=True)
     cant_dormitorios = models.IntegerField(2)
     cant_banos = models.IntegerField(2)
@@ -98,7 +107,7 @@ class Departamento(models.Model):
     
 
 class Reserva(models.Model):
-    id_reserva = models.UUIDField(primary_key=True, editable=False)
+    id_reserva = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     id_depto = models.ForeignKey(Departamento, on_delete=models.CASCADE, related_name='reserva')
     fecha_inicio = models.DateTimeField()
     fecha_fin = models.DateTimeField()
@@ -113,6 +122,7 @@ class ReservaPresencial(models.Model):
     id_reserva = models.ForeignKey(Reserva, on_delete=models.CASCADE, related_name='reservaPresencial')
     id_cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='reservaPresencial')
     id_recepcionista = models.ForeignKey(Recepcionista, on_delete=models.CASCADE, related_name='reservaPresencial')
+
 
     class Meta:
         verbose_name = 'Reserva Presencial'        
@@ -131,7 +141,7 @@ class ReservaPresencial(models.Model):
                 )
     
 class ReservaOnline(models.Model):
-    id_reserva = models.ForeignKey(Reserva, on_delete=models.CASCADE, related_name='reservaOnline')
+    id_reserva = models.OneToOneField(Reserva, on_delete=models.CASCADE, related_name='reservaOnline', primary_key=True)
     id_cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='reservaOnline')
 
     class Meta:
@@ -139,9 +149,9 @@ class ReservaOnline(models.Model):
         ordering = ['id_cliente', 'id_reserva']
 
     def __str__(self):
-                ##En este caso se retornan los datos indispensables del cliente##
+                ##se retornan los datos del cliente##
         return (f'{self.id_cliente.num_rut.num_rut} {self.id_cliente.num_rut.p_nombre} {self.id_cliente.num_rut.s_nombre}'
-                f'{self.id_cliente.num_rut.p_apellido} {self.id_cliente.num_rut.s_apellido}'
+                f'{self.id_cliente.num_rut.p_apellido} {self.id_cliente.num_rut.s_apellido} {self.id_cliente.num_rut.telefono} {self.id_cliente.num_rut.email}'
                 
                 ##datos reserva##
                 f'{self.id_reserva.id_depto.num_depto} {self.id_reserva.fecha_inicio} {self.id_reserva.fecha_fin} {self.id_reserva.valor}'
@@ -232,7 +242,7 @@ class DetalleServicios(models.Model):
                 
         )
     
-    class Pago(models.Model):
+class Pago(models.Model):
         id_pago = models.UUIDField(primary_key=True, editable=False)
         forma_de_pago = models.CharField(max_length=20, choices=[('efectivo', 'Efectivo'), ('tarjeta', 'Tarjeta'), ('transferencia', 'Transferencia')])
         id_arriendo = models.ForeignKey(Arriendo, on_delete=models.CASCADE, related_name='pago')
