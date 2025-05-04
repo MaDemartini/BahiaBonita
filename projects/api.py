@@ -1,39 +1,44 @@
-from .models import ( Persona,Cliente,Administrador,PersonalAseo,Recepcionista,Departamento,Reserva,
-                     ReservaPresencial,ReservaOnline,CheckIn,Arriendo,TipoServicioAdicional,ServicioAdicional,DetalleServicios, Pago
-)
+from .models import (Persona, Cliente, Administrador,PersonalAseo,Recepcionista,Departamento,
+                     Reserva,CheckIn,Arriendo,TipoServicioAdicional,
+                     ServicioAdicionalConsumido, Pago) 
 
 from rest_framework import viewsets, permissions
 from .serializers import (PersonaSerializer,ClienteSerializer,AdministradorSerializer,PersonalAseoSerializer,RecepcionistaSerializer,
-                           DepartamentoSerializer,ReservaSerializer,ReservaPresencialSerializer,ReservaOnlineSerializer,
-                           CheckInSerializer,ArriendoSerializer,TipoServicioAdicionalSerializer,ServicioAdicionalSerializer,
-                           DetalleServiciosSerializer, PagoSerializer)
+                           DepartamentoSerializer,ReservaSerializer,
+                           CheckInSerializer,ArriendoSerializer,TipoServicioAdicionalSerializer,
+                           ServicioAdicionalConsumidoSerializer, PagoSerializer)
 
+#sirve para el registro
 class PersonaViewSet(viewsets.ModelViewSet):
     queryset = Persona.objects.all()
-    serializer_class = PersonaSerializer 
-    lookup_field = 'num_rut' ##buscar por rut
+    serializer_class = PersonaSerializer     
     permission_classes = [permissions.AllowAny]  ##todos pueden acceder
 
+#solo consulta de clientes registrados
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
     permission_classes = [permissions.AllowAny]  ##todos pueden acceder
 
+#solo consulta de administradores registrados
 class AdministradorViewSet(viewsets.ModelViewSet):  
-    queryset = Persona.objects.all()
+    queryset = Administrador.objects.all()
     serializer_class = AdministradorSerializer
     permission_classes = [permissions.AllowAny]  ##todos pueden acceder
 
+#solo consulta de personal de aseo registrados
 class PersonalAseoViewSet(viewsets.ModelViewSet):
-    queryset = Persona.objects.all()
+    queryset = PersonalAseo.objects.all()
     serializer_class = PersonalAseoSerializer
     permission_classes = [permissions.AllowAny]  ##todos pueden acceder
 
+#solo consulta de recepcionistas registrados
 class RecepcionistaViewSet(viewsets.ModelViewSet):          
-    queryset = Persona.objects.all()
+    queryset = Recepcionista.objects.all()
     serializer_class = RecepcionistaSerializer
     permission_classes = [permissions.AllowAny]  ##todos pueden acceder
 
+#creacion de departamentos y consulta de departamentos registrados
 class DepartamentoViewSet(viewsets.ModelViewSet):
     queryset = Departamento.objects.all()
     serializer_class = DepartamentoSerializer
@@ -44,15 +49,6 @@ class ReservaViewSet(viewsets.ModelViewSet):
     serializer_class = ReservaSerializer
     permission_classes = [permissions.AllowAny]  ##todos pueden acceder
 
-class ReservaPresencialViewSet(viewsets.ModelViewSet):
-    queryset = ReservaPresencial.objects.all()
-    serializer_class = ReservaPresencialSerializer
-    permission_classes = [permissions.AllowAny]  ##todos pueden acceder
-
-class ReservaOnlineViewSet(viewsets.ModelViewSet):
-    queryset = ReservaOnline.objects.all()
-    serializer_class = ReservaOnlineSerializer
-    permission_classes = [permissions.AllowAny]  ##todos pueden acceder
 
 class CheckInViewSet(viewsets.ModelViewSet):
     queryset = CheckIn.objects.all()
@@ -70,14 +66,10 @@ class TipoServicioAdicionalViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]  ##todos pueden acceder
 
 class ServicioAdicionalViewSet(viewsets.ModelViewSet):
-    queryset = ServicioAdicional.objects.all()
-    serializer_class = ServicioAdicionalSerializer
+    queryset = ServicioAdicionalConsumido.objects.all()
+    serializer_class = ServicioAdicionalConsumidoSerializer
     permission_classes = [permissions.AllowAny]  ##todos pueden acceder
 
-class DetalleServiciosViewSet(viewsets.ModelViewSet):
-    queryset = DetalleServicios.objects.all()
-    serializer_class = DetalleServiciosSerializer
-    permission_classes = [permissions.AllowAny]  ##todos pueden acceder
 
 
 class PagoViewSet(viewsets.ModelViewSet):
