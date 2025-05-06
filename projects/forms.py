@@ -1,5 +1,5 @@
 from django import forms
-from models import Persona
+from .models import Persona
 
 class LoginForm(forms.Form):
     rut = forms.CharField(max_length=12, widget=forms.TextInput(attrs={'placeholder': 'Rut'}))
@@ -10,8 +10,8 @@ class RegisterForm(forms.ModelForm):
         model = Persona
         fields = ['nombre', 's_nombre', 'apellido', 's_apellido', 'rut', 'dv', 'fecha_nacimiento', 'direccion', 'telefono', 'email', 'password', 're_password']
         widgets = {
-            'nombre': forms.CharField(attrs={'placeholder': 'Nombre'}),
-            's_nombre': forms.TextInput(attrs={'placeholder': 'Segundo Nombre'}),
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
+            's_nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Segundo nombre'}),
             'apellido': forms.TextInput(attrs={'placeholder': 'Apellido'}),
             's_apellido': forms.TextInput(attrs={'placeholder': 'Apellido Materno'}),
             'rut': forms.TextInput(attrs={'placeholder': 'Rut'}),
