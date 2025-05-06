@@ -49,3 +49,10 @@ class RegisterForm(forms.ModelForm):
             return cleaned_data
 
         
+class ReservaForm(forms.Form):
+    fecha_inicio = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    fecha_fin = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    cantidad_de_personas = forms.IntegerField(min_value=1, widget=forms.NumberInput(attrs={'placeholder': 'Cantidad de personas'}))
+    tipo_de_reserva = forms.ChoiceField(choices=[('diaria', 'Diaria'), ('mensual', 'Mensual')], widget=forms.Select(attrs={'class': 'form-control'}))
+
+    

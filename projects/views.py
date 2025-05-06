@@ -1,5 +1,6 @@
 from datetime import date
 from django.shortcuts import render, HttpResponse, redirect
+from django.contrib import messages
 import requests
 from .forms import Persona, RegisterForm
 
@@ -7,21 +8,6 @@ from .forms import Persona, RegisterForm
 # Create your views here.
 
 ##formulario registro##
-
-def registerPage(request):
-    if request.method == 'POST':
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            post_data = form.cleaned_data  # Obtén los datos validados del formulario
-            response = postApiRegister(post_data)  # Llama a la función para enviar los datos a la API
-            if "Datos guardados exitosamente" in response:
-                return redirect('success_page')  # Redirige a una página de éxito
-            else:
-                return render(request, 'register.html', {'form': form, 'error': response.get('error')})
-    else:
-        form = RegisterForm()
-    return render(request, 'register.html', {'form': form})
-
 
 
 def postApiRegister (post_data):
@@ -42,9 +28,22 @@ def postApiRegister (post_data):
             return {"error": f"Error al realizar la solicitud: {post.status_code}", "detalles": post.text}
     except requests.exceptions.RequestException as e:
         print(f"Error: {e}")
-        return {"error": "Error de conexión con la API", "details": str(e)}
-    
-    
+        return {"error": "Error de conexión con la API", "details": str(e)}  
+
+def registerPage(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            post_data = form.cleaned_data  # Obtén los datos validados del formulario
+            response = postApiRegister(post_data)  # Llama a la función para enviar los datos a la API
+            if "Datos guardados exitosamente" in response:
+                messages.success(request, "Registro exitoso")
+                return redirect('registro')  # Redirige a una página de éxito
+            else:
+                return render(request, 'register.html', {'form': form, 'error': response.get('error')})
+    else:
+        form = RegisterForm()
+    return render(request, 'register.html', {'form': form})   
 
 
 

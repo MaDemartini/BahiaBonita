@@ -152,3 +152,19 @@ class Pago (models.Model):
     metodo_pago = models.CharField(max_length=20) # efectivo, tarjeta, transferencia
     valor_pago = models.IntegerField(10)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+class view_resumen_reserva(models.Model):
+    id_reserva = models.IntegerField()
+    nombre_cliente = models.CharField(max_length=100)
+    rut = models.CharField(max_length=10)
+    departamento_numero = models.IntegerField()
+    fecha_inicio = models.DateField()  
+    fecha_fin = models.DateField()  
+    cantidad_de_personas = models.IntegerField()  
+    tipo_de_reserva = models.CharField(max_length=20)  
+    total = models.FloatField()
+    fecha_creacion = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'view_resumen_reserva'
