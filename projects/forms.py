@@ -28,6 +28,7 @@ class RegisterForm(forms.ModelForm):
         } 
 
 #funcion para validar rut y dv
+#se valida el rut incorrecto pero hay que agregar las alertas
         def clean(self):
             cleaned_data = super().clean()
             rut = cleaned_data.get('rut')
