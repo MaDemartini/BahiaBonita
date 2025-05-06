@@ -1,8 +1,10 @@
 
 from django.db import models
+from django.contrib.auth.models import User
 
 class Persona (models.Model):
-    id_persona = models.AutoField(primary_key=True)    
+    id_persona = models.AutoField(primary_key=True) 
+    user = models.OneToOneField(User, on_delete=models.CASCADE)   
     nombre = models.CharField(max_length=20)
     s_nombre = models.CharField(max_length=20)
     apellido = models.CharField(max_length=20)

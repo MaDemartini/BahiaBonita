@@ -1,3 +1,4 @@
+from datetime import date
 from django.shortcuts import render, HttpResponse, redirect
 import requests
 from .forms import Persona, RegisterForm
@@ -26,6 +27,10 @@ def registerPage(request):
 def postApiRegister (post_data):
     
     URL_API = "http://127.0.0.1:8000/api/persona/"
+
+     # Convertir fecha_nacimiento a string si es tipo date
+    if isinstance(post_data.get("fecha_nacimiento"), date):
+        post_data["fecha_nacimiento"] = post_data["fecha_nacimiento"].isoformat()
     try:
         print(f"Enviando datos a la API: {post_data}")
         post = requests.post(URL_API, json=post_data)
