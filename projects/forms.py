@@ -28,38 +28,23 @@ class RegisterForm(forms.ModelForm):
         } 
 
 #funcion para validar rut y dv
-def clean():
-    cleaned_data = super().clean()
-    rut = cleaned_data.get('rut')
-    dv = cleaned_data.get('dv')
-    if not rut or not dv:
-        raise ValidationError("El RUT y el dígito verificador son obligatorios.")
-    print(f"RUT: {rut}, DV: {dv}")  # Agrega un log para verificar los valores      
+        def clean(self):
+            cleaned_data = super().clean()
+            rut = cleaned_data.get('rut')
+            dv = cleaned_data.get('dv')
+            if not rut or not dv:
+                self.add_error("El RUT y el dígito verificador son obligatorios.")
+                return cleaned_data    
 
-    if not rut.isdigit():
-        raise ValidationError("El RUT debe contener solo números.")
+            if not rut.isdigit():
+                self.add_error('rut', "El RUT debe contener solo números.")
 
-    if not validar_dv(rut, dv):  # Ahora `validar_dv` está definido
-        raise ValidationError("El dígito verificador no es válido.")
+            if not validar_dv(rut, dv):  # type: ignore # Ahora `validar_dv` está definido
+                self.add_error('dv', "El dígito verificador no es válido.")
 
-    return cleaned_data
+            if password and re_password and password != re_password:
+                self.add_error('re_password', "Las contraseñas no coinciden.")
 
-def validar_dv(rut: str, dv: str) -> bool:
-    suma = 0
-    multiplo = 2
+            return cleaned_data
 
-    for c in reversed(rut):
-        suma += int(c) * multiplo
-        multiplo = 9 if multiplo == 7 else multiplo + 1
-
-    resto = suma % 11
-    dv_esperado = 11 - resto
-
-    if dv_esperado == 11:
-        dv_esperado = "0"
-    elif dv_esperado == 10:
-        dv_esperado = "K"
-    else:
-        dv_esperado = str(dv_esperado)
-
-    return dv.upper() == dv_esperado
+        
