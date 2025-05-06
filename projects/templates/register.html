@@ -8,11 +8,10 @@
 <body>
 
     <h2>Formulario de registro</h2>
-    <form method = 'post'>
+    <form method = 'POST'>
         {% csrf_token %}
         {{form.as_p}}
-
-        <button type="submit">Enviar</button>
+        <button type="submit" onclick="registerPage()">Enviar</button>
     </form>
     
     
