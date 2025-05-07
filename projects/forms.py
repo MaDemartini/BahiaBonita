@@ -43,10 +43,11 @@ class RegisterForm(forms.ModelForm):
             if not validar_dv(rut, dv):  # type: ignore # Ahora `validar_dv` está definido
                 self.add_error('dv', "El dígito verificador no es válido.")
 
-            if password and re_password and password != re_password:
+            if password and re_password and password != re_password: # type: ignore
                 self.add_error('re_password', "Las contraseñas no coinciden.")
 
-            return cleaned_data
+            return cleaned_data     
+        
 
         
 class ReservaForm(forms.Form):
