@@ -1,21 +1,19 @@
 from rest_framework import serializers
-from .models import (Persona,Cliente,Administrador,PersonalAseo,Recepcionista, Departamento, 
-               Reserva,  CheckIn, Arriendo, TipoServicioAdicional,
-               ServicioAdicionalConsumido, Pago)     
-
+from .models import (Persona, Cliente, Administrador, PersonalAseo, Recepcionista, Departamento,
+                     Reserva, CheckIn, Arriendo, TipoServicioAdicional,
+                     ServicioAdicionalConsumido, Pago)
 
 class PersonaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Persona
         fields = '__all__'
-        read_only_fields = ('fecha_creacion', 'fecha_modificacion', 'fecha_eliminacion' ,)  # Solo lectura para el campo
+        read_only_fields = ('fecha_creacion', 'fecha_modificacion', 'fecha_eliminacion',)
 
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
-        fields = ['id_cliente','nombre','s_nombre','apellido','s_apellido','rut','fecha_nacimiento','direccion','telefono','email']
-
-    
+        fields = ['id_cliente', 'nombre', 's_nombre', 'apellido', 's_apellido', 'rut',
+                  'fecha_nacimiento', 'direccion', 'telefono', 'email']
 
 class AdministradorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -37,12 +35,10 @@ class DepartamentoSerializer(serializers.ModelSerializer):
         model = Departamento
         fields = '__all__'
 
-
 class ReservaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reserva
         fields = '__all__'
-
 
 class CheckInSerializer(serializers.ModelSerializer):
     class Meta:
@@ -64,11 +60,7 @@ class ServicioAdicionalConsumidoSerializer(serializers.ModelSerializer):
         model = ServicioAdicionalConsumido
         fields = '__all__'
 
-
-
 class PagoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pago
         fields = '__all__'
-
-
