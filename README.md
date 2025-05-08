@@ -1,10 +1,10 @@
 # BahiaBonita
-ya mi gente, comenzamos con el proeycto, traten de ir dejando una bitacora de avance el el redme y en lo posible con fotos y lo mas explicativo posible
+Ya mi gente, comenzamos con el proyecto, traten de ir dejando una bitacora de avance en el Readme y en lo posible con fotos y lo mas explicativo posible
 
 
 ## API Interna - Información de Departamentos
 
-EAPI REST construida con Django Rest Framework, permite consultar información detallada de los departamentos del edificio Bahía Bonita.
+API REST construida con Django Rest Framework, permite consultar información detallada de los departamentos del edificio Bahía Bonita.
 
 Endpoints disponibles:
 
