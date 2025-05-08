@@ -35,6 +35,11 @@ class DepartamentoSerializer(serializers.ModelSerializer):
         model = Departamento
         fields = '__all__'
 
+class DepartamentoInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Departamento
+        fields = ['id_departamento', 'num_depto', 'cant_dormitorios', 'cant_banos',
+                  'piso', 'cant_personas', 'valor_dia', 'imagen', 'mantenimiento']
 class ReservaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reserva

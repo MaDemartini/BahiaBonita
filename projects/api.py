@@ -8,6 +8,10 @@ from .serializers import (PersonaSerializer, ClienteSerializer, AdministradorSer
                           CheckInSerializer, ArriendoSerializer, TipoServicioAdicionalSerializer,
                           ServicioAdicionalConsumidoSerializer, PagoSerializer)
 
+from .serializers import DepartamentoInfoSerializer
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
 class PersonaViewSet(viewsets.ModelViewSet):
     queryset = Persona.objects.all()
     serializer_class = PersonaSerializer
@@ -37,6 +41,20 @@ class DepartamentoViewSet(viewsets.ModelViewSet):
     queryset = Departamento.objects.all()
     serializer_class = DepartamentoSerializer
     permission_classes = [permissions.AllowAny]
+
+    @action(detail=False, methods=['get'], url_path='disponibles')
+    def disponibles(self, request):
+        # Filtra los departamentos que NO están en mantenimiento
+        disponibles = Departamento.objects.filter(mantenimiento=False)
+        serializer = DepartamentoInfoSerializer(disponibles, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'], url_path='todos')
+    def todos(self, request):
+        # Obtiene todos los departamentos sin filtro
+        departamentos = Departamento.objects.all()
+        serializer = DepartamentoInfoSerializer(departamentos, many=True)
+        return Response(serializer.data)
 
 class ReservaViewSet(viewsets.ModelViewSet):
     queryset = Reserva.objects.all()
