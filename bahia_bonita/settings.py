@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'projects',
-    'rest_framework'
+    'rest_framework',
+    
+    
 ]
 
 MIDDLEWARE = [
@@ -49,7 +51,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',    
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -81,9 +83,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
-        'USER': 'postgres.rcsczjxxvdhwilxxdgna',
+        'USER': 'postgres.xproyajltrkqnqtgykcl',
         'PASSWORD': '*Yt7pb2iLQSt*@Z',
-        'HOST': 'aws-0-us-east-1.pooler.supabase.com',
+        'HOST': 'aws-0-us-west-1.pooler.supabase.com',
         'PORT': '5432',
         
     }

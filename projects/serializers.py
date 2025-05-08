@@ -1,18 +1,19 @@
 from rest_framework import serializers
-from .models import (Persona,Cliente,Administrador,PersonalAseo,Recepcionista, Departamento, 
-               Reserva, ReservaPresencial, ReservaOnline, CheckIn, Arriendo, TipoServicioAdicional,
-               ServicioAdicional, DetalleServicios, Pago)     
-
+from .models import (Persona, Cliente, Administrador, PersonalAseo, Recepcionista, Departamento,
+                     Reserva, CheckIn, Arriendo, TipoServicioAdicional,
+                     ServicioAdicionalConsumido, Pago)
 
 class PersonaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Persona
         fields = '__all__'
+        read_only_fields = ('fecha_creacion', 'fecha_modificacion', 'fecha_eliminacion',)
 
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
-        fields = '__all__'
+        fields = ['id_cliente', 'nombre', 's_nombre', 'apellido', 's_apellido', 'rut',
+                  'fecha_nacimiento', 'direccion', 'telefono', 'email']
 
 class AdministradorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -39,16 +40,6 @@ class ReservaSerializer(serializers.ModelSerializer):
         model = Reserva
         fields = '__all__'
 
-class ReservaPresencialSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ReservaPresencial
-        fields = '__all__'
-
-class ReservaOnlineSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ReservaOnline
-        fields = '__all__'
-
 class CheckInSerializer(serializers.ModelSerializer):
     class Meta:
         model = CheckIn
@@ -64,19 +55,12 @@ class TipoServicioAdicionalSerializer(serializers.ModelSerializer):
         model = TipoServicioAdicional
         fields = '__all__'
 
-class ServicioAdicionalSerializer(serializers.ModelSerializer):
+class ServicioAdicionalConsumidoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ServicioAdicional
-        fields = '__all__'
-
-class DetalleServiciosSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DetalleServicios
+        model = ServicioAdicionalConsumido
         fields = '__all__'
 
 class PagoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pago
         fields = '__all__'
-
-
