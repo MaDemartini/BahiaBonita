@@ -73,14 +73,14 @@ def confirm_pago(request):
 ##################################################################
 def postApiRegister (post_data):
     
-    URL_API = "http://127.0.0.1:8000/api/persona/"
+    URL_API_REGISTRO = settings.URL_API_REGISTRO
 
      # Convertir fecha_nacimiento a string si es tipo date
     if isinstance(post_data.get("fecha_nacimiento"), date):
         post_data["fecha_nacimiento"] = post_data["fecha_nacimiento"].isoformat()
     try:
         print(f"Enviando datos a la API: {post_data}")
-        post = requests.post(URL_API, json=post_data)
+        post = requests.post(URL_API_REGISTRO, json=post_data)
         print(f"Respuesta de la API: {post.status_code}, {post.text}")  # Verifica la respuesta de la API
         if post.status_code == 201:
             return {"Datos guardados exitosamente"}
