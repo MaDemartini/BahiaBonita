@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     
     
+    
 ]
 
 MIDDLEWARE = [
@@ -126,6 +127,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -139,4 +141,7 @@ TRANSBANK_API_KEY = "579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A
 
 #settings url_api registro
 
-URL_API_REGISTRO = "http://127.0.0.1:8000/api/persona/"
+URL_API_REGISTRO = "http://localhost:8000/api/persona/"
+URL_API_ADDDEPTO = "http://localhost:8000/api/depto/"
+URL_API_LIST_DEPTO = "http://localhost:8000/api/depto/"
+URL_API_CLIENTE = "http://localhost:8000/api/cliente/"

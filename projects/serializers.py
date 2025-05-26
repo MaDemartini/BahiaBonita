@@ -10,9 +10,10 @@ class PersonaSerializer(serializers.ModelSerializer):
         read_only_fields = ('fecha_creacion', 'fecha_modificacion', 'fecha_eliminacion',)
 
 class ClienteSerializer(serializers.ModelSerializer):
+    id_persona = PersonaSerializer(read_only=True)
     class Meta:
         model = Cliente
-        fields = ['id_cliente', 'nombre', 's_nombre', 'apellido', 's_apellido', 'rut',
+        fields = ['id_persona','id_cliente', 'nombre', 's_nombre', 'apellido', 's_apellido', 'rut',
                   'fecha_nacimiento', 'direccion', 'telefono', 'email']
 
 class AdministradorSerializer(serializers.ModelSerializer):

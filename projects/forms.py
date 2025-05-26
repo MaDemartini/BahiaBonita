@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import Persona
+from .models import Persona, Departamento
 
 class LoginForm(forms.Form):
     rut = forms.CharField(max_length=12, widget=forms.TextInput(attrs={'placeholder': 'Rut'}))
@@ -56,4 +56,19 @@ class ReservaForm(forms.Form):
     cantidad_de_personas = forms.IntegerField(min_value=1, widget=forms.NumberInput(attrs={'placeholder': 'Cantidad de personas'}))
     tipo_de_reserva = forms.ChoiceField(choices=[('diaria', 'Diaria'), ('mensual', 'Mensual')], widget=forms.Select(attrs={'class': 'form-control'}))
 
+
+# clase para administracion, crear departamentos en la db
+class AddDeptoForm(forms.ModelForm):
+    class Meta:
+        model = Departamento
+        fields = ['num_depto','cant_dormitorios','cant_banos','piso','cant_personas','imagen','valor_dia','mantenimiento']
+        widgets = {
+            'cant_dormitorios': forms.NumberInput(attrs={'placeholder': 'Cantidad de dormitorios'}),
+            'cant_banos': forms.NumberInput(attrs={'placeholder': 'Cantidad de baños'}),
+            'piso': forms.NumberInput(attrs={'placeholder': 'Piso'}),
+            'cant_personas': forms.NumberInput(attrs={'placeholder': 'Cantidad de personas'}),
+            'imagen': forms.TextInput(attrs={'placeholder': 'Imagen'}),
+            'valor_dia': forms.NumberInput(attrs={'placeholder': 'Valor por día'}),
+            'mantenimiento': forms.CheckboxInput(),
+        }
     

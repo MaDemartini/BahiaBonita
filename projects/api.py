@@ -15,7 +15,7 @@ from rest_framework.response import Response
 class PersonaViewSet(viewsets.ModelViewSet):
     queryset = Persona.objects.all()
     serializer_class = PersonaSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.AllowAny] #permite que todos accedan a la vista, en producción se debe de restringir el acceso
 
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
@@ -40,7 +40,7 @@ class RecepcionistaViewSet(viewsets.ModelViewSet):
 class DepartamentoViewSet(viewsets.ModelViewSet):
     queryset = Departamento.objects.all()
     serializer_class = DepartamentoSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.AllowAny] 
 
     @action(detail=False, methods=['get'], url_path='disponibles')
     def disponibles(self, request):
