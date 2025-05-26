@@ -8,6 +8,8 @@ router.register('api/cliente', ClienteViewSet, 'cliente')
 router.register('api/administrador', AdministradorViewSet, 'administrador')
 router.register('api/depto', DepartamentoViewSet, 'departamento')
 router.register('api/reserva', ReservaViewSet, 'reserva')
+router.register('api/addDepto', DepartamentoViewSet, 'add_depto')
+
 
 
 
