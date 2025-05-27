@@ -4,7 +4,6 @@ from django.contrib import admin
 from django.urls import path, include
 from projects import views  # 👈 Importa tus vistas
 
-
 router = routers.DefaultRouter()
 
 router.register('api/persona', PersonaViewSet, 'persona')
@@ -13,7 +12,6 @@ router.register('api/administrador', AdministradorViewSet, 'administrador')
 router.register('api/depto', DepartamentoViewSet, 'departamento')
 router.register('api/reserva', ReservaViewSet, 'reserva')
 router.register('api/addDepto', DepartamentoViewSet, 'add_depto')
-
 
 
 urlpatterns = [
