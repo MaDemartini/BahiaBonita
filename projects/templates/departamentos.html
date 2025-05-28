@@ -31,7 +31,7 @@
         </select>
 
         <select name="cant_personas" class="form-select" style="width: auto;">
-            <option value="">Capacidad de Personas</option>
+            <option value="">Capacidad</option>
             {% for n in "258"|make_list %}
             <option value="{{n}}" {% if filtros.cant_personas == n %}selected{% endif %}>{{n}} personas</option>
             {% endfor %}
@@ -40,28 +40,30 @@
         <button type="submit" class="btn btn-primary">Filtrar</button>
     </form>
 
+    <!-- LISTADO DE DEPARTAMENTOS -->
     <div class="row g-4">
         {% for depto in page_obj %}
         <div class="col-md-4">
-            <div class="card h-100 shadow">
-            <img src="{{ depto.imagen.url|default:'https://via.placeholder.com/400x250?text=Sin+Imagen' }}" ...>
+            <div class="card h-100 shadow-sm">
+                <img src="{{ depto.imagen.url|default:'https://via.placeholder.com/400x250?text=Sin+Imagen' }}" class="card-img-top" alt="Imagen del departamento">
                 <div class="card-body">
                     <h5 class="card-title">Departamento {{ depto.cant_dormitorios }} Habitación(es) - Piso {{ depto.piso }}</h5>
                     <p class="card-text">
-                        Baños: {{ depto.cant_banos }} <br>
-                        Capacidad: {{ depto.cant_personas }} persona(s) <br>
-                        Valor por día: ${{ depto.valor_dia }}
+                        <strong>Baños:</strong> {{ depto.cant_banos }}<br>
+                        <strong>Capacidad:</strong> {{ depto.cant_personas }} persona(s)<br>
+                        <strong>Valor por día:</strong> ${{ depto.valor_dia|floatformat:0 }}
                     </p>
-                        <a href="{% url 'crear_reserva' id_departamento=departamento.id %}" class="btn btn-primary">Reservar Ahora</a>
+                    <a href="{% url 'crear_reserva' depto.id_departamento %}" class="btn btn-success w-100">Reservar Ahora</a>
                 </div>
             </div>
         </div>
         {% empty %}
-        <p class="text-center">No hay departamentos que coincidan con los filtros.</p>
+        <p class="text-center">No hay departamentos que coincidan con los filtros seleccionados.</p>
         {% endfor %}
     </div>
 
     <!-- PAGINACIÓN -->
+    {% if page_obj.has_other_pages %}
     <nav aria-label="Paginación de departamentos" class="mt-4">
         <ul class="pagination justify-content-center">
             {% if page_obj.has_previous %}
@@ -93,5 +95,6 @@
             {% endif %}
         </ul>
     </nav>
+    {% endif %}
 </div>
 {% endblock %}

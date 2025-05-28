@@ -42,7 +42,7 @@ urlpatterns = [
     path('contacto/', views.contacto, name='contacto'),
 
     # Transbank
-    path('transbank/inicio_pago/', views.iniciar_pago, name='iniciar_pago'),
+    path('transbank/inicio_pago/', views.iniciar_pago, name='inicio_pago'),
     path('transbank/retorno/', views.confirm_pago, name='confirm_pago'),
 
     # API (Django REST Framework)

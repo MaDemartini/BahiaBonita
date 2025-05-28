@@ -349,3 +349,39 @@ caption {
     color: #0d6efd;
     display: block;
 }
+
+/* === Estilos personalizados para la vista de crear_reserva === */
+.card-reserva-departamento,
+.card-reserva-form,
+.card-reserva-comprobante {
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  box-shadow: none; /* Sin sombra flotante */
+  transition: none; /* Elimina animaciones */
+}
+
+.card-reserva-departamento:hover,
+.card-reserva-form:hover,
+.card-reserva-comprobante:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.card-reserva-img img {
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+  object-fit: cover;
+  height: 100%;
+}
+
+.card-reserva-info,
+.card-reserva-form,
+.card-reserva-comprobante {
+  background-color: #fff;
+}
+
+.card-reserva-form h4,
+.card-reserva-comprobante h4 {
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
