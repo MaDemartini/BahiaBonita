@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container my-5">
+  <div class="row">
+    <!-- IZQUIERDA: Imagen + info -->
+    <div class="col-md-6">
+    <img src="{{ departamento.imagen.url|default:'https://via.placeholder.com/600x400?text=Sin+Imagen' }}" ...>
+      <h3>Departamento {{ departamento.cant_dormitorios }} Habitación(es)</h3>
+      <ul>
+        <li><strong>Piso:</strong> {{ departamento.piso }}</li>
+        <li><strong>Baños:</strong> {{ departamento.cant_banos }}</li>
+        <li><strong>Capacidad:</strong> {{ departamento.cant_personas }} persona(s)</li>
+        <li><strong>Valor por día:</strong> ${{ departamento.valor_dia }}</li>
+      </ul>
+      <p>{{ departamento.descripcion }}</p>
+    </div>
+
+    <!-- DERECHA: Formulario + Comprobante -->
+    <div class="col-md-6">
+      <form method="POST" action="{% url 'guardar_reserva' %}" id="form-reserva">
+        {% csrf_token %}
+        <input type="hidden" name="departamento" value="{{ departamento.id_departamento }}">
+        
+        <!-- Cliente -->
+        <div class="mb-2">
+          <label for="nombre" class="form-label">Nombre</label>
+          <input type="text" class="form-control" id="nombre" name="nombre" required>
+        </div>
+        <div class="mb-2">
+          <label for="apellido" class="form-label">Apellido</label>
+          <input type="text" class="form-control" id="apellido" name="apellido" required>
+        </div>
+        <div class="mb-2">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+
+        <!-- Reserva -->
+        <div class="mb-2">
+          <label for="fecha_ingreso" class="form-label">Fecha Ingreso</label>
+          <input type="date" class="form-control" id="fecha_ingreso" name="fecha_ingreso" required>
+        </div>
+        <div class="mb-2">
+          <label for="fecha_salida" class="form-label">Fecha Salida</label>
+          <input type="date" class="form-control" id="fecha_salida" name="fecha_salida" required>
+        </div>
+        <div class="mb-2">
+          <label for="cant_personas" class="form-label">Cantidad Personas</label>
+          <input type="number" class="form-control" id="cant_personas" name="cant_personas" min="1" required>
+        </div>
+        <div class="mb-2">
+          <label for="tipo_reserva" class="form-label">Tipo Reserva</label>
+          <select class="form-select" id="tipo_reserva" name="tipo_reserva" required>
+            <option value="Normal">Normal</option>
+            <option value="Promo">Promo</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="valor_total" class="form-label">Valor Total</label>
+          <input type="number" step="0.01" class="form-control" id="valor_total" name="valor_total" required>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">Confirmar Reserva</button>
+      </form>
+
+      <!-- Comprobante -->
+      <div class="card mt-4">
+        <div class="card-header bg-dark text-white">
+          Comprobante de Reserva
+        </div>
+        <div class="card-body" id="resumen">
+          <p><strong>Nombre:</strong> <span id="r-nombre"></span> <span id="r-apellido"></span></p>
+          <p><strong>Email:</strong> <span id="r-email"></span></p>
+          <p><strong>Ingreso:</strong> <span id="r-ingreso"></span></p>
+          <p><strong>Salida:</strong> <span id="r-salida"></span></p>
+          <p><strong>Personas:</strong> <span id="r-personas"></span></p>
+          <p><strong>Tipo Reserva:</strong> <span id="r-tipo"></span></p>
+          <p><strong>Total:</strong> $<span id="r-total"></span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Script para rellenar comprobante -->
+<script>
+  const inputs = ['nombre', 'apellido', 'email', 'fecha_ingreso', 'fecha_salida', 'cant_personas', 'tipo_reserva', 'valor_total'];
+  inputs.forEach(id => {
+    document.getElementById(id).addEventListener('input', () => {
+      document.getElementById('r-' + id.replace('fecha_', '')).textContent = document.getElementById(id).value;
+    });
+  });
+</script>
+
+{% endblock %}

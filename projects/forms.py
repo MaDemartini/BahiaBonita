@@ -3,9 +3,14 @@ from django.core.exceptions import ValidationError
 from .models import Persona, Departamento
 
 class LoginForm(forms.Form):
-    rut = forms.CharField(max_length=12, widget=forms.TextInput(attrs={'placeholder': 'Rut'}))
-    password = forms.CharField(max_length=100, widget=forms.PasswordInput(attrs={'placeholder': 'Contraseña'}))
-
+    email = forms.EmailField(
+        max_length=100,
+        widget=forms.EmailInput(attrs={'placeholder': 'Correo electrónico', 'class': 'form-control'})
+    )
+    password = forms.CharField(
+        max_length=100,
+        widget=forms.PasswordInput(attrs={'placeholder': 'Contraseña', 'class': 'form-control'})
+    )
 class RegisterForm(forms.ModelForm):
     class Meta:
         model = Persona

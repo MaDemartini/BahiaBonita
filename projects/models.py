@@ -90,7 +90,7 @@ class Departamento(models.Model):
     cant_banos = models.IntegerField()
     piso = models.IntegerField()
     cant_personas = models.IntegerField()
-    imagen = models.CharField(max_length=100, blank=True)
+    imagen = models.ImageField(upload_to='departamentos/')
     valor_dia = models.IntegerField()
     mantenimiento = models.BooleanField(default=False)
 

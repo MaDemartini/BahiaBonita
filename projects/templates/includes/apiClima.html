@@ -1,0 +1,20 @@
+{% load static %}
+
+<div class="weather-section">
+  <button class="weather-title">Clima en Concón</button>
+
+  <div class="weather-card">
+    <div class="weather-icon">
+      <img id="weather-icon" src="{% static 'images/loading.gif' %}" alt="Icono clima">
+    </div>
+    <div class="weather-info">
+      <h3 id="weather-city">Concón</h3>
+      <p id="weather-description">Cargando...</p>
+      <p id="weather-temp">--°C</p>
+      <div class="temp-range">
+        <span>Min: <span id="temp-min">--°C</span></span>
+        <span>Max: <span id="temp-max">--°C</span></span>
+      </div>
+    </div>
+  </div>
+</div>
