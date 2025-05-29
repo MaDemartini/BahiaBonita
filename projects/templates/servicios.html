@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Servicios | Bahía Bonita{% endblock %}
 
@@ -15,7 +16,7 @@
         <!-- Servicio 1 -->
         <div class="col">
             <div class="card h-100 shadow-sm border-0">
-                <img src="https://via.placeholder.com/400x250?text=Suite+Privada" class="card-img-top rounded-top" alt="Alojamiento">
+                <img src={% static 'img/servicios/alojamiento.jpeg' %} class="card-img-top rounded-top" alt="Alojamiento">
                 <div class="card-body">
                     <h5 class="card-title text-primary">Todo el alojamiento es para ti</h5>
                     <p class="card-text">Disfruta de privacidad total y la comodidad de un departamento completamente equipado.</p>
@@ -26,7 +27,7 @@
         <!-- Servicio 2 -->
         <div class="col">
             <div class="card h-100 shadow-sm border-0">
-                <img src="https://via.placeholder.com/400x250?text=Espacio+Ampliado" class="card-img-top rounded-top" alt="Espacio amplio">
+                <img src={% static 'img/servicios/cocina.jpg' %} class="card-img-top rounded-top" alt="Espacio amplio">
                 <div class="card-body">
                     <h5 class="card-title text-primary">Cocina totalmente equipada</h5>
                     <p class="card-text">Prepara tus comidas favoritas con comodidad: cocina, refrigerador, microondas, vajilla y utensilios incluidos.</p>
@@ -37,7 +38,7 @@
         <!-- Servicio 3 -->
         <div class="col">
             <div class="card h-100 shadow-sm border-0">
-                <img src="https://via.placeholder.com/400x250?text=Piscina" class="card-img-top rounded-top" alt="Piscina">
+                <img src={% static 'img/servicios/piscinalibre.jpeg'  %} class="card-img-top rounded-top" alt="Piscina">
                 <div class="card-body">
                     <h5 class="card-title text-primary">Piscina al aire libre</h5>
                     <p class="card-text">Sumérgete en nuestra piscina con vista al mar, ideal para relajarte en tus vacaciones.</p>
@@ -48,7 +49,7 @@
         <!-- Servicio 4 -->
         <div class="col">
             <div class="card h-100 shadow-sm border-0">
-                <img src="https://via.placeholder.com/400x250?text=Parking" class="card-img-top rounded-top" alt="Estacionamiento">
+                <img src={% static 'img/servicios/estacionamiento.jpg' %} class="card-img-top rounded-top" alt="Estacionamiento">
                 <div class="card-body">
                     <h5 class="card-title text-primary">Estacionamiento gratuito</h5>
                     <p class="card-text">Tu vehículo seguro y cómodo, sin costos adicionales, dentro del alojamiento.</p>
@@ -59,10 +60,10 @@
         <!-- Servicio 5 -->
         <div class="col">
             <div class="card h-100 shadow-sm border-0">
-                <img src="https://via.placeholder.com/400x250?text=Ba%C3%B1o+Privado" class="card-img-top rounded-top" alt="Baño privado">
+                <img src="{% static 'img/servicios/spa.jpg' %}" class="card-img-top rounded-top" alt="Spa">
                 <div class="card-body">
-                    <h5 class="card-title text-primary">Baño privado</h5>
-                    <p class="card-text">Cada unidad cuenta con baño exclusivo, higiénico y completamente equipado.</p>
+                    <h5 class="card-title text-primary">Spa: sauna, jacuzzi y masajes</h5>
+                    <p class="card-text">Relájate en nuestro exclusivo spa con sauna, jacuzzi y servicio de masajes. El complemento perfecto para tu descanso.</p>
                 </div>
             </div>
         </div>
@@ -70,7 +71,7 @@
         <!-- Servicio 6 -->
         <div class="col">
             <div class="card h-100 shadow-sm border-0">
-                <img src="https://via.placeholder.com/400x250?text=Mascotas" class="card-img-top rounded-top" alt="Mascotas">
+                <img src={% static 'img/servicios/animales.png' %} class="card-img-top rounded-top" alt="Mascotas">
                 <div class="card-body">
                     <h5 class="card-title text-primary">Pet friendly</h5>
                     <p class="card-text">¡Viaja con tu mascota! Nuestro alojamiento está preparado para recibir a todos los miembros de tu familia.</p>
@@ -81,7 +82,7 @@
         <!-- Servicio 7 -->
         <div class="col">
             <div class="card h-100 shadow-sm border-0">
-                <img src="https://via.placeholder.com/400x250?text=Vista+al+mar" class="card-img-top rounded-top" alt="Vista al mar">
+                <img src={% static 'img/servicios/imagen2.png' %} class="card-img-top rounded-top" alt="Vista al mar">
                 <div class="card-body">
                     <h5 class="card-title text-primary">Vistas al mar</h5>
                     <p class="card-text">Despierta con una increíble vista al océano desde tu balcón privado.</p>
@@ -92,7 +93,7 @@
         <!-- Servicio 8 -->
         <div class="col">
             <div class="card h-100 shadow-sm border-0">
-                <img src="https://via.placeholder.com/400x250?text=Balc%C3%B3n" class="card-img-top rounded-top" alt="Balcón">
+                <img src={% static 'img/servicios/balcon.jpg' %} class="card-img-top rounded-top" alt="Balcón">
                 <div class="card-body">
                     <h5 class="card-title text-primary">Balcón privado</h5>
                     <p class="card-text">Disfruta del aire libre y el atardecer desde la comodidad de tu balcón.</p>
@@ -103,7 +104,7 @@
         <!-- Servicio 9 -->
         <div class="col">
             <div class="card h-100 shadow-sm border-0">
-                <img src="https://via.placeholder.com/400x250?text=WiFi" class="card-img-top rounded-top" alt="WiFi">
+                <img src={% static 'img/servicios/wifi.png' %} class="card-img-top rounded-top" alt="WiFi">
                 <div class="card-body">
                     <h5 class="card-title text-primary">WiFi gratuito</h5>
                     <p class="card-text">Conexión estable y rápida en todas las áreas del alojamiento, sin costo adicional.</p>

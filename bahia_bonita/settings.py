@@ -79,6 +79,9 @@ WSGI_APPLICATION = 'bahia_bonita.wsgi.application'
 LOGIN_REDIRECT_URL = 'index'  # Redirigir después de iniciar sesión
 LOGOUT_REDIRECT_URL = 'index'  # Redirigir después de cerrar sesión
 
+LOGIN_URL = '/login/'
+
+
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 

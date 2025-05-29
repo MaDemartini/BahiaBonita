@@ -159,3 +159,4 @@ class view_resumen_reserva(models.Model):
     class Meta:
         managed = False
         db_table = 'view_resumen_reserva'
+

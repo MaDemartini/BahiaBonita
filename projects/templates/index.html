@@ -46,50 +46,48 @@
 
 <!-- Sección Clima Mejorada -->
 <section class="my-5 p-4 bg-light rounded shadow-sm">
-    <h3 class="mb-4 text-center fw-semibold">Pronóstico del Clima - Próximos 7 Días</h3>
     {% include 'includes/apiClima.html' %}
 </section>
 
 <!-- Servicios -->
 <div class="row text-center my-5 gy-4">
-    <div class="col-md-4">
+    <div class="col-md-6 col-sm-12">
         <div class="card h-100 shadow rounded-4">
-            <img src={% static 'img/estacionamiento.jpeg' %} class="card-img-top rounded-top-4" alt="Estacionamiento">
+            <img src="{% static 'img/estacionamiento.jpeg' %}" class="card-img-top rounded-top-4" alt="Estacionamiento" style="height: 250px; object-fit: cover;">
             <div class="card-body">
                 <h5 class="card-title fw-semibold">Estacionamiento</h5>
                 <p class="card-text text-muted">Disfruta de estacionamiento seguro</p>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-6 col-sm-12">
         <div class="card h-100 shadow rounded-4">
-            <img src={% static 'img/comodidad.jpeg' %} class="card-img-top rounded-top-4" alt="Comodidad">
+            <img src="{% static 'img/comodidad.jpeg' %}" class="card-img-top rounded-top-4" alt="Comodidad" style="height: 250px; object-fit: cover;">
             <div class="card-body">
                 <h5 class="card-title fw-semibold">Comodidad Total</h5>
                 <p class="card-text text-muted">Departamentos equipados con todo lo necesario para tu descanso.</p>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-6 col-sm-12">
         <div class="card h-100 shadow rounded-4">
-            <img src={% static 'img/ubicacionprivilegiada.jpeg' %} class="card-img-top rounded-top-4" alt="Ubicación">
+            <img src="{% static 'img/ubicacionprivilegiada.jpeg' %}" class="card-img-top rounded-top-4" alt="Ubicación" style="height: 250px; object-fit: cover;">
             <div class="card-body">
                 <h5 class="card-title fw-semibold">Ubicación Privilegiada</h5>
                 <p class="card-text text-muted">Frente a la playa y cerca de los principales atractivos turísticos.</p>
             </div>
         </div>
     </div>
-</div>
-
-<section class="servicios-container">
-    <div class="card h-100 shadow rounded-4">
-        <img src={% static 'img/piscina.jpeg' %} alt="Piscina">
-        <div class="card-body">
-        <h5 class="card-title fw-semibold"> Piscina Incluida</h5>
-        <p>Acceso a nuestra piscina para toda la familia.</p>
+    <div class="col-md-6 col-sm-12">
+        <div class="card h-100 shadow rounded-4">
+            <img src="{% static 'img/piscina.jpeg' %}" class="card-img-top rounded-top-4" alt="Piscina" style="height: 250px; object-fit: cover;">
+            <div class="card-body">
+                <h5 class="card-title fw-semibold">Piscina Incluida</h5>
+                <p class="card-text text-muted">Acceso a nuestra piscina para toda la familia.</p>
+            </div>
         </div>
     </div>
-</section>
+</div>
 
 <!-- Mapa con dirección al lado -->
 <div class="container my-5">

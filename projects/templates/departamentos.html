@@ -5,6 +5,7 @@
 {% block content %}
 <div class="container py-5">
     <h1 class="text-center mb-5">Nuestros Departamentos</h1>
+    <hr class="w-15 mx-auto">
 
     <!-- FORMULARIO FILTROS -->
     <form method="get" class="mb-4 d-flex gap-3 justify-content-center flex-wrap">
@@ -47,8 +48,9 @@
             <div class="card h-100 shadow-sm">
                 <img src="{{ depto.imagen.url|default:'https://via.placeholder.com/400x250?text=Sin+Imagen' }}" class="card-img-top" alt="Imagen del departamento">
                 <div class="card-body">
-                    <h5 class="card-title">Departamento {{ depto.cant_dormitorios }} Habitación(es) - Piso {{ depto.piso }}</h5>
+                    <h5 class="card-title">Departamento {{ depto.num_depto }} - Piso {{ depto.piso }}</h5>
                     <p class="card-text">
+                        <strong>Habitaciones</strong> {{ depto.cant_dormitorios }} Habitación(es) <br>
                         <strong>Baños:</strong> {{ depto.cant_banos }}<br>
                         <strong>Capacidad:</strong> {{ depto.cant_personas }} persona(s)<br>
                         <strong>Valor por día:</strong> ${{ depto.valor_dia|floatformat:0 }}
@@ -95,6 +97,8 @@
             {% endif %}
         </ul>
     </nav>
+        <hr class="w-15 mx-auto">
+
     {% endif %}
 </div>
 {% endblock %}

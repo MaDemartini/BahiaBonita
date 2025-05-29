@@ -6,11 +6,14 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator
 from django.utils.dateparse import parse_date
 from .models import Cliente, Departamento, Reserva, Persona  
-from .forms import LoginForm, Persona, RegisterForm, AddDeptoForm
+from .forms import LoginForm, RegisterForm, AddDeptoForm, ReservaForm
 from django.shortcuts import render, HttpResponse, redirect,  get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth.decorators import login_required
+
+
 
 # Create your views here.
 
@@ -18,7 +21,11 @@ from django.contrib.auth.hashers import check_password
 
 ########################################################################
 #pago transbank API
-def iniciar_pago(request):
+@login_required
+def iniciar_pago(request, reserva_id):
+    reserva = get_object_or_404(Reserva, pk=reserva_id)
+    valor_total = reserva.valor_total
+
     url = f"{settings.TRANSBANK_API_URL}/rswebpaytransaction/api/webpay/v1.2/transactions"
 
     headers = {
@@ -28,18 +35,20 @@ def iniciar_pago(request):
     }
 
     data = {
-        "buy_order": "orden123",
-        "session_id": "session456",
-        "amount": 25000,
+        "buy_order": f"orden_{reserva.id_reserva}",
+        "session_id": f"session_{request.session.session_key}",
+        "amount": valor_total,
         "return_url": request.build_absolute_uri("/transbank/retorno/")
     }
 
     try:
-        # 👇 Este es el correcto
         response = requests.post(url, headers=headers, json=data)
         response.raise_for_status()
         r = response.json()
-        return redirect(f"{r['url']}?token_ws={r['token']}")
+        return JsonResponse({
+            "url_pago": r['url'],
+            "token_ws": r['token']
+        })
     except requests.RequestException as e:
         return JsonResponse({"error": str(e)}, status=500)
     
@@ -93,20 +102,23 @@ def postApiRegister (post_data):
         print(f"Error: {e}")
         return {"error": "Error de conexión con la API", "details": str(e)}  
 
-def registerPage(request):
+def registerPage(request): 
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            post_data = form.cleaned_data  # Obtén los datos validados del formulario
-            response = postApiRegister(post_data)  # Llama a la función para enviar los datos a la API
+            post_data = form.cleaned_data
+            post_data['password'] = make_password(post_data['password'])  # Encriptar
+            post_data.pop('re_password')  # Elimina el campo que no va a la API
+            response = postApiRegister(post_data)
             if "Datos guardados exitosamente" in response:
                 messages.success(request, "Registro exitoso")
-                return redirect('registro')  # Redirige a una página de éxito
+                return redirect('login')
             else:
                 return render(request, 'register.html', {'form': form, 'error': response.get('error')})
     else:
         form = RegisterForm()
-    return render(request, 'register.html', {'form': form}) 
+    return render(request, 'register.html', {'form': form})
+
 
 #########################################################################
 
@@ -214,6 +226,7 @@ def eliminar_depto(request, id):
     return redirect('administracion')  # Redirige a la página de administración
         
 #########################################################################
+# Páginas generales
 
 def index(request):
     return render(request, 'index.html')
@@ -236,7 +249,7 @@ def departamentos(request):
     departamentos = [d for d in departamentos if not d.get('mantenimiento', False)]
 
     # FILTROS desde GET (query params)
-    cant_dormitorios = request.GET.get('cant_dormitorios')  # Ej: '1', '2', '3'
+    cant_dormitorios = request.GET.get('cant_dormitorios')  # '1', '2', '3'
     cant_banos = request.GET.get('cant_banos')
     piso = request.GET.get('piso')
     cant_personas = request.GET.get('cant_personas')
@@ -266,25 +279,72 @@ def departamentos(request):
     }
     return render(request, 'departamentos.html', context)
 
+#########################################################################
+# Obtener Cliente de sesión
 
-def crear_reserva(request, id_departamento=None):
-    departamento = None
-    error = None
+# Función para obtener Cliente según usuario 
+def get_cliente_from_session(request):
+    usuario = request.session.get('usuario')
+    if not usuario:
+        return None
+    email = usuario.get('email')
+    try:
+        return Cliente.objects.get(email=email)
+    except Cliente.DoesNotExist:
+        return None
+    
+@login_required
+def crear_reserva(request):
+    cliente = get_cliente_from_session(request)
+    if not cliente:
+        messages.error(request, "Debe iniciar sesión para reservar.")
+        return redirect('login')
 
-    if id_departamento:
-        try:
-            response = requests.get(f"{settings.URL_API_ADDDEPTO}{id_departamento}/")
-            if response.status_code == 200:
-                departamento = response.json()
+    if request.method == 'POST':
+        form = ReservaForm(request.POST)
+        if form.is_valid():
+            reserva = form.save(commit=False)
+            reserva.id_cliente = cliente
+
+            # Calcular valor total
+            depto = reserva.id_departamento
+            dias = (reserva.fecha_salida - reserva.fecha_ingreso).days
+
+            # Cálculo aseo según cantidad de habitaciones
+            cant_hab = depto.cant_dormitorios
+            if cant_hab == 1:
+                valor_aseo = 15000
+            elif cant_hab == 2:
+                valor_aseo = 20000
+            elif cant_hab >= 3:
+                valor_aseo = 25000
             else:
-                error = f"Error al cargar el departamento. Código: {response.status_code}"
-        except Exception as e:
-            error = f"Error al conectar con la API: {e}"
+                valor_aseo = 15000  # fallback
 
-    return render(request, 'crear_reserva.html', {
-        'departamento': departamento,
-        'error': error
-    })
+            valor_total = (depto.valor_dia * dias) + valor_aseo
+            reserva.valor_total = valor_total
+            reserva.tipo_reserva = "diaria"  # Fijo para la web
+            reserva.fecha_reserva = date.today()
+
+            # Guardar reserva
+            reserva.save()
+            messages.success(request, f"Reserva creada con éxito. Total: ${valor_total}")
+
+            # Redirigir a iniciar pago con id reserva
+            return redirect('iniciar_pago', reserva_id=reserva.id_reserva)
+    else:
+        form = ReservaForm(initial={
+            'nombre_cliente': cliente.nombre,
+            'apellido_clinete': cliente.apellido,
+        })
+    
+    context = {
+        'form': form,
+        'cliente': cliente,
+    }
+
+    return render(request, 'crear_reserva.html', context)
+
 
 
 def guardar_reserva(request):
@@ -317,7 +377,7 @@ def guardar_reserva(request):
 
             if response.status_code == 201:
                 messages.success(request, "Reserva guardada correctamente.")
-                return redirect('index')  # O donde desees redirigir tras reservar
+                return redirect('index')  
             else:
                 messages.error(request, f"Error al guardar la reserva: {response.status_code} - {response.text}")
                 return redirect('crear_reserva')
