@@ -17,8 +17,7 @@ router.register('api/reserva', ReservaViewSet, 'reserva')
 router.register('api/addDepto', DepartamentoViewSet, 'add_depto')
 
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
+urlpatterns = [   
 
     # HTML PAGES (Frontend)
     path('', views.index, name='index'),
