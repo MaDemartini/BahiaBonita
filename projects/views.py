@@ -102,13 +102,11 @@ def postApiRegister (post_data):
         print(f"Error: {e}")
         return {"error": "Error de conexión con la API", "details": str(e)}  
 
-def registerPage(request): 
+def registerPage(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
             post_data = form.cleaned_data
-            post_data['password'] = make_password(post_data['password'])  # Encriptar
-            post_data.pop('re_password')  # Elimina el campo que no va a la API
             response = postApiRegister(post_data)
             if "Datos guardados exitosamente" in response:
                 messages.success(request, "Registro exitoso")
