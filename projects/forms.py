@@ -7,11 +7,12 @@ class LoginForm(forms.Form):
     password = forms.CharField(max_length=100, widget=forms.PasswordInput(attrs={'placeholder': 'Contraseña'}))
 
 class RegisterForm(forms.ModelForm):
+    confirm_password = forms.CharField(label='Confirmar Contraseña', max_length=100, widget=forms.PasswordInput(attrs={'placeholder': 'Confirmar Contraseña'}))
     class Meta:
         model = Persona
-        fields = ['nombre', 's_nombre', 'apellido', 's_apellido', 'rut', 'dv', 'fecha_nacimiento', 'direccion', 'telefono', 'email', 'password', 're_password']
+        fields = ['nombre', 's_nombre', 'apellido', 's_apellido', 'rut', 'dv', 'fecha_nacimiento', 'direccion', 'telefono', 'email', 'password']
         widgets = {
-            'Nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
             's_nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Segundo nombre'}),
             'apellido': forms.TextInput(attrs={'placeholder': 'Apellido'}),
             's_apellido': forms.TextInput(attrs={'placeholder': 'Apellido Materno'}),
@@ -22,7 +23,7 @@ class RegisterForm(forms.ModelForm):
             'telefono': forms.TextInput(attrs={'placeholder': 'Teléfono'}),
             'email': forms.EmailInput(attrs={'placeholder': 'Email'}),
             'password': forms.PasswordInput(attrs={'placeholder': 'Contraseña'}),
-            're_password': forms.PasswordInput(attrs={'placeholder': 'Repetir Contraseña'}),
+            
         
 
         } 
