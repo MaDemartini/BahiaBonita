@@ -7,7 +7,7 @@ class LoginForm(forms.Form):
     password = forms.CharField(max_length=100, widget=forms.PasswordInput(attrs={'placeholder': 'Contraseña'}))
 
 class RegisterForm(forms.ModelForm):
-    confirm_password = forms.CharField(label='Confirmar Contraseña', max_length=100, widget=forms.PasswordInput(attrs={'placeholder': 'Confirmar Contraseña'}))
+    re_password = forms.CharField(label='Confirmar Contraseña', max_length=100, widget=forms.PasswordInput(attrs={'placeholder': 'Confirmar Contraseña'}))
     class Meta:
         model = Persona
         fields = ['nombre', 's_nombre', 'apellido', 's_apellido', 'rut', 'dv', 'fecha_nacimiento', 'direccion', 'telefono', 'email', 'password']
