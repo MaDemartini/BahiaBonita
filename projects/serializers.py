@@ -6,7 +6,9 @@ from .models import (Persona, Cliente, Administrador, PersonalAseo, Recepcionist
 class PersonaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Persona
-        fields = '__all__'
+        fields = ['id_persona', 'nombre', 's_nombre', 'apellido', 's_apellido', 'rut',
+                  'dv', 'fecha_nacimiento', 'direccion', 'telefono', 'email', 'password',
+                  'fecha_creacion', 'fecha_modificacion', 'fecha_eliminacion']
         read_only_fields = ('fecha_creacion', 'fecha_modificacion', 'fecha_eliminacion',)
 
 class ClienteSerializer(serializers.ModelSerializer):
