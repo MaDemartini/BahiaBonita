@@ -16,56 +16,48 @@ class LoginForm(forms.Form):
     )
 
 class RegisterForm(forms.ModelForm):
-    re_password = forms.CharField(
-        max_length=100,
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Repetir Contraseña'}),
-        label="Repetir contraseña"
-    )
-
+    re_password = forms.CharField(label='Confirmar Contraseña', max_length=100, widget=forms.PasswordInput(attrs={'placeholder': 'Confirmar Contraseña'}))
     class Meta:
         model = Persona
-        fields = ['nombre', 's_nombre', 'apellido', 's_apellido', 'rut', 'dv',
-                  'fecha_nacimiento', 'direccion', 'telefono', 'email', 'password']
+        fields = ['nombre', 's_nombre', 'apellido', 's_apellido', 'rut', 'dv', 'fecha_nacimiento', 'direccion', 'telefono', 'email', 'password']
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
             's_nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Segundo nombre'}),
-            'apellido': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Apellido'}),
-            's_apellido': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Apellido Materno'}),
-            'rut': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Rut'}),
-            'dv': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'DV'}),
-            'fecha_nacimiento': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'direccion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Dirección'}),
-            'telefono': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Teléfono'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
-            'password': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Contraseña'}),
-        }
+            'apellido': forms.TextInput(attrs={'placeholder': 'Apellido'}),
+            's_apellido': forms.TextInput(attrs={'placeholder': 'Apellido Materno'}),
+            'rut': forms.TextInput(attrs={'placeholder': 'Rut'}),
+            'dv': forms.TextInput(attrs={'placeholder': 'DV'}),
+            'fecha_nacimiento': forms.DateInput(attrs={'placeholder': 'Fecha de Nacimiento', 'type': 'date'}),
+            'direccion': forms.TextInput(attrs={'placeholder': 'Dirección'}),
+            'telefono': forms.TextInput(attrs={'placeholder': 'Teléfono'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'Email'}),
+            'password': forms.PasswordInput(attrs={'placeholder': 'Contraseña'}),
+            
+        
 
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if Persona.objects.filter(email=email).exists():
-            raise forms.ValidationError("Este correo ya está registrado.")
-        return email
+        } 
 
-    def clean(self):
-        cleaned_data = super().clean()
-        password = cleaned_data.get("password")
-        re_password = cleaned_data.get("re_password")
-        rut = cleaned_data.get('rut')
-        dv = cleaned_data.get('dv')
+#funcion para validar rut y dv
+#se valida el rut incorrecto pero hay que agregar las alertas
+        def clean(self):
+            cleaned_data = super().clean()
+            rut = cleaned_data.get('rut')
+            dv = cleaned_data.get('dv')
+            if not rut or not dv:
+                self.add_error("El RUT y el dígito verificador son obligatorios.")
+                return cleaned_data    
 
-        if password and len(password) < 6:
-            self.add_error('password', "La contraseña debe tener al menos 6 caracteres.")
-        if password and re_password and password != re_password:
-            self.add_error('re_password', "Las contraseñas no coinciden.")
+            if not rut.isdigit():
+                self.add_error('rut', "El RUT debe contener solo números.")
 
-        if not rut or not dv:
-            self.add_error('rut', "El RUT y el dígito verificador son obligatorios.")
-        elif not rut.isdigit():
-            self.add_error('rut', "El RUT debe contener solo números.")
-        elif not validar_dv(rut, dv):
-            self.add_error('dv', "El dígito verificador no es válido.")
+            if not validar_dv(rut, dv):  # type: ignore # Ahora `validar_dv` está definido
+                self.add_error('dv', "El dígito verificador no es válido.")
 
-        return cleaned_data
+            if password and re_password and password != re_password: # type: ignore
+                self.add_error('re_password', "Las contraseñas no coinciden.")
+
+            return cleaned_data     
+
 
         
 class ReservaForm(forms.ModelForm):
