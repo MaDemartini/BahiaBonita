@@ -148,12 +148,12 @@ TRANSBANK_API_KEY = "579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A
 #settings url_api registro
 
 URL_API_REGISTRO = "http://localhost:8000/api/persona/"
-URL_API_LOGIN = "http://localhost/api/login/"
+URL_API_LOGIN = "http://localhost:8000/api/login/"
 
 URL_API_ADDDEPTO = "http://localhost:8000/api/depto/"
 URL_API_LIST_DEPTO = "http://localhost:8000/api/depto/"
 URL_API_CLIENTE = "http://localhost:8000/api/cliente/"
-URL_API_RESERVA = "http://localhost:8000/api/reservas/"
+URL_API_RESERVA = "http://localhost:8000/api/reserva/"
 
 
 MEDIA_URL = '/media/'
