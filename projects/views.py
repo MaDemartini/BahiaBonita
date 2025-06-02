@@ -393,17 +393,9 @@ def guardar_reserva(request):
 def inicio_pago(request):
     return render(request, 'inicio_pago.html')
 
-def confirm_pago(request):
-    return render(request, 'retorno.html')
 
 def contacto(request):
     return render(request, 'contacto.html')
-
-def loginPage(request):
-    return render(request, 'login.html')
-
-def administracion(request):
-    return render(request, 'administracion.html')
 
 def estadisticas(request):
     return render(request, 'estadisticas.html')
