@@ -149,6 +149,7 @@ TRANSBANK_API_KEY = "579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A
 
 URL_API_REGISTRO = "http://localhost:8000/api/persona/"
 URL_API_LOGIN = "http://localhost:8000/api/login/"
+URL_API_CONTACTO = "http://localhost:8000/api/contacto/"
 
 URL_API_ADDDEPTO = "http://localhost:8000/api/depto/"
 URL_API_LIST_DEPTO = "http://localhost:8000/api/depto/"
@@ -158,3 +159,13 @@ URL_API_RESERVA = "http://localhost:8000/api/reservas/"
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+##servidor SMTP de gmail
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'mariobahiabonita@gmail.com'
+EMAIL_HOST_PASSWORD = '123456'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_CONTACTO = 'mariobahiabonita@gmail.com'

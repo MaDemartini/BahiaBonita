@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import (Persona, Cliente, Administrador, PersonalAseo, Recepcionista, Departamento,
+from .models import (Contacto, Persona, Cliente, Administrador, PersonalAseo, Recepcionista, Departamento,
                      Reserva, CheckIn, Arriendo, TipoServicioAdicional,
                      ServicioAdicionalConsumido, Pago)
 
@@ -72,5 +72,11 @@ class PagoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pago
         fields = '__all__'
+        
+class ContactoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contacto
+        fields = ['id_contacto','nombre', 'telefono', 'email', 'mensaje']
+        read_only_fields = ('fecha_creacion',)  # Assuming you want to keep track of creation time
         
 

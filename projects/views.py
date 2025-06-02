@@ -5,8 +5,11 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.core.paginator import Paginator
 from django.utils.dateparse import parse_date
+from django.core.mail import send_mail
+
+
 from .models import Cliente, Departamento, Reserva, Persona  
-from .forms import LoginForm, RegisterForm, AddDeptoForm, ReservaForm
+from .forms import ContactoForm, LoginForm, RegisterForm, AddDeptoForm, ReservaForm
 from django.shortcuts import render, HttpResponse, redirect,  get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -426,15 +429,105 @@ def logout(request):
 #perfil
 
 def profile(request):
-    return render(request, 'profile.html')
+    # Email desde la sesión (puede venir desde login personalizado)
+    email = request.session.get('usuario', {}).get('email')
 
+    if not email:
+        return render(request, 'profile.html', {
+            'error': 'No hay sesión activa o falta el correo.'
+        })
 
+    try:
+        # Llama al endpoint con filtro por email
+        url = f"{settings.URL_API_REGISTRO}?email={email}"
+        response = requests.get(url)
 
+        if response.status_code == 200:
+            personas = response.json()
 
+            # Verifica si viene como lista o diccionario (depende de tu API)
+            if isinstance(personas, list) and personas:
+                persona = personas[0]  # Primer resultado
+            elif isinstance(personas, dict) and 'nombre' in personas:
+                persona = personas
+            else:
+                return render(request, 'profile.html', {
+                    'error': 'No se encontró una persona con ese correo.'
+                })
 
+            nombre = persona.get('nombre')
+            apellido = persona.get('apellido')
+            direccion = persona.get('direccion')
+            telefono = persona.get('telefono')
+            
+            return render(request, 'profile.html', {
+                'nombre': nombre,
+                'apellido': apellido,
+                'email': email,
+                'direccion': direccion,
+                'telefono': telefono,
+            })
+        else:
+            return render(request, 'profile.html', {
+                'error': 'No se pudo acceder a la API.'
+            })
 
+    except Exception as e:
+        return render(request, 'profile.html', {
+            'error': f'Error al consultar la API: {str(e)}'
+        })
 
 ##########################################################################
+#Subir imagen a supabase
+# def img_supabase(file, user_id):
+#     url = 
+
+##########################################################################
+#contacto
+
+def contacto(request):
+    if request.method == 'POST':
+        contactoForm = ContactoForm(request.POST)
+        if contactoForm.is_valid():
+            data = contactoForm.cleaned_data
+            print("Datos enviados a la API:", data)
+            try:
+                #guardar mediante api
+                url_api_contacto = settings.URL_API_CONTACTO 
+                print("Enviando datos al endpoint:", url_api_contacto)               
+                response = requests.post(url_api_contacto, json=data)
+                print("Código de respuesta:", response.status_code)
+                print("Respuesta de la API:", response.text)                
+                if response.status_code in [200, 201]:
+                    send_mail(
+                        subject=f"Nuevo mensaje de contacto: {data['nombre']}",
+                        message=f"""
+                            Nombre: {data['nombre']}
+                            Teléfono: {data['telefono']}
+                            Email: {data['email']}
+
+                            Mensaje:
+                            {data['mensaje']}
+                            """,
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[settings.EMAIL_CONTACTO],
+                        fail_silently=False
+                    )
+
+                    messages.success(request, 'Mensaje enviado correctamente.')
+                    return redirect('index')
+                else:
+                    messages.error(request, f"Error al guardar en API: {response.status_code}")
+            except Exception as e:
+                messages.error(request, f"Error al procesar solicitud: {e}")
+    else:
+        contactoForm = ContactoForm()
+
+    return render(request, 'contacto.html', {'contactoForm': contactoForm})
+    
+
+##########################################################################
+
 def inicio_pago(request):
     return render(request, 'inicio_pago.html')
 
@@ -442,9 +535,6 @@ def inicio_pago(request):
         "cliente": cliente,
         "departamento": departamento
     })
-
-def contacto(request):
-    return render(request, 'contacto.html')
 
 def estadisticas(request):
     return render(request, 'estadisticas.html')

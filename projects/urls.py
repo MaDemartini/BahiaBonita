@@ -1,5 +1,5 @@
 from rest_framework import routers
-from .api import PersonaViewSet, ClienteViewSet, AdministradorViewSet,DepartamentoViewSet,ReservaViewSet
+from .api import PersonaViewSet, ClienteViewSet, AdministradorViewSet,DepartamentoViewSet,ReservaViewSet,ContactoViewSet
 from django.contrib import admin
 from django.urls import path, include
 from .views import api_login
@@ -15,6 +15,7 @@ router.register('api/administrador', AdministradorViewSet, 'administrador')
 router.register('api/depto', DepartamentoViewSet, 'departamento')
 router.register('api/reserva', ReservaViewSet, 'reserva')
 router.register('api/addDepto', DepartamentoViewSet, 'add_depto')
+router.register('api/contacto', ContactoViewSet, 'contacto')
 
 
 urlpatterns = [   

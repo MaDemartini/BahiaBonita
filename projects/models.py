@@ -159,4 +159,15 @@ class view_resumen_reserva(models.Model):
     class Meta:
         managed = False
         db_table = 'view_resumen_reserva'
+        
+        
+class Contacto(models.Model):
+    id_contacto = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=50)
+    telefono = models.CharField(max_length=15)
+    email = models.EmailField(max_length=100)
+    mensaje = models.TextField()
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    
 
