@@ -1,0 +1,391 @@
+/* Reset básico */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* General */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff;
+    color: #212529;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Navbar */
+.navbar {
+    padding: 1rem 2rem;
+    background-color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.navbar .nav-link {
+    font-weight: 500;
+    transition: color 0.3s;
+    color: #444;
+    margin: 0 0.5rem;
+}
+
+.navbar .nav-link:hover {
+    color: #007bff;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #007bff;
+}
+
+/* Carrusel */
+.carousel-inner img {
+    object-fit: cover;
+    height: 550px;
+}
+
+.carousel-item {
+    transition: transform 0.8s ease-in-out;
+}
+
+/* Sección Inicio / Bienvenida */
+#inicio {
+    margin-top: 4rem;
+    padding-top: 3rem;
+}
+
+#inicio h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* Cards generales */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+    background-color: #ffffff;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-title {
+    font-weight: 600;
+}
+
+/* Cards servicios */
+.servicio-card {
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    width: 300px; /* ancho fijo para uniformidad */
+}
+
+.servicio-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.servicio-card i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #0d6efd;
+    display: block;
+}
+
+/* Imágenes en cards para tamaño fijo y uniforme */
+.servicio-card img,
+.card img,
+.card-reserva-img img {
+    width: 100%;
+    height: 200px; /* ajusta según necesidad */
+    object-fit: cover;
+    border-radius: 12px 12px 0 0;
+    display: block;
+}
+
+/* Botones */
+.btn {
+    border-radius: 5px;
+    padding: 10px 18px;
+    font-weight: 500;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-outline-primary {
+    border: 1px solid #007bff;
+    color: #007bff;
+}
+
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Footer */
+footer {
+    background-color: #212529;
+    color: white;
+    padding: 2rem 0;
+    text-align: center;
+    margin-top: auto;
+}
+
+footer a {
+    color: #ffffff;
+    margin-right: 1rem;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: #007bff;
+}
+
+/* Tablas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+caption {
+    font-size: 20px;
+    margin: 10px 0;
+}
+
+/* Contenedor servicios */
+.servicios-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding: 2rem 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Sección Clima */
+#apiClima {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.9rem;
+    padding: 1rem;
+}
+
+.diaClima {
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 1rem 1.5rem;
+    width: 110px;
+    text-align: center;
+    box-shadow: 0 0 8px rgb(0 0 0 / 0.1);
+}
+
+.diaClima p {
+    margin-top: 0.4rem;
+    font-weight: 600;
+    color: #007bff;
+}
+
+.diaClima img {
+    width: 50px;
+    height: 50px;
+}
+
+/* Dirección */
+.direccion {
+    max-width: 300px;
+    padding: 1rem;
+    font-size: 0.9rem;
+    color: #444;
+    box-shadow: 0 0 8px rgb(0 0 0 / 0.08);
+    border-radius: 0.5rem;
+    background-color: #fff;
+    margin-left: auto;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+    .servicios-container {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 575px) {
+    .servicios-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .direccion {
+        max-width: 100%;
+        margin: 1rem auto 0 auto;
+    }
+}
+
+/* Botón WhatsApp personalizado Bahía Bonita */
+.bb-btn {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: transparent;
+    position: relative;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.bb-svg-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #00d757;
+    backdrop-filter: blur(4px);
+    letter-spacing: 0.8px;
+    border-radius: 10px;
+    transition: all 0.3s;
+    border: 1px solid rgba(156, 156, 156, 0.466);
+}
+
+.bb-bg {
+    position: absolute;
+    content: "";
+    width: 100%;
+    height: 100%;
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
+    z-index: -1;
+    border-radius: 9px;
+    pointer-events: none;
+    transition: all 0.3s;
+}
+
+.bb-btn:hover .bb-bg {
+    transform: rotate(35deg);
+    transform-origin: bottom;
+}
+
+.bb-btn:hover .bb-svg-container {
+    background-color: rgba(156, 156, 156, 0.466);
+}
+
+/* Footer iconos sociales */
+.footer-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Instagram */
+.instagram-icon {
+    background-color: #ea4282;
+    box-shadow: 0 0 0 2px #ea4282;
+}
+
+.instagram-icon:hover {
+    background-color: white;
+    box-shadow: 0 0 25px 4px #ea4282;
+}
+
+.instagram-icon svg {
+    width: 20px;
+    height: 20px;
+    fill: white;
+    transition: all 0.3s ease;
+}
+
+.instagram-icon:hover svg {
+    fill: #ea4282;
+}
+
+/* Whatsapp */
+.whatsapp-icon {
+    background-color: #25d366;
+    box-shadow: 0 0 0 2px #25d366;
+}
+
+.whatsapp-icon:hover {
+    background-color: white;
+    box-shadow: 0 0 25px 4px #25d366;
+}
+
+.whatsapp-icon svg {
+    width: 20px;
+    height: 20px;
+    fill: white;
+    transition: all 0.3s ease;
+}
+
+.whatsapp-icon:hover svg {
+    fill: #25d366;
+}
+
+/* Estilos crear_reserva */
+.card-reserva-departamento,
+.card-reserva-form,
+.card-reserva-comprobante {
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    box-shadow: none;
+    transition: none;
+}
+
+.card-reserva-departamento:hover,
+.card-reserva-form:hover,
+.card-reserva-comprobante:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.card-reserva-img img {
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+}
+
+/* Estilos generales para formularios */
+form {
+    width: 100%;
+}
+
+/* Fin de archivo */

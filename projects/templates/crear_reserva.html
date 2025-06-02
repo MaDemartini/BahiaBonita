@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}Reservar Departamento | Bahía Bonita{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <!-- Tarjeta horizontal del departamento -->
+  <div class="card mb-4 flex-row shadow border-0">
+    <div class="col-md-5 p-0">
+      <img src="{{ departamento.imagen.url|default:'https://via.placeholder.com/600x400?text=Sin+Imagen' }}" class="img-fluid rounded-start w-100 h-100 object-fit-cover" alt="Imagen del departamento">
+    </div>
+    <div class="col-md-7 p-4 bg-white">
+      <h3 class="card-title">{{ departamento.nombre }}</h3>
+      {% if departamento.numero %}
+        <p><strong>Número de Departamento:</strong> {{ departamento.numero }}</p>
+      {% else %}
+        <p><strong>ID de Departamento:</strong> {{ departamento.id }}</p>
+      {% endif %}
+      <p><strong>Descripción:</strong> {{ departamento.descripcion }}</p>
+      <p><strong>Capacidad:</strong> {{ departamento.cant_personas }} persona(s)</p>
+      <p><strong>Precio por noche:</strong> ${{ departamento.valor_dia }}</p>
+      <ul class="list-group list-group-flush border-top mt-3">
+        <li class="list-group-item"><strong>Piso:</strong> {{ departamento.piso }}</li>
+        <li class="list-group-item"><strong>Baños:</strong> {{ departamento.cant_banos }}</li>
+        <li class="list-group-item"><strong>TV:</strong> {{ departamento.tv|yesno:"Sí,No" }}</li>
+        <li class="list-group-item"><strong>Cocina:</strong> {{ departamento.cocina|yesno:"Equipada,No equipada" }}</li>
+        <li class="list-group-item"><strong>Balcón:</strong> {{ departamento.balcon|yesno:"Sí,No" }}</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Formulario de Reserva y Comprobante -->
+  <div class="row">
+    <!-- Formulario -->
+    <div class="col-md-6">
+      <div class="card p-4 shadow-sm border-0 bg-white">
+        <h4 class="mb-3">Formulario de Reserva</h4>
+        <form method="post" id="form-reserva" novalidate>
+          {% csrf_token %}
+
+          {% if request.user.is_authenticated and cliente %}
+            <input type="hidden" name="id_cliente" value="{{ cliente.id }}">
+            <div class="mb-3">
+              <label class="form-label">Nombre</label>
+              <input type="text" id="nombre" class="form-control" value="{{ cliente.nombre }}" readonly>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Apellido</label>
+              <input type="text" id="apellido" class="form-control" value="{{ cliente.apellido }}" readonly>
+            </div>
+          {% else %}
+            <div class="mb-3">
+              <label class="form-label">Nombre</label>
+              <input type="text" name="nombre" id="nombre" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Apellido</label>
+              <input type="text" name="apellido" id="apellido" class="form-control" required>
+            </div>
+          {% endif %}
+
+          <div class="mb-3">
+            <label class="form-label">Fecha de Ingreso</label>
+            <input type="date" name="fecha_ingreso" id="fecha_ingreso" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Fecha de Salida</label>
+            <input type="date" name="fecha_salida" id="fecha_salida" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Cantidad de Adultos</label>
+            <input type="number" name="cant_adultos" id="cant_adultos" class="form-control" required min="0" max="{{ departamento.cant_personas }}">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Cantidad de Niños</label>
+            <input type="number" name="cant_ninos" id="cant_ninos" class="form-control" required min="0" max="{{ departamento.cant_personas }}">
+          </div>
+
+          <div id="error-capacidad" class="text-danger mt-2" style="display:none;"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Comprobante -->
+    <div class="col-md-6">
+      <div class="card p-4 shadow-sm bg-light border-0">
+        <h4 class="mb-3">Comprobante de Reserva</h4>
+        <p><strong>Número Departamento:</strong> {{ departamento.num_depto }}</p>
+        <p><strong>Cliente:</strong> <span id="comp_nombre_apellido">{% if cliente %}{{ cliente.nombre }} {{ cliente.apellido }}{% else %}Nombre y apellido serán ingresados{% endif %}</span></p>
+        <p><strong>Fecha Ingreso:</strong> <span id="comp_fecha_ingreso">-</span></p>
+        <p><strong>Fecha Salida:</strong> <span id="comp_fecha_salida">-</span></p>
+        <p><strong>Adultos:</strong> <span id="comp_cant_adultos">-</span></p>
+        <p><strong>Niños:</strong> <span id="comp_cant_ninos">-</span></p>
+        <p><strong>Total Personas:</strong> <span id="comp_cant_total">-</span></p>
+        <p><strong>Total Estimado:</strong> $<span id="comp_valor_total">-</span></p>
+
+        <a href="{% url 'inicio_pago' %}" class="btn btn-success w-100 mt-3">Ir al Pago</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Script para comprobante y validación -->
+<script>
+  const nombreInput = document.getElementById('nombre');
+  const apellidoInput = document.getElementById('apellido');
+  const ingresoInput = document.getElementById('fecha_ingreso');
+  const salidaInput = document.getElementById('fecha_salida');
+  const adultosInput = document.getElementById('cant_adultos');
+  const ninosInput = document.getElementById('cant_ninos');
+  const errorDiv = document.getElementById('error-capacidad');
+  const precioNoche = {{ departamento.valor_dia|default:"0" }};
+  const capacidadMax = {{ departamento.cant_personas }};
+
+  function actualizarComprobante() {
+    const adultos = parseInt(adultosInput.value) || 0;
+    const ninos = parseInt(ninosInput.value) || 0;
+    const totalPersonas = adultos + ninos;
+
+    const fi = new Date(ingresoInput.value);
+    const fs = new Date(salidaInput.value);
+    const dias = (fs - fi) / (1000 * 60 * 60 * 24);
+    let total = 0;
+
+    if (totalPersonas > capacidadMax) {
+      errorDiv.textContent = `La suma de adultos y niños no puede superar la capacidad máxima del departamento (${capacidadMax} personas).`;
+      errorDiv.style.display = 'block';
+    } else if (totalPersonas === 0) {
+      errorDiv.textContent = 'Debe ingresar al menos una persona (adultos o niños).';
+      errorDiv.style.display = 'block';
+    } else if (dias <= 0 || isNaN(dias)) {
+      errorDiv.textContent = 'Las fechas ingresadas no son válidas. La fecha de salida debe ser posterior a la de ingreso.';
+      errorDiv.style.display = 'block';
+    } else {
+      errorDiv.style.display = 'none';
+      total = dias * precioNoche;
+    }
+
+    document.getElementById("comp_nombre_apellido").textContent = `${nombreInput?.value || 'Nombre'} ${apellidoInput?.value || 'Apellido'}`;
+    document.getElementById("comp_fecha_ingreso").textContent = ingresoInput.value || '-';
+    document.getElementById("comp_fecha_salida").textContent = salidaInput.value || '-';
+    document.getElementById("comp_cant_adultos").textContent = adultos;
+    document.getElementById("comp_cant_ninos").textContent = ninos;
+    document.getElementById("comp_cant_total").textContent = totalPersonas;
+    document.getElementById("comp_valor_total").textContent = total.toFixed(0);
+  }
+
+  [nombreInput, apellidoInput, ingresoInput, salidaInput, adultosInput, ninosInput].forEach(el => {
+    if (el) el.addEventListener('input', actualizarComprobante);
+  });
+
+  window.addEventListener('load', actualizarComprobante);
+</script>
+{% endblock %}

@@ -22,10 +22,6 @@ from projects import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('projects.urls')),
-    path('registro/', views.registerPage, name='registro'),
-    path('transbank/inicio_pago/', views.iniciar_pago, name='iniciar_pago'),
-    path('transbank/retorno/', views.confirm_pago, name='confirm_pago'),
-    path('administracion/', views.administracion, name='administracion'),
-    
-]
+    path('', include('projects.urls')) 
+]    
+

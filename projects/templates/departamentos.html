@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Departamentos | Bahía Bonita{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-5">Nuestros Departamentos</h1>
+    <hr class="w-15 mx-auto">
+
+    <!-- FORMULARIO FILTROS -->
+    <form method="get" class="mb-4 d-flex gap-3 justify-content-center flex-wrap">
+
+        <select name="cant_dormitorios" class="form-select" style="width: auto;">
+            <option value="">Habitaciones</option>
+            {% for n in "123"|make_list %}
+            <option value="{{n}}" {% if filtros.cant_dormitorios == n %}selected{% endif %}>{{n}} Habitación(es)</option>
+            {% endfor %}
+        </select>
+
+        <select name="cant_banos" class="form-select" style="width: auto;">
+            <option value="">Baños</option>
+            {% for n in "12"|make_list %}
+            <option value="{{n}}" {% if filtros.cant_banos == n %}selected{% endif %}>{{n}} Baño(s)</option>
+            {% endfor %}
+        </select>
+
+        <select name="piso" class="form-select" style="width: auto;">
+            <option value="">Piso</option>
+            {% for n in "1234"|make_list %}
+            <option value="{{n}}" {% if filtros.piso == n %}selected{% endif %}>Piso {{n}}</option>
+            {% endfor %}
+        </select>
+
+        <select name="cant_personas" class="form-select" style="width: auto;">
+            <option value="">Capacidad</option>
+            {% for n in "258"|make_list %}
+            <option value="{{n}}" {% if filtros.cant_personas == n %}selected{% endif %}>{{n}} personas</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </form>
+
+    <!-- LISTADO DE DEPARTAMENTOS -->
+    <div class="row g-4">
+        {% for depto in page_obj %}
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <img src="{{ depto.imagen.url|default:'https://via.placeholder.com/400x250?text=Sin+Imagen' }}" class="card-img-top" alt="Imagen del departamento">
+                <div class="card-body">
+                    <h5 class="card-title">Departamento {{ depto.num_depto }} - Piso {{ depto.piso }}</h5>
+                    <p class="card-text">
+                        <strong>Habitaciones</strong> {{ depto.cant_dormitorios }} Habitación(es) <br>
+                        <strong>Baños:</strong> {{ depto.cant_banos }}<br>
+                        <strong>Capacidad:</strong> {{ depto.cant_personas }} persona(s)<br>
+                        <strong>Valor por día:</strong> ${{ depto.valor_dia|floatformat:0 }}
+                    </p>
+                    <a href="{% url 'crear_reserva' depto.id_departamento %}" class="btn btn-success w-100">Reservar Ahora</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">No hay departamentos que coincidan con los filtros seleccionados.</p>
+        {% endfor %}
+    </div>
+
+    <!-- PAGINACIÓN -->
+    {% if page_obj.has_other_pages %}
+    <nav aria-label="Paginación de departamentos" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}&{% for key,value in filtros.items %}{% if value %}{{ key }}={{ value }}&{% endif %}{% endfor %}" aria-label="Anterior">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}&{% for key,value in filtros.items %}{% if value %}{{ key }}={{ value }}&{% endif %}{% endfor %}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}&{% for key,value in filtros.items %}{% if value %}{{ key }}={{ value }}&{% endif %}{% endfor %}" aria-label="Siguiente">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+            {% endif %}
+        </ul>
+    </nav>
+        <hr class="w-15 mx-auto">
+
+    {% endif %}
+</div>
+{% endblock %}

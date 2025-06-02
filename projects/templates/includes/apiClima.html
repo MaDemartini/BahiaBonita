@@ -1,0 +1,31 @@
+{% load static %}
+
+{% load static %}
+
+<div class="container my-5">
+  <!-- Título principal -->
+  <h2 class="mb-4 text-center">Pronóstico del Clima</h2>
+
+  <!-- Clima actual -->
+  <div id="weather-current" class="p-4 border rounded shadow-sm mb-5 bg-light">
+    <h4 class="mb-3">Clima Actual - Concón</h4>
+    <div class="d-flex align-items-center gap-4">
+      <img id="weather-icon" src="" alt="Icono clima" style="width:100px;">
+      <div>
+        <p id="weather-description" class="mb-1 text-capitalize">Cargando...</p>
+        <p class="mb-1">Temperatura: <span id="weather-temp">--</span></p>
+        <p class="mb-0">Mín: <span id="temp-min">--</span> / Máx: <span id="temp-max">--</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pronóstico de 7 días -->
+  <div id="weather-forecast">
+    <h4 class="mb-3">Pronóstico 5 Días</h4>
+    <div id="weather-container" class="d-flex flex-nowrap gap-3 overflow-auto">
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'js/clima.js' %}"></script>
+

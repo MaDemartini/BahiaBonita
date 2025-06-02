@@ -15,6 +15,7 @@ import psycopg2
 from dotenv import load_dotenv
 import os
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -62,7 +63,7 @@ ROOT_URLCONF = 'bahia_bonita.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "projects" / "templates"], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,6 +76,10 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'bahia_bonita.wsgi.application'
+LOGIN_REDIRECT_URL = 'index'  # Redirigir después de iniciar sesión
+LOGOUT_REDIRECT_URL = 'index'  # Redirigir después de cerrar sesión
+
+LOGIN_URL = '/login/'
 
 
 # Database
@@ -122,6 +127,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+import os
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
@@ -142,6 +148,13 @@ TRANSBANK_API_KEY = "579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A
 #settings url_api registro
 
 URL_API_REGISTRO = "http://localhost:8000/api/persona/"
+URL_API_LOGIN = "http://localhost/api/login/"
+
 URL_API_ADDDEPTO = "http://localhost:8000/api/depto/"
 URL_API_LIST_DEPTO = "http://localhost:8000/api/depto/"
 URL_API_CLIENTE = "http://localhost:8000/api/cliente/"
+URL_API_RESERVA = "http://localhost:8000/api/reservas/"
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
