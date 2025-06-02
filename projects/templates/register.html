@@ -7,10 +7,10 @@
   <div class="col-md-8 col-lg-6">
     <h2 class="text-center mb-4">Crear Cuenta</h2>
     <hr class="w-25 mx-auto">
-        
+    <p>Formulario cargado: {{ form }}</p>    
     <form method = 'POST'>
         {% csrf_token %}
-        {{form.as_p}}
+        {{ form.as_p }}
         <button type="submit">Enviar</button>
     </form>
     

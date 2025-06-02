@@ -107,6 +107,7 @@ def registerPage(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             post_data = form.cleaned_data
+            post_data.pop('re_password')
             response = postApiRegister(post_data)
             if "Datos guardados exitosamente" in response:
                 messages.success(request, "Registro exitoso")
@@ -115,7 +116,8 @@ def registerPage(request):
                 return render(request, 'register.html', {'form': form, 'error': response.get('error')})
     else:
         form = RegisterForm()
-    return render(request, 'register.html', {'form': form})
+        print("Campos del formulario:", form.fields)
+        return render(request, 'register.html', {'form': form})
 
 
 #########################################################################
