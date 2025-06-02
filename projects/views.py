@@ -21,10 +21,13 @@ from django.contrib.auth.decorators import login_required
 
 ########################################################################
 #pago transbank API
-@login_required
-def iniciar_pago(request, reserva_id):
-    reserva = get_object_or_404(Reserva, pk=reserva_id)
-    valor_total = reserva.valor_total
+def iniciar_pago(request):
+    reserva_temp = request.session.get("reserva_temp")
+
+    if not reserva_temp:
+        return JsonResponse({"error": "No se encontró la reserva temporal."}, status=400)
+
+    valor_total = reserva_temp.get('valor_total', 0)
 
     url = f"{settings.TRANSBANK_API_URL}/rswebpaytransaction/api/webpay/v1.2/transactions"
 
@@ -35,8 +38,8 @@ def iniciar_pago(request, reserva_id):
     }
 
     data = {
-        "buy_order": f"orden_{reserva.id_reserva}",
-        "session_id": f"session_{request.session.session_key}",
+        "buy_order": f"orden_{reserva_temp.get('id_departamento')}_{reserva_temp.get('fecha_ingreso')}",
+        "session_id": request.session.session_key or "default_session",
         "amount": valor_total,
         "return_url": request.build_absolute_uri("/transbank/retorno/")
     }
@@ -45,24 +48,32 @@ def iniciar_pago(request, reserva_id):
         response = requests.post(url, headers=headers, json=data)
         response.raise_for_status()
         r = response.json()
-        return JsonResponse({
-            "url_pago": r['url'],
-            "token_ws": r['token']
-        })
+
+        token = r.get('token')
+        url_pago = r.get('url')
+
+        if not token or not url_pago:
+            return JsonResponse({"error": "Transbank no entregó token o URL de pago"}, status=500)
+
+        # Guarda el token para validación posterior si es necesario
+        request.session['token_ws'] = token
+
+        return redirect(f"{url_pago}?token_ws={token}")
+
     except requests.RequestException as e:
-        return JsonResponse({"error": str(e)}, status=500)
+        return JsonResponse({"error": f"Error en conexión con Transbank: {str(e)}"}, status=500)
+
     
 # Confirmación de pago
 # Esta vista se llama desde el Webpay después de que el usuario completa el pago
 
 def confirm_pago(request):
     token = request.GET.get("token_ws")
-    
+
     if not token:
         return JsonResponse({"error": "Token no proporcionado"}, status=422)
 
     url = f"{settings.TRANSBANK_API_URL}/rswebpaytransaction/api/webpay/v1.2/transactions/{token}"
-
     headers = {
         "Tbk-Api-Key-Id": settings.TRANSBANK_COMMERCE_CODE,
         "Tbk-Api-Key-Secret": settings.TRANSBANK_API_KEY
@@ -72,9 +83,31 @@ def confirm_pago(request):
         response = requests.put(url, headers=headers)
         response.raise_for_status()
         datos_pago = response.json()
-        return JsonResponse(datos_pago)
+
+        if datos_pago.get('status') == 'AUTHORIZED':
+            # Recuperar datos temporales
+            reserva_temp = request.session.get('reserva_temp')
+            if not reserva_temp:
+                return JsonResponse({"error": "No se encontró la reserva temporal en sesión."}, status=400)
+
+            # Guardar la reserva definitivamente
+            post_reserva = requests.post(settings.URL_API_RESERVA, json=reserva_temp)
+            if post_reserva.status_code == 201:
+                reserva_data = post_reserva.json()
+                # Elimina los temporales
+                del request.session['reserva_temp']
+                del request.session['token_ws']
+                # Redirigir a comprobante
+                return redirect(f"/retorno.html?id_reserva={reserva_data['id_reserva']}")
+            else:
+                return JsonResponse({"error": "El pago fue exitoso pero no se pudo guardar la reserva."}, status=500)
+
+        else:
+            return JsonResponse({"error": "Pago rechazado por Transbank."}, status=400)
+
     except requests.RequestException as e:
         return JsonResponse({"error": str(e)}, status=500)
+
     
 #########################################################################
 
@@ -294,105 +327,43 @@ def get_cliente_from_session(request):
     except Cliente.DoesNotExist:
         return None
     
-@login_required
-def crear_reserva(request):
+def crear_reserva(request, id_departamento):
     cliente = get_cliente_from_session(request)
-    if not cliente:
-        messages.error(request, "Debe iniciar sesión para reservar.")
-        return redirect('login')
+    departamento = get_object_or_404(Departamento, id_departamento=id_departamento)
 
     if request.method == 'POST':
-        form = ReservaForm(request.POST)
-        if form.is_valid():
-            reserva = form.save(commit=False)
-            reserva.id_cliente = cliente
+        fecha_ingreso = request.POST.get("fecha_ingreso")
+        fecha_salida = request.POST.get("fecha_salida")
+        cant_adultos = int(request.POST.get("cant_adultos", 0))
+        cant_ninos = int(request.POST.get("cant_ninos", 0))
+        cant_personas = cant_adultos + cant_ninos
+        dias = (date.fromisoformat(fecha_salida) - date.fromisoformat(fecha_ingreso)).days
 
-            # Calcular valor total
-            depto = reserva.id_departamento
-            dias = (reserva.fecha_salida - reserva.fecha_ingreso).days
+        if dias <= 0 or cant_personas <= 0:
+            messages.error(request, "Fechas inválidas o número de personas incorrecto.")
+            return redirect('crear_reserva', id_departamento=id_departamento)
 
-            # Cálculo aseo según cantidad de habitaciones
-            cant_hab = depto.cant_dormitorios
-            if cant_hab == 1:
-                valor_aseo = 15000
-            elif cant_hab == 2:
-                valor_aseo = 20000
-            elif cant_hab >= 3:
-                valor_aseo = 25000
-            else:
-                valor_aseo = 15000  # fallback
+        valor_aseo = 15000 if departamento.cant_dormitorios == 1 else 20000 if departamento.cant_dormitorios == 2 else 25000
+        valor_total = (departamento.valor_dia * dias) + valor_aseo
 
-            valor_total = (depto.valor_dia * dias) + valor_aseo
-            reserva.valor_total = valor_total
-            reserva.tipo_reserva = "diaria"  # Fijo para la web
-            reserva.fecha_reserva = date.today()
+        reserva_temp = {
+            "id_cliente": cliente.id_cliente if cliente else None,
+            "id_departamento": departamento.id_departamento,
+            "fecha_reserva": date.today().isoformat(),
+            "fecha_ingreso": fecha_ingreso,
+            "fecha_salida": fecha_salida,
+            "cant_personas": cant_personas,
+            "valor_total": valor_total,
+            "tipo_reserva": "diaria"
+        }
 
-            # Guardar reserva
-            reserva.save()
-            messages.success(request, f"Reserva creada con éxito. Total: ${valor_total}")
+        request.session["reserva_temp"] = reserva_temp
+        return redirect('iniciar_pago')  # Asegúrate de tener esta ruta configurada
 
-            # Redirigir a iniciar pago con id reserva
-            return redirect('iniciar_pago', reserva_id=reserva.id_reserva)
-    else:
-        form = ReservaForm(initial={
-            'nombre_cliente': cliente.nombre,
-            'apellido_clinete': cliente.apellido,
-        })
-    
-    context = {
-        'form': form,
-        'cliente': cliente,
-    }
-
-    return render(request, 'crear_reserva.html', context)
-
-
-
-def guardar_reserva(request):
-    if request.method == 'POST':
-        try:
-            nombre = request.POST['nombre']
-            apellido = request.POST['apellido']
-            email = request.POST['email']
-            departamento_id = request.POST['departamento']
-            fecha_ingreso = parse_date(request.POST['fecha_ingreso'])
-            fecha_salida = parse_date(request.POST['fecha_salida'])
-            cant_personas = int(request.POST['cant_personas'])
-            tipo_reserva = request.POST['tipo_reserva']
-            valor_total = float(request.POST['valor_total'])
-
-            # Datos para enviar a la API
-            reserva_data = {
-                "nombre": nombre,
-                "apellido": apellido,
-                "email": email,
-                "departamento": departamento_id,
-                "fecha_ingreso": fecha_ingreso.isoformat(),
-                "fecha_salida": fecha_salida.isoformat(),
-                "cant_personas": cant_personas,
-                "tipo_reserva": tipo_reserva,
-                "valor_total": valor_total
-            }
-
-            response = requests.post(settings.URL_API_RESERVA, json=reserva_data)
-
-            if response.status_code == 201:
-                messages.success(request, "Reserva guardada correctamente.")
-                return redirect('index')  
-            else:
-                messages.error(request, f"Error al guardar la reserva: {response.status_code} - {response.text}")
-                return redirect('crear_reserva')
-
-        except Exception as e:
-            messages.error(request, f"Error inesperado al guardar la reserva: {str(e)}")
-            return redirect('crear_reserva')
-    else:
-        return HttpResponse("Método no permitido", status=405)
-
-
-def inicio_pago(request):
-    return render(request, 'inicio_pago.html')
-
+    return render(request, 'crear_reserva.html', {
+        "cliente": cliente,
+        "departamento": departamento
+    })
 
 def contacto(request):
     return render(request, 'contacto.html')

@@ -17,9 +17,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from projects.views import registerPage, iniciar_pago, confirm_pago
-from projects import views
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('projects.urls')) 
