@@ -7,8 +7,10 @@ def validar_dv(rut: str, dv: str) -> bool:
 
     for numero in reversed(rut):
         suma += int(numero) * multiplicador
-        multiplicador = 9 if multiplicador == 7 else multiplicador + 1
-
+        multiplicador += 1
+        if multiplicador > 7:
+            multiplicador = 2  
+    
     resultado = 11 - (suma % 11)
     if resultado == 11:
         dv_esperado = '0'

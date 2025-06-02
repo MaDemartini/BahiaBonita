@@ -16,22 +16,22 @@ class LoginForm(forms.Form):
     )
 
 class RegisterForm(forms.ModelForm):
-    re_password = forms.CharField(label='Confirmar Contraseña', max_length=100, widget=forms.PasswordInput(attrs={'placeholder': 'Confirmar Contraseña'}))
+    re_password = forms.CharField(label='Confirmar Contraseña', max_length=100, widget=forms.PasswordInput(attrs={'class': 'form-control','placeholder': 'Confirmar Contraseña'}))
     class Meta:
         model = Persona
         fields = ['nombre', 's_nombre', 'apellido', 's_apellido', 'rut', 'dv', 'fecha_nacimiento', 'direccion', 'telefono', 'email', 'password']
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
             's_nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Segundo nombre'}),
-            'apellido': forms.TextInput(attrs={'placeholder': 'Apellido'}),
-            's_apellido': forms.TextInput(attrs={'placeholder': 'Apellido Materno'}),
-            'rut': forms.TextInput(attrs={'placeholder': 'Rut'}),
-            'dv': forms.TextInput(attrs={'placeholder': 'DV'}),
-            'fecha_nacimiento': forms.DateInput(attrs={'placeholder': 'Fecha de Nacimiento', 'type': 'date'}),
-            'direccion': forms.TextInput(attrs={'placeholder': 'Dirección'}),
-            'telefono': forms.TextInput(attrs={'placeholder': 'Teléfono'}),
-            'email': forms.EmailInput(attrs={'placeholder': 'Email'}),
-            'password': forms.PasswordInput(attrs={'placeholder': 'Contraseña'}),
+            'apellido': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Apellido'}),
+            's_apellido': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Apellido Materno'}),
+            'rut': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Rut'}),
+            'dv': forms.TextInput(attrs={'class': 'form-control','placeholder': 'DV'}),
+            'fecha_nacimiento': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Fecha de Nacimiento', 'type': 'date'}),
+            'direccion': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Dirección'}),
+            'telefono': forms.TextInput(attrs={'class': 'form-control','value': '+569'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control','placeholder': 'Email'}),
+            'password': forms.PasswordInput(attrs={'class': 'form-control','placeholder': 'Contraseña'}),
         } 
 
 #funcion para validar rut y dv

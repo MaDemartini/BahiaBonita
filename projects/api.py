@@ -85,3 +85,5 @@ class PagoViewSet(viewsets.ModelViewSet):
     queryset = Pago.objects.all()
     serializer_class = PagoSerializer
     permission_classes = [permissions.AllowAny]
+    
+

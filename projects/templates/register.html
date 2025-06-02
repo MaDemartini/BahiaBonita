@@ -3,17 +3,102 @@
 {% block title %}Registro - Bahía Bonita{% endblock %}
 
 {% block content %}
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+<div class="container d-flex justify-content-center align-items-center"
+  style="min-height: 80vh;">
   <div class="col-md-8 col-lg-6">
     <h2 class="text-center mb-4">Crear Cuenta</h2>
     <hr class="w-25 mx-auto">
-    <p>Formulario cargado: {{ form }}</p>    
-    <form method = 'POST'>
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Enviar</button>
+    <form class="row g-3" method='POST'>
+      {% csrf_token %}
+      <div class="col-md-6">
+        <label for="{{ form.nombre.id_for_label }}"
+          class="form-label">Nombre</label>
+        {{ form.nombre }}
+        {{ form.nombre.errors }}
+      </div>
+
+      <div class="col-md-6">
+        <label for="{{ form.s_nombre.id_for_label }}" class="form-label">Segundo
+          Nombre</label>
+        {{ form.s_nombre }}
+        {{ form.s_nombre.errors }}
+      </div>
+
+      <div class="col-md-6">
+        <label for="{{ form.apellido.id_for_label }}"
+          class="form-label">Apellido Paterno</label>
+        {{ form.apellido }}
+        {{ form.apellido.errors }}
+      </div>
+
+      <div class="col-md-6">
+        <label for="{{ form.s_apellido.id_for_label }}"
+          class="form-label">Apellido Materno</label>
+        {{ form.s_apellido }}
+        {{ form.s_apellido.errors }}
+      </div>
+
+      <div class="col-md-4">
+        <label for="{{ form.rut.id_for_label }}" class="form-label">RUT</label>
+        {{ form.rut }}
+        {{ form.rut.errors }}
+      </div>
+
+      <div class="col-md-2">
+        <label for="{{ form.dv.id_for_label }}" class="form-label">DV</label>
+        {{ form.dv }}
+        {{ form.dv.errors }}
+      </div>
+
+      <div class="col-md-6">
+        <label for="{{ form.fecha_nacimiento.id_for_label }}"
+          class="form-label">Fecha Nacimiento</label>
+        {{ form.fecha_nacimiento }}
+        {{ form.fecha_nacimiento.errors }}
+      </div>
+
+      <div class="col-12">
+        <label for="{{ form.direccion.id_for_label }}"
+          class="form-label">Dirección</label>
+        {{ form.direccion }}
+        {{ form.direccion.errors }}
+      </div>
+
+      <div class="col-md-6">
+        <label for="{{ form.telefono.id_for_label }}"
+          class="form-label">Teléfono</label>
+        {{ form.telefono }}
+        {{ form.telefono.errors }}
+      </div>
+
+      <div class="col-12">
+        <label for="{{ form.email.id_for_label }}"
+          class="form-label">E-mail</label>
+        {{ form.email }}
+        {{ form.email.errors }}
+      </div>
+
+      <div class="col-md-6">
+        <label for="{{ form.password.id_for_label }}"
+          class="form-label">Contraseña</label>
+        {{ form.password }}
+        {{ form.password.errors }}
+      </div>
+
+      <div class="col-md-6">
+        <label for="{{ form.re_password.id_for_label }}"
+          class="form-label">Confirmar Contraseña</label>
+        {{ form.re_password }}
+        {{ form.re_password.errors }}
+      </div>
+
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary w-100">Registrar</button>
+      </div>
     </form>
-    
+
+    <hr class="w-25 mx-auto">
+
     <script>
         {% for message in messages %}
         Swal.fire({
@@ -30,4 +115,5 @@
     </p>
   </div>
 </div>
+
 {% endblock %}

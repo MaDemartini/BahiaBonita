@@ -107,6 +107,7 @@ def registerPage(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             post_data = form.cleaned_data
+            post_data['password'] = make_password(form.cleaned_data['password'])
             post_data.pop('re_password')
             response = postApiRegister(post_data)
             if "Datos guardados exitosamente" in response:
@@ -117,7 +118,7 @@ def registerPage(request):
     else:
         form = RegisterForm()
         print("Campos del formulario:", form.fields)
-        return render(request, 'register.html', {'form': form})
+    return render(request, 'register.html', {'form': form})
 
 
 #########################################################################
@@ -397,9 +398,6 @@ def confirm_pago(request):
 
 def contacto(request):
     return render(request, 'contacto.html')
-
-def registerPage(request):
-    return render(request, 'register.html')
 
 def loginPage(request):
     return render(request, 'login.html')
