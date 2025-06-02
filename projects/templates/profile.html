@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Mi Perfil | Bahía Bonita{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+
+      <div class="card shadow-sm p-4">
+        <div class="text-center mb-4">
+          <!-- Icono de perfil -->
+          <i class="bi bi-person-circle text-secondary" style="font-size: 100px;"></i>
+          <h3 class="mt-2">Mi Perfil</h3>
+            <hr class="w-25 mx-auto">
+            <!-- Botón para simular subir foto (solo visual) -->
+          <div class="text-center mt-4">
+            <button class="btn btn-outline-primary" disabled>Subir nueva foto</button>
+          </div>
+        </div>
+
+        <!-- Información del usuario -->
+        <div class="mb-3">
+          <label class="form-label">Nombre Completo</label>
+          <div class="form-control bg-light">{{ request.session.usuario.nombre }} {{ request.session.usuario.apellido }}</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Correo electrónico</label>
+          <div class="form-control bg-light">{{ request.session.usuario.email }}</div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

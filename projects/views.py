@@ -177,7 +177,6 @@ def loginPage(request):
             response = postApiLogin(data)
             if response and response.status_code == 200:
                 user_data = response.json()
-
                 # Guarda la sesión o token, si lo usas
                 request.session['usuario'] = user_data
                 messages.success(request, f"¡Bienvenido, {user_data.get('nombre', '')}!")
@@ -199,8 +198,9 @@ def api_login(request):
             return Response({
                 "id": persona.id_persona,
                 "nombre": persona.nombre,
+                "apellido": persona.apellido,
                 "email": persona.email,
-                "rol": persona.rol  # o usa una función get_rol(persona)
+                # "rol": persona.rol  # o usa una función get_rol(persona)
             }, status=200)
         else:
             return Response({"error": "Contraseña incorrecta"}, status=401)
@@ -329,6 +329,7 @@ def get_cliente_from_session(request):
     
 def crear_reserva(request, id_departamento):
     cliente = get_cliente_from_session(request)
+    usuario = request.session.get('usuario')
     departamento = get_object_or_404(Departamento, id_departamento=id_departamento)
 
     if request.method == 'POST':
@@ -343,9 +344,11 @@ def crear_reserva(request, id_departamento):
             messages.error(request, "Fechas inválidas o número de personas incorrecto.")
             return redirect('crear_reserva', id_departamento=id_departamento)
 
+        # Calcular valor de aseo según dormitorios
         valor_aseo = 15000 if departamento.cant_dormitorios == 1 else 20000 if departamento.cant_dormitorios == 2 else 25000
         valor_total = (departamento.valor_dia * dias) + valor_aseo
 
+        # Preparar reserva temporal
         reserva_temp = {
             "id_cliente": cliente.id_cliente if cliente else None,
             "id_departamento": departamento.id_departamento,
@@ -358,7 +361,82 @@ def crear_reserva(request, id_departamento):
         }
 
         request.session["reserva_temp"] = reserva_temp
-        return redirect('iniciar_pago')  # Asegúrate de tener esta ruta configurada
+        return redirect('iniciar_pago')  # Esta vista genera el token de Transbank y redirige
+
+    return render(request, 'crear_reserva.html', {
+        "cliente": cliente,
+        "departamento": departamento,
+        "usuario": usuario  # <-- pasamos el usuario al HTML
+    })
+
+
+##########################################################################
+
+def guardar_reserva(request):
+    if request.method == 'POST':
+        try:
+            nombre = request.POST['nombre']
+            apellido = request.POST['apellido']
+            email = request.POST['email']
+            departamento_id = request.POST['departamento']
+            fecha_ingreso = parse_date(request.POST['fecha_ingreso'])
+            fecha_salida = parse_date(request.POST['fecha_salida'])
+            cant_personas = int(request.POST['cant_personas'])
+            tipo_reserva = request.POST['tipo_reserva']
+            valor_total = float(request.POST['valor_total'])
+
+            # Datos para enviar a la API
+            reserva_data = {
+                "nombre": nombre,
+                "apellido": apellido,
+                "email": email,
+                "departamento": departamento_id,
+                "fecha_ingreso": fecha_ingreso.isoformat(),
+                "fecha_salida": fecha_salida.isoformat(),
+                "cant_personas": cant_personas,
+                "tipo_reserva": tipo_reserva,
+                "valor_total": valor_total
+            }
+
+            response = requests.post(settings.URL_API_RESERVA, json=reserva_data)
+
+            if response.status_code == 201:
+                messages.success(request, "Reserva guardada correctamente.")
+                return redirect('index')  
+            else:
+                messages.error(request, f"Error al guardar la reserva: {response.status_code} - {response.text}")
+                return redirect('crear_reserva')
+
+        except Exception as e:
+            messages.error(request, f"Error inesperado al guardar la reserva: {str(e)}")
+            return redirect('crear_reserva')
+    else:
+        return HttpResponse("Método no permitido", status=405)
+
+##########################################################################
+
+#logout
+
+def logout(request):
+    request.session.flush()
+    list(messages.get_messages(request))
+    return redirect('index')
+
+##########################################################################
+#perfil
+
+def profile(request):
+    return render(request, 'profile.html')
+
+
+
+
+
+
+
+##########################################################################
+def inicio_pago(request):
+    return render(request, 'inicio_pago.html')
 
     return render(request, 'crear_reserva.html', {
         "cliente": cliente,
@@ -370,3 +448,4 @@ def contacto(request):
 
 def estadisticas(request):
     return render(request, 'estadisticas.html')
+

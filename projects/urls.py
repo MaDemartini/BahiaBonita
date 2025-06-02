@@ -23,6 +23,9 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('servicios/', views.servicios, name='servicios'),
     path('departamentos/', views.departamentos, name='departamentos'),
+    path('profile/', views.profile, name='profile'),
+    #logout
+    path('logout/', views.logout, name='logout'),
     
     # La ruta con ID debe ir antes que la genérica
     path('crear_reserva/<int:id_departamento>/', views.crear_reserva, name='crear_reserva'),

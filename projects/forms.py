@@ -16,7 +16,9 @@ class LoginForm(forms.Form):
     )
 
 class RegisterForm(forms.ModelForm):
+
     re_password = forms.CharField(label='Confirmar Contraseña', max_length=100, widget=forms.PasswordInput(attrs={'class': 'form-control','placeholder': 'Confirmar Contraseña'}))
+
     class Meta:
         model = Persona
         fields = ['nombre', 's_nombre', 'apellido', 's_apellido', 'rut', 'dv', 'fecha_nacimiento', 'direccion', 'telefono', 'email', 'password']
@@ -32,6 +34,7 @@ class RegisterForm(forms.ModelForm):
             'telefono': forms.TextInput(attrs={'class': 'form-control','value': '+569'}),
             'email': forms.EmailInput(attrs={'class': 'form-control','placeholder': 'Email'}),
             'password': forms.PasswordInput(attrs={'class': 'form-control','placeholder': 'Contraseña'}),
+
         } 
 
 #funcion para validar rut y dv
@@ -110,3 +113,5 @@ class AddDeptoForm(forms.ModelForm):
             'mantenimiento': forms.CheckboxInput(),
         }
     
+class FotoPerfilForm(forms.Form):
+    foto = forms.ImageField(required=True)

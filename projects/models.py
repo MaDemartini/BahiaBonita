@@ -15,7 +15,8 @@ class Persona(models.Model):
     password = models.CharField(max_length=100)    
     fecha_creacion = models.DateTimeField(auto_now=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)
-    fecha_eliminacion = models.DateTimeField(blank=True, null=True)
+    fecha_eliminacion = models.DateTimeField(blank=True, null=True)    
+
 
 class Cliente(models.Model):
     id_cliente = models.AutoField(primary_key=True)
