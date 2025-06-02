@@ -7,32 +7,21 @@
 <div class="container py-5">
     <div class="text-center mb-5">
         <h1 class="display-5 fw-bold">Contáctanos</h1>
-        <p class="lead text-muted">¿Tienes alguna pregunta o deseas reservar? Estamos aquí para ayudarte.</p>
+        <p class="lead text-muted">¿Tienes alguna pregunta o deseas reservar?
+            Estamos aquí para ayudarte.</p>
         <hr class="w-25 mx-auto">
     </div>
 
     <div class="row g-5">
         <!-- Formulario de contacto -->
         <div class="col-md-6">
-            <div class="card shadow-sm rounded-4 p-4">
-                <form>
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label fw-semibold">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" placeholder="Tu nombre completo" required>
+            <div class="shadow-sm rounded-4 p-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ contactoForm.as_p }}
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Enviar</button>
                     </div>
-                    <div class="mb-3">
-                        <label for="telefono" class="form-label fw-semibold">Teléfono</label>
-                        <input type="tel" class="form-control" id="telefono" placeholder="+56 9 1234 5678" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="correo" class="form-label fw-semibold">Correo electrónico</label>
-                        <input type="email" class="form-control" id="correo" placeholder="tucorreo@ejemplo.com" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="mensaje" class="form-label fw-semibold">Mensaje</label>
-                        <textarea class="form-control" id="mensaje" rows="5" placeholder="Escribe tu mensaje aquí..." required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">Enviar mensaje</button>
                 </form>
             </div>
         </div>
@@ -41,9 +30,9 @@
         <div class="col-md-6">
             <div class="bg-light rounded-4 shadow-sm p-4 h-100">
                 <h4 class="fw-bold mb-3">Información de contacto</h4>
-                <p><i class="bi bi-geo-alt-fill me-2 text-primary"></i> San Fabián 22040, Bahía Bonita, Chile</p>
-                <p><i class="bi bi-telephone-fill me-2 text-primary"></i> +56 9 3095 6242</p>
-                <p><i class="bi bi-envelope-fill me-2 text-primary"></i> contacto@bahiabonita.cl</p>
+                <p><i class="bi bi-geo-alt-fill me-2 text-primary"></i>San Fabián 22040, Bahía Bonita, Chile</p>
+                <p><i class="bi bi-telephone-fill me-2 text-primary"></i>+56 9 3095 6242</p>
+                <p><i class="bi bi-envelope-fill me-2 text-primary"></i>contacto@bahiabonita.cl</p>
                 <hr>
             </div>
         </div>

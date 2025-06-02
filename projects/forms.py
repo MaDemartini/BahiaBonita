@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import Persona, Departamento, Reserva
+from .models import Contacto, Persona, Departamento, Reserva
 from .utils import validar_dv  # Asegúrate de tener esta función implementada
 from django.contrib.auth.hashers import make_password
 
@@ -113,5 +113,14 @@ class AddDeptoForm(forms.ModelForm):
             'mantenimiento': forms.CheckboxInput(),
         }
     
-class FotoPerfilForm(forms.Form):
-    foto = forms.ImageField(required=True)
+    
+class ContactoForm(forms.ModelForm):
+    class Meta:
+        model = Contacto
+        fields = ['nombre', 'telefono', 'email', 'mensaje']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
+            'telefono': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Teléfono'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
+            'mensaje': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Mensaje'}),
+        }

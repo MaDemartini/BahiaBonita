@@ -1,9 +1,9 @@
-from .models import (Persona, Cliente, Administrador, PersonalAseo, Recepcionista, Departamento,
+from .models import (Contacto, Persona, Cliente, Administrador, PersonalAseo, Recepcionista, Departamento,
                      Reserva, CheckIn, Arriendo, TipoServicioAdicional,
                      ServicioAdicionalConsumido, Pago)
 
 from rest_framework import viewsets, permissions
-from .serializers import (PersonaSerializer, ClienteSerializer, AdministradorSerializer, PersonalAseoSerializer, RecepcionistaSerializer,
+from .serializers import (ContactoSerializer, PersonaSerializer, ClienteSerializer, AdministradorSerializer, PersonalAseoSerializer, RecepcionistaSerializer,
                           DepartamentoSerializer, ReservaSerializer,
                           CheckInSerializer, ArriendoSerializer, TipoServicioAdicionalSerializer,
                           ServicioAdicionalConsumidoSerializer, PagoSerializer)
@@ -15,6 +15,7 @@ from rest_framework.response import Response
 class PersonaViewSet(viewsets.ModelViewSet):
     queryset = Persona.objects.all()
     serializer_class = PersonaSerializer
+    filterset_fields = ['email']
     permission_classes = [permissions.AllowAny] #permite que todos accedan a la vista, en producción se debe de restringir el acceso
 
 class ClienteViewSet(viewsets.ModelViewSet):
@@ -85,5 +86,12 @@ class PagoViewSet(viewsets.ModelViewSet):
     queryset = Pago.objects.all()
     serializer_class = PagoSerializer
     permission_classes = [permissions.AllowAny]
+    
+class ContactoViewSet(viewsets.ModelViewSet):
+    queryset = Contacto.objects.all()
+    serializer_class = ContactoSerializer
+    permission_classes = [permissions.AllowAny]
+
+    
     
 

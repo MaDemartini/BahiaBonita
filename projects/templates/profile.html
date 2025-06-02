@@ -8,7 +8,7 @@
 
   <!-- Imagen o icono -->
   <div id="preview-container">
-    <i id="default-icon" class="bi bi-person-circle icono-usuario" style="font-size: 120px;"></i>
+    <i id="default-icon" class="bi bi-person-circle icono-usuario"></i>
     <img id="preview-image" src="#" alt="Vista previa" style="display: none; width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
   </div>
 
@@ -17,6 +17,8 @@
     <label for="archivo" class="btn btn-primary">Subir nueva foto</label>
     <input type="file" id="archivo" accept="image/*" hidden>
   </div>
+  <br>
+  <p>Hola {{ nombre }} {{ apellido }}</p>
 </div>
 
 {% endblock %}
