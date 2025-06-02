@@ -113,3 +113,5 @@ class AddDeptoForm(forms.ModelForm):
             'mantenimiento': forms.CheckboxInput(),
         }
     
+class FotoPerfilForm(forms.Form):
+    foto = forms.ImageField(required=True)

@@ -144,7 +144,6 @@ def loginPage(request):
             response = postApiLogin(data)
             if response and response.status_code == 200:
                 user_data = response.json()
-
                 # Guarda la sesión o token, si lo usas
                 request.session['usuario'] = user_data
                 messages.success(request, f"¡Bienvenido, {user_data.get('nombre', '')}!")
@@ -167,7 +166,7 @@ def api_login(request):
                 "id": persona.id_persona,
                 "nombre": persona.nombre,
                 "email": persona.email,
-                "rol": persona.rol  # o usa una función get_rol(persona)
+                # "rol": persona.rol  # o usa una función get_rol(persona)
             }, status=200)
         else:
             return Response({"error": "Contraseña incorrecta"}, status=401)
@@ -346,7 +345,7 @@ def crear_reserva(request):
 
     return render(request, 'crear_reserva.html', context)
 
-
+##########################################################################
 
 def guardar_reserva(request):
     if request.method == 'POST':
@@ -389,7 +388,28 @@ def guardar_reserva(request):
     else:
         return HttpResponse("Método no permitido", status=405)
 
+##########################################################################
 
+#logout
+
+def logout(request):
+    request.session.flush()
+    list(messages.get_messages(request))
+    return redirect('index')
+
+##########################################################################
+#perfil
+
+def profile(request):
+    return render(request, 'profile.html')
+
+
+
+
+
+
+
+##########################################################################
 def inicio_pago(request):
     return render(request, 'inicio_pago.html')
 
@@ -399,3 +419,4 @@ def contacto(request):
 
 def estadisticas(request):
     return render(request, 'estadisticas.html')
+
