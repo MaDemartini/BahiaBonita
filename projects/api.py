@@ -21,22 +21,12 @@ class PersonaViewSet(viewsets.ModelViewSet):
         persona = serializer.save()
         
         # Crea cliente solo si el rol es "cliente"
-        if persona.rol and persona.rol.nombre.lower() == 'cliente':
+        if persona.rol.nombre == 'Cliente':
             Cliente.objects.create(
-                persona=persona,
-                nombre=persona.nombre,
-                s_nombre=persona.s_nombre,
-                apellido=persona.apellido,
-                s_apellido=persona.s_apellido,
-                rut=persona.rut,
-                dv=persona.dv,
-                fecha_nacimiento=persona.fecha_nacimiento,
-                direccion=persona.direccion,
-                telefono=persona.telefono,
-                email=persona.email,
+                persona=persona,                
                 fecha_creacion=persona.fecha_creacion,
-                                    
-                
+                fecha_modificacion=persona.fecha_modificacion,
+                fecha_eliminacion=persona.fecha_eliminacion                            
             )
 
 class ClienteViewSet(viewsets.ModelViewSet):
@@ -114,16 +104,9 @@ class ContactoViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
     
 class RolViewSet(viewsets.ModelViewSet):
+    queryset = Rol.objects.all()
     serializer_class = RolSerializer
-
-    def get_queryset(self):
-        return Rol.objects.annotate(
-            prioridad=Case(
-                When(nombre__iexact='cliente', then=Value(0)),
-                default=Value(1),
-                output_field=IntegerField()
-            )
-        ).order_by('prioridad', 'nombre')
+    permission_classes = [permissions.AllowAny]
 
     
     

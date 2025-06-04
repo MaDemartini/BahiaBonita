@@ -12,14 +12,8 @@
     <form method='POST' class="row g-3 , shadow p-4 rounded bg-white">
       {% csrf_token %} 
       
-      <div class="col-md-6">
-        <label for="rol" class="form-label">Selecciona un rol</label>
-        <select name="rol" id="rol" class="form-select">
-          {% for r in roles %}
-            <option value="{{ r.id_rol }}">{{ r.nombre }}</option>
-          {% endfor %}
-        </select>
-      </div>
+      <!-- se asigna automaticamente el rol de cliente en el registro y oculto del form -->
+      <input type="hidden" name="rol" value="5">
 
       <div class="col-md-6">
         <label for="{{ form.nombre.id_for_label }}"

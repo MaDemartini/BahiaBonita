@@ -20,6 +20,7 @@ from django.views.decorators.http import require_GET
 
 
 
+
 # Create your views here.
 
 ########################################################################
@@ -133,10 +134,17 @@ def postApiRegister (post_data):
 def registerPage(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
-        if form.is_valid():
+        if form.is_valid():            
             post_data = form.cleaned_data
             post_data['password'] = make_password(form.cleaned_data['password'])
             post_data.pop('re_password')
+            try:
+                rol_id = int(request.POST.get("rol"))
+                cliente_rol = Rol.objects.get(id_rol=rol_id)
+                post_data["rol"] = cliente_rol.id_rol
+            except Rol.DoesNotExist:
+                messages.error(request, "Rol 'Cliente' no encontrado.")
+                return render(request, 'register.html', {'form': form})
             response = postApiRegister(post_data)
             print("Respuesta API:", response)  # para depuración
             if response.get("mensaje") == "Datos guardados exitosamente":
@@ -147,9 +155,9 @@ def registerPage(request):
     else:
         form = RegisterForm()
         print("Campos del formulario:", form.fields)
-    roles = Rol.objects.all()        
+     
          
-    return render(request, 'register.html', {'form': form, 'roles': roles})
+    return render(request, 'register.html', {'form': form})
 
 
 #########################################################################

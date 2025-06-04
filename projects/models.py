@@ -8,7 +8,7 @@ class Rol(models.Model):
 
 class Persona(models.Model):
     id_persona = models.AutoField(primary_key=True)
-    rol = models.ForeignKey(Rol, on_delete=models.CASCADE, null=True, blank=True, default=2)
+    rol = models.ForeignKey(Rol, on_delete=models.CASCADE, null=True, blank=True)
     nombre = models.CharField(max_length=20)
     s_nombre = models.CharField(max_length=20)
     apellido = models.CharField(max_length=20)

@@ -21,10 +21,10 @@ class RegisterForm(forms.ModelForm):
 
     class Meta:
         model = Persona
-        fields = ['rol','nombre', 's_nombre', 'apellido', 's_apellido', 'rut', 'dv', 'fecha_nacimiento', 'direccion', 'pais',
+        fields = ['nombre', 's_nombre', 'apellido', 's_apellido', 'rut', 'dv', 'fecha_nacimiento', 'direccion', 'pais',
                   'ciudad', 'telefono', 'email', 'password']
         widgets = {
-            'rol': forms.Select(attrs={'class': 'form-control', 'id': 'rol'}),
+            
             'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
             's_nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Segundo nombre'}),
             'apellido': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Apellido'}),
