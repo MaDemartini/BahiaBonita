@@ -1,5 +1,7 @@
+from functools import wraps
+import jwt
 import requests
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 from django.conf import settings
 from django.contrib import messages
 from django.http import JsonResponse
@@ -8,23 +10,46 @@ from django.utils.dateparse import parse_date
 from django.core.mail import send_mail
 
 
-from .models import Cliente, Departamento, Reserva, Persona  
+from .models import Cliente, Departamento, Reserva, Persona, Administrador, PersonalAseo, Recepcionista, Rol  
 from .forms import ContactoForm, LoginForm, RegisterForm, AddDeptoForm, ReservaForm
 from django.shortcuts import render, HttpResponse, redirect,  get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.contrib.auth.hashers import check_password, make_password
-from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_GET
 
 
 
 # Create your views here.
 
+########################################################################
+#creacion del decorador jwt_required
+def jwt_required(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        print("==> JWT decorador activado")
+        token = request.session.get('jwt_token')
+        print("==> token en sesión:", token)
+        if not token:
+            return redirect(f"/login/?next={request.path}")
 
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+            request.jwt_payload = payload  # opcional, si quieres acceder a datos del token
+        except jwt.ExpiredSignatureError:
+            messages.error(request, "Tu sesión ha expirado.")
+            return redirect("/login/")
+        except jwt.InvalidTokenError:
+            messages.error(request, "Token inválido.")
+            return redirect("/login/")
+
+        return view_func(request, *args, **kwargs)
+    return wrapper
 
 ########################################################################
+
 #pago transbank API
-@login_required
+@jwt_required
 def iniciar_pago(request, reserva_id):
     reserva = get_object_or_404(Reserva, pk=reserva_id)
     valor_total = reserva.valor_total
@@ -95,9 +120,9 @@ def postApiRegister (post_data):
     try:
         print(f"Enviando datos a la API: {post_data}")
         post = requests.post(url, json=post_data)
-        print(f"Respuesta de la API: {post.status_code}, {post.text}")  # Verifica la respuesta de la API
+          
         if post.status_code == 201:
-            return {"Datos guardados exitosamente"}
+            return {"mensaje": "Datos guardados exitosamente"}
             
         else:
             return {"error": f"Error al realizar la solicitud: {post.status_code}", "detalles": post.text}
@@ -113,7 +138,8 @@ def registerPage(request):
             post_data['password'] = make_password(form.cleaned_data['password'])
             post_data.pop('re_password')
             response = postApiRegister(post_data)
-            if "Datos guardados exitosamente" in response:
+            print("Respuesta API:", response)  # para depuración
+            if response.get("mensaje") == "Datos guardados exitosamente":
                 messages.success(request, "Registro exitoso")
                 return redirect('login')
             else:
@@ -121,7 +147,9 @@ def registerPage(request):
     else:
         form = RegisterForm()
         print("Campos del formulario:", form.fields)
-    return render(request, 'register.html', {'form': form})
+    roles = Rol.objects.all()        
+         
+    return render(request, 'register.html', {'form': form, 'roles': roles})
 
 
 #########################################################################
@@ -135,6 +163,35 @@ def postApiLogin(data):
         print(f"Error al conectar con API login: {e}")
         return None
 
+@api_view(['POST'])
+def api_login(request):
+    email = request.data.get('email')
+    password = request.data.get('password')
+
+    try:
+        persona = Persona.objects.get(email=email)
+        if check_password(password, persona.password):  # Solo si guardas password hasheado
+            
+            payload = {
+                "id": persona.id_persona,
+                "email": persona.email,
+                "exp": datetime.now(timezone.utc) + timedelta(hours=1),  # Expira en 1 hora
+                "iat": datetime.now(timezone.utc)
+            }
+            token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')           
+            
+            return Response({
+                "token": token,
+                "id": persona.id_persona,
+                "nombre": persona.nombre,                
+                "email": persona.email,
+                # "rol": persona.rol  # o usa una función get_rol(persona)
+            }, status=200)
+        else:
+            return Response({"error": "Contraseña incorrecta"}, status=401)
+    except Persona.DoesNotExist:
+        return Response({"error": "Usuario no encontrado"}, status=404)
+    
 def loginPage(request):
     form = LoginForm()
     if request.method == 'POST':
@@ -147,7 +204,9 @@ def loginPage(request):
             response = postApiLogin(data)
             if response and response.status_code == 200:
                 user_data = response.json()
+                print("DEBUG: token recibido:", user_data.get('token'))
                 # Guarda la sesión o token, si lo usas
+                request.session['jwt_token'] = user_data.get('token')
                 request.session['usuario'] = user_data
                 messages.success(request, f"¡Bienvenido, {user_data.get('nombre', '')}!")
 
@@ -157,44 +216,29 @@ def loginPage(request):
                 messages.error(request, "Correo o contraseña incorrectos")
     return render(request, 'login.html', {'form': form})
 
-@api_view(['POST'])
-def api_login(request):
-    email = request.data.get('email')
-    password = request.data.get('password')
-
-    try:
-        persona = Persona.objects.get(email=email)
-        if check_password(password, persona.password):  # Solo si guardas password hasheado
-            return Response({
-                "id": persona.id_persona,
-                "nombre": persona.nombre,                
-                "email": persona.email,
-                # "rol": persona.rol  # o usa una función get_rol(persona)
-            }, status=200)
-        else:
-            return Response({"error": "Contraseña incorrecta"}, status=401)
-    except Persona.DoesNotExist:
-        return Response({"error": "Usuario no encontrado"}, status=404)
-
 #########################################################################
 #crear deptos mediante API
+
+@jwt_required
 def administracion(request):
     departamentos = []
     clientes = []
-
     if request.method == 'POST':
-        form = AddDeptoForm(request.POST)
-        if form.is_valid():
-            url = settings.URL_API_ADDDEPTO  # Asegúrate de que esta URL esté definida en tu settings.py
-            data = form.cleaned_data
+        AddDepto_modal_form = AddDeptoForm(request.POST)
+        if AddDepto_modal_form.is_valid():
+            url = settings.URL_API_ADDDEPTO  
+            data = AddDepto_modal_form.cleaned_data
             response = requests.post(url, json=data)
+            print("==> DATA ENVIADA A LA API:", data)
+            print("==> STATUS:", response.status_code)
+            print("==> RESPONSE TEXT:", response.text)
             if response.status_code == 201:
                 messages.success(request, "Departamento agregado exitosamente")
                 return redirect('administracion')  # Redirige a la misma página para ver el nuevo departamento
             else:
                 messages.error(request, f"Error al agregar el departamento: {response.status_code} - {response.text}")
     else:
-        form = AddDeptoForm()
+        AddDepto_modal_form = AddDeptoForm()
 
     # Obtener departamentos desde la API
     page_obj = []
@@ -202,7 +246,7 @@ def administracion(request):
         response_depto = requests.get(settings.URL_API_ADDDEPTO) 
         if response_depto.status_code == 200:
             departamentos = response_depto.json()        
-            paginator = Paginator(departamentos, 2)  # Muestra la cantidad de departamentos por página
+            paginator = Paginator(departamentos, 10)  # Muestra la cantidad de departamentos por página
             page_number = request.GET.get('page')
             page_obj = paginator.get_page(page_number)
     except Exception as e:
@@ -217,7 +261,7 @@ def administracion(request):
     except Exception as e:
         messages.error(request, f"Error al cargar clientes: {e}")
 
-    return render(request, 'administracion.html', {'form': form,'clientes': clientes, 'page_obj' : page_obj})
+    return render(request, 'administracion.html', {'AddDepto_modal_form': AddDepto_modal_form,'clientes': clientes, 'page_obj' : page_obj})
 #eliminar deptos mediante API
 def eliminar_depto(request, id):
     url = f"{settings.URL_API_ADDDEPTO}{id}/"  # Asegúrate de que esta URL esté definida en tu settings.py
@@ -296,7 +340,7 @@ def get_cliente_from_session(request):
     except Cliente.DoesNotExist:
         return None
     
-@login_required
+@jwt_required
 def crear_reserva(request):
     cliente = get_cliente_from_session(request)
     if not cliente:
@@ -474,20 +518,23 @@ def contacto(request):
                 print("Código de respuesta:", response.status_code)
                 print("Respuesta de la API:", response.text)                
                 if response.status_code in [200, 201]:
-                    send_mail(
-                        subject=f"Nuevo mensaje de contacto: {data['nombre']}",
-                        message=f"""
-                            Nombre: {data['nombre']}
-                            Teléfono: {data['telefono']}
-                            Email: {data['email']}
+                    try:
+                        send_mail(
+                            subject=f"Nuevo mensaje de contacto: {data['nombre']}",
+                            message=f"""
+                                Nombre: {data['nombre']}
+                                Teléfono: {data['telefono']}
+                                Email: {data['email']}
 
-                            Mensaje:
-                            {data['mensaje']}
-                            """,
-                        from_email=settings.DEFAULT_FROM_EMAIL,
-                        recipient_list=[settings.EMAIL_CONTACTO],
-                        fail_silently=False
-                    )
+                                Mensaje:
+                                {data['mensaje']}
+                                """,
+                            from_email=settings.DEFAULT_FROM_EMAIL,
+                            recipient_list=[settings.EMAIL_CONTACTO],
+                            fail_silently=False
+                        )
+                    except Exception as e:
+                        messages.warning(request, f"Mensaje guardado, pero no se pudo enviar el correo: {e}")
 
                     messages.success(request, 'Mensaje enviado correctamente.')
                     return redirect('index')
@@ -503,10 +550,53 @@ def contacto(request):
 
 ##########################################################################
 
+#rol
+def api_get_rol(request):
+    rol = Rol.objects.all().values('id_rol', 'nombre')
+    return JsonResponse(list(rol), safe=False)
+
+        
+    
+
+# #rapidapi_key
+
+# @require_GET
+# def get_rapidapi_key(request):
+#     return JsonResponse({'key': settings.RAPIDAPI_KEY})
+
+##########################################################################
+# Obtener países y ciudades desde RapidAPI
+# @require_GET
+# def get_paises(request):
+#     url = "https://wft-geo-db.p.rapidapi.com/v1/geo/countries?limit=10"
+#     headers = {
+#         "X-RapidAPI-Key": settings.RAPIDAPI_KEY,
+#         "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com"
+#     }
+#     response = requests.get(url, headers=headers)
+#     return JsonResponse(response.json())
+
+# @require_GET
+# def get_ciudades(request):
+#     country_code = request.GET.get('country')
+#     if not country_code:
+#         return JsonResponse({'data': []})
+#     url = f"https://wft-geo-db.p.rapidapi.com/v1/geo/countries/{country_code}/cities?limit=100"
+#     headers = {
+#         "X-RapidAPI-Key": settings.RAPIDAPI_KEY,
+#         "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com"
+#     }
+#     response = requests.get(url, headers=headers)
+#     return JsonResponse(response.json())
+
+###########################################################################
+
 def inicio_pago(request):
     return render(request, 'inicio_pago.html')
 
 
 def estadisticas(request):
     return render(request, 'estadisticas.html')
+
+#################################################################
 

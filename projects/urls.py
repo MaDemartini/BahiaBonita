@@ -1,5 +1,5 @@
 from rest_framework import routers
-from .api import PersonaViewSet, ClienteViewSet, AdministradorViewSet,DepartamentoViewSet,ReservaViewSet,ContactoViewSet
+from .api import PersonaViewSet, ClienteViewSet, AdministradorViewSet,DepartamentoViewSet,ReservaViewSet,ContactoViewSet, RolViewSet
 from django.contrib import admin
 from django.urls import path, include
 from .views import api_login
@@ -16,6 +16,7 @@ router.register('api/depto', DepartamentoViewSet, 'departamento')
 router.register('api/reserva', ReservaViewSet, 'reserva')
 router.register('api/addDepto', DepartamentoViewSet, 'add_depto')
 router.register('api/contacto', ContactoViewSet, 'contacto')
+router.register('api/rol', RolViewSet, 'rol')
 
 
 urlpatterns = [   
@@ -36,9 +37,8 @@ urlpatterns = [
 
     path('registro/', views.registerPage, name='registro'),
     path('login/', views.loginPage, name='login'),
-    path('api/login/', api_login, name='api_login'),
-
-   
+    path('api/login/', api_login, name='api_login'),        
+    
     path('administracion/', views.administracion, name='administracion'),
     path('estadisticas/', views.estadisticas, name='estadisticas'),
    
@@ -50,5 +50,12 @@ urlpatterns = [
 
     # API (Django REST Framework)
     path('', include(router.urls)),
+    
+    #API paises de rapidAPI geocities
+    # path('api/paises/', views.get_paises, name='get_paises'),
+    # path('api/ciudades/', views.get_ciudades, name='get_ciudades'),
+    
+    # # API para obtener la clave de RapidAPI
+    # path('api/get-rapidapi-key/', get_rapidapi_key, name='get_rapidapi_key'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

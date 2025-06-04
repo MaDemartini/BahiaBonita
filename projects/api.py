@@ -1,12 +1,14 @@
 from .models import (Contacto, Persona, Cliente, Administrador, PersonalAseo, Recepcionista, Departamento,
-                     Reserva, CheckIn, Arriendo, TipoServicioAdicional,
+                     Reserva, CheckIn, Arriendo, Rol, TipoServicioAdicional,
                      ServicioAdicionalConsumido, Pago)
 
 from rest_framework import viewsets, permissions
 from .serializers import (ContactoSerializer, PersonaSerializer, ClienteSerializer, AdministradorSerializer, PersonalAseoSerializer, RecepcionistaSerializer,
                           DepartamentoSerializer, ReservaSerializer,
-                          CheckInSerializer, ArriendoSerializer, TipoServicioAdicionalSerializer,
+                          CheckInSerializer, ArriendoSerializer, RolSerializer, TipoServicioAdicionalSerializer,
                           ServicioAdicionalConsumidoSerializer, PagoSerializer)
+
+from django.db.models import Case, When, Value, IntegerField
 
 from .serializers import DepartamentoInfoSerializer
 from rest_framework.decorators import action
@@ -15,8 +17,27 @@ from rest_framework.response import Response
 class PersonaViewSet(viewsets.ModelViewSet):
     queryset = Persona.objects.all()
     serializer_class = PersonaSerializer
-    filterset_fields = ['email']
-    permission_classes = [permissions.AllowAny] #permite que todos accedan a la vista, en producción se debe de restringir el acceso
+    def perform_create(self, serializer):
+        persona = serializer.save()
+        
+        # Crea cliente solo si el rol es "cliente"
+        if persona.rol and persona.rol.nombre.lower() == 'cliente':
+            Cliente.objects.create(
+                persona=persona,
+                nombre=persona.nombre,
+                s_nombre=persona.s_nombre,
+                apellido=persona.apellido,
+                s_apellido=persona.s_apellido,
+                rut=persona.rut,
+                dv=persona.dv,
+                fecha_nacimiento=persona.fecha_nacimiento,
+                direccion=persona.direccion,
+                telefono=persona.telefono,
+                email=persona.email,
+                fecha_creacion=persona.fecha_creacion,
+                                    
+                
+            )
 
 class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
@@ -91,6 +112,18 @@ class ContactoViewSet(viewsets.ModelViewSet):
     queryset = Contacto.objects.all()
     serializer_class = ContactoSerializer
     permission_classes = [permissions.AllowAny]
+    
+class RolViewSet(viewsets.ModelViewSet):
+    serializer_class = RolSerializer
+
+    def get_queryset(self):
+        return Rol.objects.annotate(
+            prioridad=Case(
+                When(nombre__iexact='cliente', then=Value(0)),
+                default=Value(1),
+                output_field=IntegerField()
+            )
+        ).order_by('prioridad', 'nombre')
 
     
     

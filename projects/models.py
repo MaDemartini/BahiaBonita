@@ -1,7 +1,14 @@
 from django.db import models
 
+class Rol(models.Model):
+    id_rol = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=20, unique=True)    
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_modificacion = models.DateTimeField(auto_now=True)
+
 class Persona(models.Model):
     id_persona = models.AutoField(primary_key=True)
+    rol = models.ForeignKey(Rol, on_delete=models.CASCADE, null=True, blank=True, default=2)
     nombre = models.CharField(max_length=20)
     s_nombre = models.CharField(max_length=20)
     apellido = models.CharField(max_length=20)
@@ -10,6 +17,8 @@ class Persona(models.Model):
     dv = models.CharField(max_length=1)
     fecha_nacimiento = models.DateField()
     direccion = models.CharField(max_length=100)
+    pais = models.CharField(max_length=100, null=True, blank=True)
+    ciudad = models.CharField(max_length=100, null=True, blank=True)
     telefono = models.CharField(max_length=15)
     email = models.EmailField(max_length=100, unique=True)
     password = models.CharField(max_length=100)    
@@ -20,65 +29,27 @@ class Persona(models.Model):
 
 class Cliente(models.Model):
     id_cliente = models.AutoField(primary_key=True)
-    id_persona = models.ForeignKey(Persona, on_delete=models.CASCADE)
-    nombre = models.CharField(max_length=20)
-    s_nombre = models.CharField(max_length=20)
-    apellido = models.CharField(max_length=20)
-    s_apellido = models.CharField(max_length=20)
-    rut = models.CharField(max_length=12, unique=True)
-    dv = models.CharField(max_length=1)
-    fecha_nacimiento = models.DateField()
-    direccion = models.CharField(max_length=100)
-    telefono = models.CharField(max_length=15)
-    email = models.EmailField(max_length=100, unique=True)
+    persona = models.ForeignKey(Persona, on_delete=models.CASCADE)    
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)
     fecha_eliminacion = models.DateTimeField(blank=True, null=True)
 
 class Administrador(models.Model):
     id_administrador = models.AutoField(primary_key=True)
-    id_persona = models.ForeignKey(Persona, on_delete=models.CASCADE)
-    nombre = models.CharField(max_length=20)
-    s_nombre = models.CharField(max_length=20)
-    apellido = models.CharField(max_length=20)
-    s_apellido = models.CharField(max_length=20)
-    rut = models.CharField(max_length=12, unique=True)
-    fecha_nacimiento = models.DateField()
-    direccion = models.CharField(max_length=100)
-    telefono = models.CharField(max_length=15)
-    email = models.EmailField(max_length=100, unique=True)
+    persona = models.ForeignKey(Persona, on_delete=models.CASCADE)    
     fecha_creacion = models.DateTimeField(auto_now=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)
     fecha_eliminacion = models.DateTimeField(blank=True, null=True)
 
 class PersonalAseo(models.Model):
     id_personal_aseo = models.AutoField(primary_key=True)
-    id_persona = models.ForeignKey(Persona, on_delete=models.CASCADE)
-    nombre = models.CharField(max_length=20)
-    s_nombre = models.CharField(max_length=20)
-    apellido = models.CharField(max_length=20)
-    s_apellido = models.CharField(max_length=20)
-    rut = models.CharField(max_length=12, unique=True)
-    fecha_nacimiento = models.DateField()
-    direccion = models.CharField(max_length=100)
-    telefono = models.CharField(max_length=15)
-    email = models.EmailField(max_length=100, unique=True)
+    persona = models.ForeignKey(Persona, on_delete=models.CASCADE)    
     fecha_creacion = models.DateTimeField(auto_now=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)
     fecha_eliminacion = models.DateTimeField(blank=True, null=True)
 
 class Recepcionista(models.Model):
-    id_recepcionista = models.AutoField(primary_key=True)
-    id_persona = models.ForeignKey(Persona, on_delete=models.CASCADE)
-    nombre = models.CharField(max_length=20)
-    s_nombre = models.CharField(max_length=20)
-    apellido = models.CharField(max_length=20)
-    s_apellido = models.CharField(max_length=20)
-    rut = models.CharField(max_length=12, unique=True)
-    fecha_nacimiento = models.DateField()
-    direccion = models.CharField(max_length=100)
-    telefono = models.CharField(max_length=15)
-    email = models.EmailField(max_length=100, unique=True)
+    id_recepcionista = models.AutoField(primary_key=True)    
     fecha_creacion = models.DateTimeField(auto_now=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)
     fecha_eliminacion = models.DateTimeField(blank=True, null=True)
@@ -90,14 +61,14 @@ class Departamento(models.Model):
     cant_banos = models.IntegerField()
     piso = models.IntegerField()
     cant_personas = models.IntegerField()
-    imagen = models.ImageField(upload_to='departamentos/')
+    imagen = models.ImageField(blank=True, null=True)
     valor_dia = models.IntegerField()
     mantenimiento = models.BooleanField(default=False)
 
 class Reserva(models.Model):
     id_reserva = models.AutoField(primary_key=True)
-    id_cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-    id_departamento = models.ForeignKey(Departamento, on_delete=models.CASCADE)
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    departamento = models.ForeignKey(Departamento, on_delete=models.CASCADE)
     fecha_reserva = models.DateField()
     fecha_ingreso = models.DateField(blank=True)
     fecha_salida = models.DateField()
@@ -109,15 +80,15 @@ class Reserva(models.Model):
 
 class CheckIn(models.Model):
     id_checkin = models.AutoField(primary_key=True)
-    id_reserva = models.ForeignKey(Reserva, on_delete=models.CASCADE)
-    id_cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-    id_recepcionista = models.ForeignKey(Recepcionista, on_delete=models.CASCADE)
+    reserva = models.ForeignKey(Reserva, on_delete=models.CASCADE)
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    recepcionista = models.ForeignKey(Recepcionista, on_delete=models.CASCADE)
     fecha_checkin = models.DateField()
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
 class Arriendo(models.Model):
     id_arriendo = models.AutoField(primary_key=True)
-    id_checkIn = models.ForeignKey(CheckIn, on_delete=models.CASCADE)
+    checkIn = models.ForeignKey(CheckIn, on_delete=models.CASCADE)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
 class TipoServicioAdicional(models.Model):
@@ -130,15 +101,15 @@ class TipoServicioAdicional(models.Model):
 
 class ServicioAdicionalConsumido(models.Model):
     id_servicio_adicional_consumido = models.AutoField(primary_key=True)
-    id_arreindo = models.ForeignKey(Reserva, on_delete=models.CASCADE)
-    id_tipo_servicio_adicional = models.ForeignKey(TipoServicioAdicional, on_delete=models.CASCADE)
+    arreindo = models.ForeignKey(Reserva, on_delete=models.CASCADE)
+    tipo_servicio_adicional = models.ForeignKey(TipoServicioAdicional, on_delete=models.CASCADE)
     fecha_consumo = models.DateField()
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
 class Pago(models.Model):
     id_pago = models.AutoField(primary_key=True)
-    id_arriendo = models.ForeignKey(Arriendo, on_delete=models.CASCADE)
-    id_recepcionista = models.ForeignKey(Recepcionista, on_delete=models.CASCADE)
+    arriendo = models.ForeignKey(Arriendo, on_delete=models.CASCADE)
+    recepcionista = models.ForeignKey(Recepcionista, on_delete=models.CASCADE)
     fecha_pago = models.DateField(auto_now_add=True)
     metodo_pago = models.CharField(max_length=20)
     valor_pago = models.IntegerField(10)

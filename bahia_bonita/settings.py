@@ -132,7 +132,7 @@ import os
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # Default primary key field type
@@ -146,7 +146,6 @@ TRANSBANK_COMMERCE_CODE = "597055555532"
 TRANSBANK_API_KEY = "579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C"
 
 #settings url_api registro
-
 URL_API_REGISTRO = "http://localhost:8000/api/persona/"
 URL_API_LOGIN = "http://localhost:8000/api/login/"
 URL_API_CONTACTO = "http://localhost:8000/api/contacto/"
@@ -155,6 +154,10 @@ URL_API_ADDDEPTO = "http://localhost:8000/api/depto/"
 URL_API_LIST_DEPTO = "http://localhost:8000/api/depto/"
 URL_API_CLIENTE = "http://localhost:8000/api/cliente/"
 URL_API_RESERVA = "http://localhost:8000/api/reservas/"
+
+# clave api rapidAPI
+# RAPIDAPI_KEY = "265ae1d89fmsh43cb1b76b5dda66p19835fjsnd2f11953b0d6"
+
 
 
 MEDIA_URL = '/media/'
@@ -165,7 +168,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'mariobahiabonita@gmail.com'
-EMAIL_HOST_PASSWORD = '123456'
+EMAIL_HOST_USER = 'contactobahiabonita@gmail.com'
+EMAIL_HOST_PASSWORD = 'skvh nzlq chts pziw'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-EMAIL_CONTACTO = 'mariobahiabonita@gmail.com'
+EMAIL_CONTACTO = 'contactobahiabonita@gmail.com'

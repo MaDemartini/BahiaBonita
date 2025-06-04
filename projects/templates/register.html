@@ -10,7 +10,17 @@
     <hr class="w-25 mx-auto">
     <br>
     <form method='POST' class="row g-3 , shadow p-4 rounded bg-white">
-      {% csrf_token %}
+      {% csrf_token %} 
+      
+      <div class="col-md-6">
+        <label for="rol" class="form-label">Selecciona un rol</label>
+        <select name="rol" id="rol" class="form-select">
+          {% for r in roles %}
+            <option value="{{ r.id_rol }}">{{ r.nombre }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
       <div class="col-md-6">
         <label for="{{ form.nombre.id_for_label }}"
           class="form-label">Nombre</label>
@@ -66,6 +76,20 @@
       </div>
 
       <div class="col-md-6">
+        <label for="{{ form.pais.id_for_label }}"
+          class="form-label">pais</label>
+        {{ form.pais }}
+        {{ form.pais.errors }}
+      </div>
+
+      <div class="col-md-6">
+        <label for="{{ form.ciudad.id_for_label }}"
+          class="form-label">ciudad</label>
+        {{ form.ciudad }}
+        {{ form.ciudad.errors }}
+      </div>
+
+      <div class="col-md-6">
         <label for="{{ form.telefono.id_for_label }}"
           class="form-label">Teléfono</label>
         {{ form.telefono }}
@@ -97,25 +121,27 @@
         <button type="submit" class="btn btn-primary w-100">Registrar</button>
       </div>
     </form>
-    
 
     <hr class="w-25 mx-auto">
 
-    <script>
+    {% if messages %}
+      <script>
         {% for message in messages %}
         Swal.fire({
           icon: 'success',
-          title: '{{ message|escapejs }}',  //evita errores de comillas o caracteres especiales
-          timer: 4000,
+          title: '{{ message|escapejs }}',
+          timer: 3000,
           showConfirmButton: false
         });
         {% endfor %}
       </script>
+    {% endif %}
 
     <p class="text-center mt-3">
       ¿Ya tienes cuenta? <a href="{% url 'login' %}">Iniciar sesión</a>
     </p>
   </div>
 </div>
+
 
 {% endblock %}

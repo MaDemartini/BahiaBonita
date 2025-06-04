@@ -21,8 +21,10 @@ class RegisterForm(forms.ModelForm):
 
     class Meta:
         model = Persona
-        fields = ['nombre', 's_nombre', 'apellido', 's_apellido', 'rut', 'dv', 'fecha_nacimiento', 'direccion', 'telefono', 'email', 'password']
+        fields = ['rol','nombre', 's_nombre', 'apellido', 's_apellido', 'rut', 'dv', 'fecha_nacimiento', 'direccion', 'pais',
+                  'ciudad', 'telefono', 'email', 'password']
         widgets = {
+            'rol': forms.Select(attrs={'class': 'form-control', 'id': 'rol'}),
             'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
             's_nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Segundo nombre'}),
             'apellido': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Apellido'}),
@@ -31,6 +33,8 @@ class RegisterForm(forms.ModelForm):
             'dv': forms.TextInput(attrs={'class': 'form-control','placeholder': 'DV'}),
             'fecha_nacimiento': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Fecha de Nacimiento', 'type': 'date'}),
             'direccion': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Dirección'}),
+            'pais' : forms.TextInput(attrs={'class': 'form-control', 'id': 'pais'}),
+            'ciudad' : forms.TextInput(attrs={'class': 'form-control', 'id': 'ciudad'}),            
             'telefono': forms.TextInput(attrs={'class': 'form-control','value': '+569'}),
             'email': forms.EmailInput(attrs={'class': 'form-control','placeholder': 'Email'}),
             'password': forms.PasswordInput(attrs={'class': 'form-control','placeholder': 'Contraseña'}),
@@ -66,13 +70,13 @@ class RegisterForm(forms.ModelForm):
 class ReservaForm(forms.ModelForm):
     class Meta:
         model = Reserva
-        fields = ['id_departamento', 'fecha_ingreso', 'fecha_salida', 'cant_personas']
+        fields = ['departamento', 'fecha_ingreso', 'fecha_salida', 'cant_personas']
 
     def clean(self):
         cleaned_data = super().clean()
         fecha_ingreso = cleaned_data.get('fecha_ingreso')
         fecha_salida = cleaned_data.get('fecha_salida')
-        id_departamento = cleaned_data.get('id_departamento')
+        departamento = cleaned_data.get('departamento')
 
         if fecha_ingreso and fecha_salida:
             if fecha_salida <= fecha_ingreso:
@@ -83,7 +87,7 @@ class ReservaForm(forms.ModelForm):
             # Validar bloqueo temporal (fecha ya reservada)
             from .models import Reserva
             overlapping_reservas = Reserva.objects.filter(
-                id_departamento=id_departamento,
+                departamento=departamento,
                 fecha_salida__gt=fecha_ingreso,
                 fecha_ingreso__lt=fecha_salida,
             )

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import (Contacto, Persona, Cliente, Administrador, PersonalAseo, Recepcionista, Departamento,
-                     Reserva, CheckIn, Arriendo, TipoServicioAdicional,
+                     Reserva, CheckIn, Arriendo, Rol, TipoServicioAdicional,
                      ServicioAdicionalConsumido, Pago)
 
 class PersonaSerializer(serializers.ModelSerializer):
@@ -77,6 +77,12 @@ class ContactoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contacto
         fields = ['id_contacto','nombre', 'telefono', 'email', 'mensaje']
-        read_only_fields = ('fecha_creacion',)  # Assuming you want to keep track of creation time
+        read_only_fields = ('fecha_creacion',) 
+        
+class RolSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rol
+        fields = ['id_rol', 'nombre']
+        read_only_fields = ('fecha_creacion', 'fecha_modificacion', 'fecha_eliminacion',)  # Assuming these fields exist in Rol model
         
 
