@@ -183,7 +183,7 @@ def api_login(request):
             payload = {
                 "id": persona.id_persona,
                 "email": persona.email,
-                "exp": datetime.now(timezone.utc) + timedelta(hours=1),  # Expira en 1 hora
+                "exp": datetime.now(timezone.utc) + timedelta(hours=2),  # Expira en 2 hora
                 "iat": datetime.now(timezone.utc)
             }
             token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')           

@@ -18,7 +18,20 @@
     <input type="file" id="archivo" accept="image/*" hidden>
   </div>
   <br>
-  <p>Hola {{ nombre }} {{ apellido }}</p>
+  <p>Hola {{ nombre }} {{ apellido }}</p>  
 </div>
+
+<div class="container-fluid">
+  <a href="{% url 'logout' %}" 
+   class="btn btn-danger rounded-circle d-flex align-items-center justify-content-center"
+   style="width: 50px; height: 50px; position: fixed; bottom: 380px; right: 100px;"
+   title="Cerrar sesión">
+  <i class="fa-solid fa-right-from-bracket"></i>
+</a>
+</div>
+
+
+
+
 
 {% endblock %}

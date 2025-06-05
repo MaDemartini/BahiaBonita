@@ -41,18 +41,12 @@
                     <!-- Botones separados -->
                     <div class="d-flex align-items-center gap-2">
                         <a href="/departamentos"
-                            class="btn btn-primary px-4 fw-semibold">Reservar</a>
+                            class="btn btn-primary px-4 fw-semibold btn_reserva">Reservar</a>
                         <a href="/contacto"
                             class="btn btn-outline-primary px-4 fw-semibold">Contacto</a>
                         {% if request.session.usuario %}
                         <a href="{% url 'profile' %}"
-                            class="btn btn-outline-success px-4 fw-semibold">Perfil de ususario</a>
-                        <a href="{% url 'logout' %}"
-                            class="btn btn-outline-danger px-4 fw-semibold">Cerrar
-                            sesión</a>
-                        
-                        
-                        
+                            class="btn btn-outline-primary px-4 fw-semibold">Perfil de ususario</a>                     
                         {% else %}
                         <a href="{% url 'registro' %}"
                             class="btn btn-outline-secondary px-4 fw-semibold">Registro</a>

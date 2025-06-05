@@ -8,21 +8,41 @@
   <body>
     <div class="container">
       <br>
-      <h2>Administracion de departamentos</h2>
+      <h2>Administracion general</h2>
+      <div class="container-fluid d-flex justify-content-center gap-5">
+        <!-- Botón 1 -->
+        <div class="d-flex flex-column align-items-center">
+          <button type="button" class="btn rounded-circle btn_menu_admin d-flex align-items-center justify-content-center"
+                  data-bs-toggle="modal" data-bs-target="#modalAgregar">
+            <i class="fa-solid fa-house-medical"></i>
+          </button>
+          <span class="mt-2">Agregar departamento</span>
+        </div>
 
-      <button type="button" class="btn btn-sm btn-primary"
-        data-bs-toggle="modal" data-bs-target="#modalAgregar">Agregar
-        departamentos <i class="fa-solid fa-plus"></i></i></button>
+        <!-- Botón 2 -->
+        <div class="d-flex flex-column align-items-center">
+          <button type="button" class="btn rounded-circle btn_menu_admin d-flex align-items-center justify-content-center"
+                  data-bs-toggle="modal" data-bs-target="#modalAgregarColaborador">
+            <i class="fa-solid fa-person"></i>
+          </button>
+          <span class="mt-2">Añadir colaborador</span>
+        </div>
 
-      <button type="button" class="btn btn-sm btn-primary"
-        data-bs-toggle="modal" data-bs-target="#modalAgregar">Enrolar recepcionista<i class="fa-solid fa-plus"></i></i></button>
+        <div class="d-flex flex-column align-items-center">
+          <button type="button" class="btn rounded-circle btn_menu_admin d-flex align-items-center justify-content-center"
+                  data-bs-toggle="modal" data-bs-target="#modalinfromes">
+            <i class="fa-solid fa-chart-pie"></i>
+          </button>
+          <span class="mt-2">Informes</span>
+        </div>
+      </div>
+      
+        
+      
+      
 
-      <button type="button" class="btn btn-sm btn-primary"
-        data-bs-toggle="modal" data-bs-target="#modalAgregar">Enrolar personal de aseo<i class="fa-solid fa-plus"></i></i></button>
-
-      <button type="button" class="btn btn-sm btn-primary"
-        data-bs-toggle="modal" data-bs-target="#modalAgregar">Enrolar administrativo<i class="fa-solid fa-plus"></i></i></button>
-    <p></p>
+      
+      
 
     <h3>Lista de departamentos</h3>
 
@@ -134,9 +154,9 @@
           <p>Total de clientes: {{ clientes|length }}</p>
           {% for c in clientes %}
           <tr>
-            <td>{{c.id_persona.nombre}} {{c.id_persona.s_nombre}}
-              {{c.id_persona.apellido}} {{c.id_persona.s_apellido}}</td>
-            <td>{{ c.id_persona.rut }}-{{ c.id_persona.dv }}</td>
+            <td>{{c.persona.nombre}} {{c.persona.s_nombre}}
+              {{c.persona.apellido}} {{c.persona.s_apellido}}</td>
+            <td>{{ c.persona.rut }}-{{ c.persona.dv }}</td>
             <td>
 
               <!-- boton editar con la data -->
