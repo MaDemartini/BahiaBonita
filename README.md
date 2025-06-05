@@ -15,10 +15,17 @@ Aplicación para gestionar reservas, departamentos y clientes usando **Django** 
    source env/bin/activate
    ```
 
+⚠️ Si te da error de permisos, ejecuta primero este comando para permitirlo temporalmente:
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+
 2. Instala las dependencias de Python:
 
    ```bash
    pip install -r requirements.txt
+   ```
+
+   ```bash
+   pip install Pillow
    ```
 
 3. Si planeas usar la interfaz web instala las dependencias de JavaScript:
