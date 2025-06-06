@@ -30,7 +30,7 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
     
     # La ruta con ID debe ir antes que la genérica
-    path('crear_reserva/<int:id_departamento>/', views.crear_reserva, name='crear_reserva'),
+    path('crear_reserva/<int:departamento>/', views.crear_reserva, name='crear_reserva'),
     path('crear_reserva/', views.crear_reserva, name='crear_reserva'),
 
     path('guardar_reserva/', views.guardar_reserva, name='guardar_reserva'),
@@ -45,11 +45,15 @@ urlpatterns = [
     path('contacto/', views.contacto, name='contacto'),
 
     # Transbank
-    path('transbank/inicio_pago/', views.iniciar_pago, name='inicio_pago'),
+    path('transbank/inicio_pago/<int:id_reserva>/', views.iniciar_pago, name='inicio_pago'),
     path('transbank/retorno/', views.confirm_pago, name='confirm_pago'),
 
     # API (Django REST Framework)
     path('', include(router.urls)),
+    
+    #reserva AJAX    
+    path('api/crear_reserva_ajax/', views.crear_reserva_ajax, name='crear_reserva_ajax'),
+
     
     #API paises de rapidAPI geocities
     # path('api/paises/', views.get_paises, name='get_paises'),

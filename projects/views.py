@@ -1,4 +1,5 @@
 from functools import wraps
+import json
 import jwt
 import requests
 from datetime import date, datetime, timedelta, timezone
@@ -17,6 +18,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.contrib.auth.hashers import check_password, make_password
 from django.views.decorators.http import require_GET
+from django.views.decorators.csrf import csrf_exempt
 
 
 
@@ -50,9 +52,10 @@ def jwt_required(view_func):
 ########################################################################
 
 #pago transbank API
+
 @jwt_required
-def iniciar_pago(request, reserva_id):
-    reserva = get_object_or_404(Reserva, pk=reserva_id)
+def iniciar_pago(request, id_reserva):
+    reserva = get_object_or_404(Reserva, pk=id_reserva)
     valor_total = reserva.valor_total
 
     url = f"{settings.TRANSBANK_API_URL}/rswebpaytransaction/api/webpay/v1.2/transactions"
@@ -74,10 +77,8 @@ def iniciar_pago(request, reserva_id):
         response = requests.post(url, headers=headers, json=data)
         response.raise_for_status()
         r = response.json()
-        return JsonResponse({
-            "url_pago": r['url'],
-            "token_ws": r['token']
-        })
+         # Redirige al usuario a la URL de pago de Transbank
+        return redirect(f"{r['url']}?token_ws={r['token']}")
     except requests.RequestException as e:
         return JsonResponse({"error": str(e)}, status=500)
     
@@ -101,7 +102,7 @@ def confirm_pago(request):
         response = requests.put(url, headers=headers)
         response.raise_for_status()
         datos_pago = response.json()
-        return JsonResponse(datos_pago)
+        return render(request, 'pago_exitoso.html', {'datos_pago': datos_pago})
     except requests.RequestException as e:
         return JsonResponse({"error": str(e)}, status=500)
     
@@ -344,17 +345,19 @@ def get_cliente_from_session(request):
         return None
     email = usuario.get('email')
     try:
-        return Cliente.objects.get(email=email)
+        return Cliente.objects.get(persona__email=email)
     except Cliente.DoesNotExist:
         return None
     
 @jwt_required
-def crear_reserva(request):
+def crear_reserva(request, departamento):
     cliente = get_cliente_from_session(request)
     if not cliente:
         messages.error(request, "Debe iniciar sesión para reservar.")
         return redirect('login')
-
+    
+    departamento_obj = get_object_or_404(Departamento, pk=departamento)
+    
     if request.method == 'POST':
         form = ReservaForm(request.POST)
         if form.is_valid():
@@ -362,7 +365,7 @@ def crear_reserva(request):
             reserva.id_cliente = cliente
 
             # Calcular valor total
-            depto = reserva.id_departamento
+            depto = reserva.departamento
             dias = (reserva.fecha_salida - reserva.fecha_ingreso).days
 
             # Cálculo aseo según cantidad de habitaciones
@@ -386,16 +389,19 @@ def crear_reserva(request):
             messages.success(request, f"Reserva creada con éxito. Total: ${valor_total}")
 
             # Redirigir a iniciar pago con id reserva
-            return redirect('iniciar_pago', reserva_id=reserva.id_reserva)
+            return redirect('inicio_pago', id_reserva=reserva.id_reserva)
     else:
         form = ReservaForm(initial={
-            'nombre_cliente': cliente.nombre,
-            'apellido_clinete': cliente.apellido,
+            'nombre_cliente': cliente.persona.nombre,
+            'apellido_clinete': cliente.persona.apellido,
+            
         })
     
     context = {
         'form': form,
         'cliente': cliente,
+        'departamento': departamento_obj,
+        
     }
 
     return render(request, 'crear_reserva.html', context)
@@ -448,6 +454,10 @@ def guardar_reserva(request):
 #logout
 
 def logout(request):
+    # Elimina datos de autenticación manualmente
+    request.session.pop('jwt_token', None)
+    request.session.pop('usuario', None)
+    # Limpiar la sesión completamente
     request.session.flush()
     list(messages.get_messages(request))
     return redirect('index')
@@ -563,40 +573,6 @@ def api_get_rol(request):
     rol = Rol.objects.all().values('id_rol', 'nombre')
     return JsonResponse(list(rol), safe=False)
 
-        
-    
-
-# #rapidapi_key
-
-# @require_GET
-# def get_rapidapi_key(request):
-#     return JsonResponse({'key': settings.RAPIDAPI_KEY})
-
-##########################################################################
-# Obtener países y ciudades desde RapidAPI
-# @require_GET
-# def get_paises(request):
-#     url = "https://wft-geo-db.p.rapidapi.com/v1/geo/countries?limit=10"
-#     headers = {
-#         "X-RapidAPI-Key": settings.RAPIDAPI_KEY,
-#         "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com"
-#     }
-#     response = requests.get(url, headers=headers)
-#     return JsonResponse(response.json())
-
-# @require_GET
-# def get_ciudades(request):
-#     country_code = request.GET.get('country')
-#     if not country_code:
-#         return JsonResponse({'data': []})
-#     url = f"https://wft-geo-db.p.rapidapi.com/v1/geo/countries/{country_code}/cities?limit=100"
-#     headers = {
-#         "X-RapidAPI-Key": settings.RAPIDAPI_KEY,
-#         "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com"
-#     }
-#     response = requests.get(url, headers=headers)
-#     return JsonResponse(response.json())
-
 ###########################################################################
 
 def inicio_pago(request):
@@ -607,4 +583,44 @@ def estadisticas(request):
     return render(request, 'estadisticas.html')
 
 #################################################################
+#reserva AJAX
+@csrf_exempt
+@jwt_required
+def crear_reserva_ajax(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            fecha_ingreso = data.get('fecha_ingreso')
+            fecha_salida = data.get('fecha_salida')
+            cant_adultos = int(data.get('cant_adultos', 0))
+            cant_ninos = int(data.get('cant_ninos', 0))
+            departamento_id = data.get('departamento_id')
+            nombre = data.get('nombre')
+            apellido = data.get('apellido')
 
+            if not all([fecha_ingreso, fecha_salida, departamento_id, nombre, apellido]):
+                return JsonResponse({'error': 'Datos incompletos'}, status=400)
+
+            departamento = Departamento.objects.get(pk=departamento_id)
+            dias = (parse_date(fecha_salida) - parse_date(fecha_ingreso)).days
+            valor_total = departamento.valor_dia * dias
+
+            cliente = get_cliente_from_session(request)
+
+            reserva = Reserva.objects.create(
+                fecha_reserva=date.today(),
+                fecha_ingreso=fecha_ingreso,
+                fecha_salida=fecha_salida,
+                cant_personas=cant_adultos + cant_ninos,
+                valor_total=valor_total,
+                tipo_reserva="diaria",
+                cliente_id=cliente.id_cliente if cliente else None,
+                departamento_id=departamento.id_departamento,
+                pagado=False
+            )
+
+            return JsonResponse({'success': True, 'reserva_id': reserva.id_reserva, 'valor_total': valor_total})
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Método no permitido'}, status=405)

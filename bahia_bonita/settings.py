@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     
     
     
+    
 ]
 
 MIDDLEWARE = [
@@ -172,3 +173,5 @@ EMAIL_HOST_USER = 'contactobahiabonita@gmail.com'
 EMAIL_HOST_PASSWORD = 'skvh nzlq chts pziw'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 EMAIL_CONTACTO = 'contactobahiabonita@gmail.com'
+
+

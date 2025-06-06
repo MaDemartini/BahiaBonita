@@ -7,14 +7,18 @@
   <!-- Tarjeta horizontal del departamento -->
   <div class="card mb-4 flex-row shadow border-0">
     <div class="col-md-5 p-0">
-      <img src="{{ departamento.imagen.url|default:'https://via.placeholder.com/600x400?text=Sin+Imagen' }}" class="img-fluid rounded-start w-100 h-100 object-fit-cover" alt="Imagen del departamento">
+      {% if departamento.imagen %}
+        <img src="{{ departamento.imagen.url }}" class="img-fluid rounded-start w-100 h-100 object-fit-cover" alt="Imagen del departamento">
+      {% else %}
+        <img src="https://via.placeholder.com/600x400?text=Sin+Imagen" class="img-fluid rounded-start w-100 h-100 object-fit-cover" alt="Sin imagen disponible">
+      {% endif %}
     </div>
     <div class="col-md-7 p-4 bg-white">
-      <h3 class="card-title">{{ departamento.nombre }}</h3>
+      <h3 class="card-title">{{ id_departamento.nombre }}</h3>
       {% if departamento.numero %}
         <p><strong>Número de Departamento:</strong> {{ departamento.numero }}</p>
       {% else %}
-        <p><strong>ID de Departamento:</strong> {{ departamento.id }}</p>
+        <p><strong>ID de Departamento:</strong> {{ departamento.id_departamento }}</p>
       {% endif %}
       <p><strong>Descripción:</strong> {{ departamento.descripcion }}</p>
       <p><strong>Capacidad:</strong> {{ departamento.cant_personas }} persona(s)</p>
@@ -32,56 +36,55 @@
   <!-- Formulario de Reserva y Comprobante -->
   <div class="row">
     <!-- Formulario -->
-    <div class="col-md-6">
-      <div class="card p-4 shadow-sm border-0 bg-white">
-        <h4 class="mb-3">Formulario de Reserva</h4>
-        <form method="post" id="form-reserva" novalidate>
-          {% csrf_token %}
+<div class="col-md-6">
+  <div class="card p-4 shadow-sm border-0 bg-white">
+    <h4 class="mb-3">Formulario de Reserva</h4>
+    <form method="post" id="form-reserva" novalidate>
+      {% csrf_token %}
+      {% if cliente %}
+        <input type="hidden" name="id_cliente" value="{{ cliente.id_cliente }}">
+        <div class="mb-3">
+          <label class="form-label">Nombre</label>
+          <input type="text" name="nombre" id="nombre" class="form-control" value="{{ cliente.persona.nombre }} {{ cliente.persona.s_nombre }}" readonly>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Apellido</label>
+          <input type="text" name="apellido" id="apellido" class="form-control" value="{{ cliente.persona.apellido }} {{ cliente.persona.s_apellido }}" readonly>
+        </div>
+      {% else %}
+        <div class="mb-3">
+          <label class="form-label">Nombre</label>
+          <input type="text" name="nombre" id="nombre" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Apellido</label>
+          <input type="text" name="apellido" id="apellido" class="form-control" required>
+        </div>
+      {% endif %}
 
-          {% if request.user.is_authenticated and cliente %}
-            <input type="hidden" name="id_cliente" value="{{ cliente.id }}">
-            <div class="mb-3">
-              <label class="form-label">Nombre</label>
-              <input type="text" id="nombre" class="form-control" value="{{ cliente.nombre }}" readonly>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Apellido</label>
-              <input type="text" id="apellido" class="form-control" value="{{ cliente.apellido }}" readonly>
-            </div>
-          {% else %}
-            <div class="mb-3">
-              <label class="form-label">Nombre</label>
-              <input type="text" name="nombre" id="nombre" class="form-control" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Apellido</label>
-              <input type="text" name="apellido" id="apellido" class="form-control" required>
-            </div>
-          {% endif %}
-
-          <div class="mb-3">
-            <label class="form-label">Fecha de Ingreso</label>
-            <input type="date" name="fecha_ingreso" id="fecha_ingreso" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Fecha de Salida</label>
-            <input type="date" name="fecha_salida" id="fecha_salida" class="form-control" required>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Cantidad de Adultos</label>
-            <input type="number" name="cant_adultos" id="cant_adultos" class="form-control" required min="0" max="{{ departamento.cant_personas }}">
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Cantidad de Niños</label>
-            <input type="number" name="cant_ninos" id="cant_ninos" class="form-control" required min="0" max="{{ departamento.cant_personas }}">
-          </div>
-
-          <div id="error-capacidad" class="text-danger mt-2" style="display:none;"></div>
-        </form>
+      <div class="mb-3">
+        <label class="form-label">Fecha de Ingreso</label>
+        <input type="date" name="fecha_ingreso" id="fecha_ingreso" class="form-control" required>
       </div>
-    </div>
+      <div class="mb-3">
+        <label class="form-label">Fecha de Salida</label>
+        <input type="date" name="fecha_salida" id="fecha_salida" class="form-control" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Cantidad de Adultos</label>
+        <input type="number" name="cant_adultos" id="cant_adultos" class="form-control" required min="0" max="{{ departamento.cant_personas }}">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Cantidad de Niños</label>
+        <input type="number" name="cant_ninos" id="cant_ninos" class="form-control" required min="0" max="{{ departamento.cant_personas }}">
+      </div>
+
+      <div id="error-capacidad" class="text-danger mt-2" style="display:none;"></div>
+    </form>
+  </div>
+</div>
 
     <!-- Comprobante -->
     <div class="col-md-6">
@@ -96,11 +99,18 @@
         <p><strong>Total Personas:</strong> <span id="comp_cant_total">-</span></p>
         <p><strong>Total Estimado:</strong> $<span id="comp_valor_total">-</span></p>
 
-        <a href="{% url 'inicio_pago' %}" class="btn btn-success w-100 mt-3">Ir al Pago</a>
+        <div id="btn-pago">
+          <button class="btn btn-secondary w-100 mt-3" disabled>Completa el formulario para continuar al pago</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+
+<script>
+  const departamentoId = {{ departamento.id_departamento }};
+</script>
 
 <!-- Script para comprobante y validación -->
 <script>
@@ -147,10 +157,73 @@
     document.getElementById("comp_valor_total").textContent = total.toFixed(0);
   }
 
+  // Al detectar cambios en cualquier input, actualiza comprobante y evalúa si crear reserva
+  [nombreInput, apellidoInput, ingresoInput, salidaInput, adultosInput, ninosInput].forEach(el => {
+    if (el) el.addEventListener('input', () => {
+      actualizarComprobante();
+      crearReservaEnServidor(); // <-- solo la llamas si los datos están listos
+    });
+  });
+
   [nombreInput, apellidoInput, ingresoInput, salidaInput, adultosInput, ninosInput].forEach(el => {
     if (el) el.addEventListener('input', actualizarComprobante);
   });
 
-  window.addEventListener('load', actualizarComprobante);
+  let reservaCreada = false;
+let reservaId = null;
+
+function crearReservaEnServidor() {
+  if (reservaCreada) return;
+
+  const nombre = nombreInput?.value.trim();
+  const apellido = apellidoInput?.value.trim();
+  const ingreso = ingresoInput.value;
+  const salida = salidaInput.value;
+  const adultos = parseInt(adultosInput.value) || 0;
+  const ninos = parseInt(ninosInput.value) || 0;
+  const total = adultos + ninos;
+  const dias = (new Date(salida) - new Date(ingreso)) / (1000 * 60 * 60 * 24);
+
+  if (!nombre || !apellido || dias <= 0 || total === 0 || total > capacidadMax) return;
+
+  fetch("{% url 'crear_reserva_ajax' %}", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": "{{ csrf_token }}",
+    },
+    body: JSON.stringify({
+      nombre: nombreInput?.value || "",
+      apellido: apellidoInput?.value || "",
+      fecha_ingreso: ingreso,
+      fecha_salida: salida,
+      cant_adultos: adultos,
+      cant_ninos: ninos,
+      departamento_id: departamentoId,
+    }),
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      reservaCreada = true;
+      reservaId = data.reserva_id;
+      document.getElementById("comp_valor_total").textContent = data.valor_total;
+
+      // Insertar botón real de pago
+      document.querySelector("#btn-pago").outerHTML = `
+        <a href="/transbank/inicio_pago/${reservaId}/" class="btn btn-success w-100 mt-3">Ir al Pago</a>
+      `;
+    }
+  })
+  .catch(err => console.error("Error al crear reserva:", err));
+}
+
+window.addEventListener('load', () => {
+  actualizarComprobante();
+});  
 </script>
+
+
+
+
 {% endblock %}

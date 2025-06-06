@@ -69,6 +69,7 @@ class Reserva(models.Model):
     id_reserva = models.AutoField(primary_key=True)
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     departamento = models.ForeignKey(Departamento, on_delete=models.CASCADE)
+    pagado = models.BooleanField(default=False)
     fecha_reserva = models.DateField()
     fecha_ingreso = models.DateField(blank=True)
     fecha_salida = models.DateField()
