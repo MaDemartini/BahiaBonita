@@ -53,6 +53,9 @@ urlpatterns = [
     
     #reserva AJAX    
     path('api/crear_reserva_ajax/', views.crear_reserva_ajax, name='crear_reserva_ajax'),
+    
+    # validar reservas    
+    path('validar_reserva/', views.validar_reserva, name='validar_reserva'),
 
     
     #API paises de rapidAPI geocities

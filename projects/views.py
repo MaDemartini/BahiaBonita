@@ -381,7 +381,7 @@ def crear_reserva(request, departamento):
 
             valor_total = (depto.valor_dia * dias) + valor_aseo
             reserva.valor_total = valor_total
-            reserva.tipo_reserva = "diaria"  # Fijo para la web
+            reserva.tipo_reserva = "por día"  # Fijo para la web
             reserva.fecha_reserva = date.today()
 
             # Guardar reserva
@@ -624,3 +624,37 @@ def crear_reserva_ajax(request):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+##################################################################
+# validacion de reservas
+
+def validar_reserva(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            fecha_ingreso = data.get('fecha_ingreso')
+            fecha_salida = data.get('fecha_salida')
+            departamento_id = data.get('departamento_id')
+
+            if not all([fecha_ingreso, fecha_salida, departamento_id]):
+                return JsonResponse({'error': 'Datos incompletos'}, status=400)
+
+            
+            reservas = Reserva.objects.filter(
+                departamento_id=departamento_id,
+                fecha_ingreso__lte=parse_date(fecha_salida), ##de esta forma podemos ver si hay traslape entre las fechas
+                fecha_salida__gte=parse_date(fecha_ingreso)
+            )
+            
+            if reservas.exists():
+                return JsonResponse({'disponible': False, 'mensaje': 'El departamento ya está reservado en esas fechas.'}, status=200)
+            else:
+                return JsonResponse({'disponible': True}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+            
+        
+        
+        

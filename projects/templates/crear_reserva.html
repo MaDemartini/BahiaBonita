@@ -32,6 +32,7 @@
       </ul>
     </div>
   </div>
+  
 
   <!-- Formulario de Reserva y Comprobante -->
   <div class="row">
@@ -82,6 +83,7 @@
       </div>
 
       <div id="error-capacidad" class="text-danger mt-2" style="display:none;"></div>
+      
     </form>
   </div>
 </div>
@@ -106,6 +108,50 @@
     </div>
   </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('form-reserva');
+    const errorDiv = document.getElementById('error-capacidad');
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault(); // Evita el envío inmediato
+
+        // Obtén los valores del formulario
+        const fecha_ingreso = document.getElementById('fecha_ingreso').value;
+        const fecha_salida = document.getElementById('fecha_salida').value;
+        const departamento_id = "{{ departamento.id_departamento }}"; // O el id correspondiente
+
+        // Llama a la API de validación
+        fetch("{% url 'validar_reserva' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({
+                fecha_ingreso: fecha_ingreso,
+                fecha_salida: fecha_salida,
+                departamento_id: departamento_id
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.disponible) {
+                // Si está disponible, envía el formulario realmente
+                form.submit();
+            } else {
+                // Muestra el mensaje de error
+                errorDiv.style.display = "block";
+                errorDiv.innerText = data.mensaje || "No disponible en esas fechas.";
+            }
+        })
+        .catch(error => {
+            errorDiv.style.display = "block";
+            errorDiv.innerText = "Error al validar la reserva.";
+        });
+    });
+});
+</script>
 
 
 <script>

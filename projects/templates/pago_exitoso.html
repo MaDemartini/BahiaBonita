@@ -4,17 +4,31 @@
 {% block title %}Contacto | Bahía Bonita{% endblock %}
 
 {% block content %}
+<div class="container text-center mt-5">
+    <h2 class="mb-4">Pago Exitoso</h2>
+    <hr class="w-25 mx-auto">
 
-<div class="container py-5">
-    <div class="text-center mb-5">
-        <h1 class="display-5 fw-bold">Pago Exitoso</h1>
-        <p class="lead text-muted">Tu pago ha sido procesado exitosamente. ¡Gracias por tu reserva!</p>
-        <hr class="w-25 mx-auto">
+    <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">¡Gracias por tu compra!</h4>
+        <p>Tu pago ha sido procesado exitosamente. Recibirás un correo
+            electrónico de confirmación con los detalles de tu compra.</p>
+        <hr>
+        <p class="mb-0">Si tienes alguna pregunta, no dudes en contactarnos.</p>
     </div>
 
-    <div class="row g-5">
-        <div class="col-md-12">
-            <div class="bg-light rounded-4 shadow-sm p-4 h-100 text-center">
-                <h4 class="fw-bold mb
+    <a href="{% url 'home' %}" class="btn btn-primary mt-3">Volver al inicio</a>
+</div>
+<script>
+    // Detectar recarga de la página
+    if (performance.navigation.type === 1) {
+        alert("¡Error! No puedes recargar esta página. Si necesitas ayuda, contáctanos.");
+        
+    }
+
+    // Redirigir después de 5 segundos al perfil del cliente
+    setTimeout(function() {
+        window.location.href = "{% url 'profile' %}";
+    }, 5000);
+</script>
 
 {% endblock %}
