@@ -1,16 +1,72 @@
 # BahiaBonita
-Ya mi gente, comenzamos con el proyecto, traten de ir dejando una bitacora de avance en el Readme y en lo posible con fotos y lo mas explicativo posible
+Aplicación para gestionar reservas, departamentos y clientes usando **Django** y **Django REST Framework**.
+
+## Requisitos previos
+- Python 3.11 o superior
+- `virtualenv` para crear entornos aislados
+- Node y `npm` si se desea utilizar la parte web
+
+## Configuración del entorno
+
+1. Clona el repositorio y crea un entorno virtual:
+
+   ```bash
+   python -m venv env
+   source env/bin/activate
+   ```
+
+2. Instala las dependencias de Python:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Si planeas usar la interfaz web instala las dependencias de JavaScript:
+
+   ```bash
+   npm install
+   ```
+
+## Migraciones y servidor
+
+1. Aplica las migraciones para preparar la base de datos:
+
+   ```bash
+   python manage.py migrate
+   ```
+
+2. Inicia el servidor de desarrollo:
+
+   ```bash
+   python manage.py runserver
+   ```
+   
+## Arquitectura
+
+El código se organiza en varias capas. Las **vistas** reciben las peticiones del usuario, los **serializers** y la lógica de negocio actúan como intermediarios y los **modelos** gestionan el acceso a datos a través del ORM de Django.
+
+```
+[Cliente] --HTTP--> [Views/API] --ORM--> [Base de Datos]
+   ^                                     |
+   |------------- Respuesta JSON ---------|
+```
+
+Las peticiones entran a la capa de presentación y de ahí a la lógica, que consulta los modelos. El resultado vuelve al cliente como JSON o HTML según corresponda.
+
+## Uso de la API
+
+El proyecto ofrece varios endpoints REST bajo `/api/`. Algunos ejemplos:
+
+- `GET /api/depto/disponibles/` &mdash; departamentos que no están en mantenimiento.
+- `GET /api/depto/todos/` &mdash; lista de todos los departamentos.
+
+Puedes probarlos con `curl` o cualquier cliente HTTP. Si quieres ampliar la API, crea nuevas vistas en `projects/api.py` y registra las rutas en `projects/urls.py`.
+
+---
+
+Si encuentras algún problema o deseas contribuir, abre un _issue_ o envía un _pull request_.
 
 
-## API Interna - Información de Departamentos
 
-API REST construida con Django Rest Framework, permite consultar información detallada de los departamentos del edificio Bahía Bonita.
 
-Endpoints disponibles:
 
-- `GET /api/depto/disponibles/` → Lista solo los departamentos disponibles (no en mantenimiento).
-- `GET /api/depto/todos/` → Lista todos los departamentos, sin importar su estado.
-
-Uso común:
-- Integración con el sitio web para mostrar departamentos disponibles a clientes.
-- Consulta administrativa para ver todos los departamentos (uso interno).
