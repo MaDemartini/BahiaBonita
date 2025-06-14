@@ -1,3 +1,5 @@
+YA HICIMOS ENTREGA 2, AHORA VIENE LA ENTREGA 3 PRUEBAS DE SEGURIDAD Y BUGS, NO ARREGLAR FALLOS, YA TERMINO FASE 2! https://gettaurus.org/ para hacer las pruebas de seguridad, Se debe subir 1000 departamentos para poder hacer la prueba
+
 # BahiaBonita
 Aplicación para gestionar reservas, departamentos y clientes usando **Django** y **Django REST Framework**.
 
