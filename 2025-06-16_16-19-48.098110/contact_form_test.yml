@@ -1,0 +1,21 @@
+execution:
+  - concurrency: 500
+    iterations: 1
+    ramp-up: 10s
+    hold-for: 5s
+    scenario: contacto_api
+
+scenarios:
+  contacto_api:
+    requests:
+      - url: http://127.0.0.1:8000/api/contacto/
+        method: POST
+        headers:
+          Content-Type: application/json
+        body: |
+          {
+            "nombre": "Jaime desde Taurus",
+            "telefono": "1111111111",
+            "email": "test@bahiabonita.cl",
+            "mensaje": "Esto es un mensaje automatizado desde Taurus sin CSRF"
+          }
