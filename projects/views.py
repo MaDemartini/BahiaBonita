@@ -522,6 +522,7 @@ def profile(request):
 ##########################################################################
 #contacto
 
+
 def contacto(request):
     if request.method == 'POST':
         contactoForm = ContactoForm(request.POST)
