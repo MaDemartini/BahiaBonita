@@ -74,7 +74,7 @@ def iniciar_pago(request, id_reserva):
     }
 
     try:
-        response = requests.post(url, headers=headers, json=data)
+        response = requests.post(url, headers=headers, json=data, timeout=5)
         response.raise_for_status()
         r = response.json()
          # Redirige al usuario a la URL de pago de Transbank
