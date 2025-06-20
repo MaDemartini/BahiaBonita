@@ -128,3 +128,32 @@ class ContactoForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
             'mensaje': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Mensaje'}),
         }
+        
+class AddColaboradorForm(forms.ModelForm):
+    class Meta:
+        model = Persona
+        fields = ['nombre', 's_nombre', 'apellido', 's_apellido', 'rut', 'dv', 'fecha_nacimiento', 'direccion', 'pais',
+                  'ciudad', 'telefono', 'email', 'password']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
+            's_nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Segundo nombre'}),
+            'apellido': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Apellido'}),
+            's_apellido': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Apellido Materno'}),
+            'rut': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Rut'}),
+            'dv': forms.TextInput(attrs={'class': 'form-control','placeholder': 'DV'}),
+            'fecha_nacimiento': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Fecha de Nacimiento', 'type': 'date'}),
+            'direccion': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Dirección'}),
+            'pais' : forms.TextInput(attrs={'class': 'form-control', 'id': 'pais'}),
+            'ciudad' : forms.TextInput(attrs={'class': 'form-control', 'id': 'ciudad'}),            
+            'telefono': forms.TextInput(attrs={'class': 'form-control','value': '+569'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control','placeholder': 'Email'}),
+            'password': forms.PasswordInput(attrs={'class': 'form-control','placeholder': 'Contraseña'}),
+            # No se debe mostrar el campo password en el formulario
+        } 
+
+    def save(self, commit=True):
+        persona = super().save(commit=False)
+        persona.password = make_password(self.cleaned_data['password'])
+        if commit:
+            persona.save()
+        return persona
