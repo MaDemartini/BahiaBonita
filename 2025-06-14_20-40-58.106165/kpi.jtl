@@ -1,0 +1,124 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,success,bytes,grpThreads,allThreads,Latency,Hostname,Connect
+1749948066762,896,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-5,true,4803023,6,6,3,CrazY,1
+1749948066762,951,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-2,true,4803035,6,6,13,CrazY,1
+1749948065810,1965,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-1,true,4803036,6,6,30,CrazY,22
+1749948066762,1036,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-4,true,4803035,11,11,9,CrazY,1
+1749948066762,1330,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-3,true,4803036,11,11,5,CrazY,1
+1749948066763,1428,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-6,true,4803033,11,11,13,CrazY,0
+1749948067662,785,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-5,true,4803036,11,11,3,CrazY,0
+1749948067780,776,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-8,true,4803025,11,11,11,CrazY,1
+1749948067782,816,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-10,true,4803032,11,11,19,CrazY,3
+1749948067800,834,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-4,true,4803036,11,11,6,CrazY,0
+1749948067714,955,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-2,true,4803029,11,11,2,CrazY,0
+1749948068557,293,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-8,true,4803036,16,16,3,CrazY,0
+1749948067784,1231,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-9,true,4803031,16,16,36,CrazY,1
+1749948067777,1316,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-1,true,4803027,16,16,5,CrazY,0
+1749948067780,1325,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-7,true,4803027,16,16,10,CrazY,1
+1749948068600,568,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-10,true,4803043,16,16,1,CrazY,0
+1749948068450,1050,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-5,true,4803036,16,16,2,CrazY,0
+1749948068637,1038,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-4,true,4803035,16,16,2,CrazY,0
+1749948068852,1150,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-8,true,4803023,21,21,4,CrazY,0
+1749948068194,1994,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-6,true,4803033,21,21,10,CrazY,2
+1749948069502,725,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-5,true,4803029,21,21,5,CrazY,0
+1749948068671,1563,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-2,true,4803032,21,21,5,CrazY,1
+1749948069096,1292,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-1,true,4803029,21,21,14,CrazY,2
+1749948069797,689,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-18,true,4803027,21,21,21,CrazY,1
+1749948069677,809,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-4,true,4803031,21,21,3,CrazY,1
+1749948069798,711,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-21,true,4803033,21,21,20,CrazY,0
+1749948069173,1436,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-10,true,4803025,21,21,5,CrazY,0
+1749948069106,1509,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-7,true,4803021,21,21,6,CrazY,0
+1749948069016,1642,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-9,true,4803030,21,21,3,CrazY,0
+1749948070236,563,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-2,true,4803027,21,21,8,CrazY,1
+1749948069797,1187,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-20,true,4803038,26,26,17,CrazY,2
+1749948070511,500,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-21,true,4803032,26,26,6,CrazY,0
+1749948068787,2322,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-15,true,4803044,26,26,15,CrazY,1
+1749948070005,1242,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-8,true,4803033,26,26,2,CrazY,0
+1749948070490,815,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-4,true,4803046,26,26,4,CrazY,0
+1749948070391,1190,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-1,true,4803027,26,26,4,CrazY,0
+1749948070230,2449,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-5,true,4803038,31,31,3,CrazY,0
+1749948070189,2506,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-6,true,4803037,31,31,12,CrazY,1
+1749948068787,4076,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-14,true,4803031,36,36,10,CrazY,1
+1749948068094,4817,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-3,true,4803032,36,36,19,CrazY,1
+1749948067784,5209,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-11,true,4803030,36,36,33,CrazY,1
+1749948068786,4306,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-12,true,4803035,36,36,3,CrazY,0
+1749948068786,4713,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-13,true,4803032,36,36,7,CrazY,0
+1749948072679,1233,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-5,true,4803032,41,41,4,CrazY,1
+1749948068787,5239,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-16,true,4803034,41,41,17,CrazY,1
+1749948073834,1398,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-39,true,4803033,46,46,3,CrazY,0
+1749948073913,1700,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-5,true,4803040,46,46,4,CrazY,0
+1749948075232,1515,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-39,true,4803027,50,50,2,CrazY,0
+1749948069796,7052,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-17,true,4803027,50,50,10,CrazY,1
+1749948076748,445,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-39,true,4803027,50,50,1,CrazY,0
+1749948069796,16058,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-19,true,4803037,50,50,7,CrazY,1
+1749948072829,49276,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-35,true,4803025,50,50,11,CrazY,0
+1749948070617,84502,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-7,true,4803031,50,50,3,CrazY,0
+1749948070799,84671,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-2,true,4803030,50,50,4,CrazY,0
+1749948070814,84821,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-23,true,4803051,50,50,9,CrazY,1
+1749948071583,84255,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-1,true,4803038,50,50,2,CrazY,0
+1749948071248,85231,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-8,true,4803034,50,50,3,CrazY,0
+1749948071111,86365,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-15,true,4803027,50,50,2,CrazY,0
+1749948072696,85058,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-6,true,4803021,50,50,4,CrazY,1
+1749948072864,84928,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-14,true,4803034,50,50,5,CrazY,1
+1749948072829,85749,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-36,true,4803047,50,50,3,CrazY,1
+1749948073834,85273,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-41,true,4803052,50,50,8,CrazY,1
+1749948074845,84482,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-42,true,4803047,50,50,4,CrazY,0
+1749948073834,85918,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-37,true,4803059,50,50,16,CrazY,1
+1749948073500,87656,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-13,true,4803033,50,50,2,CrazY,0
+1749948073834,87735,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-38,true,4803029,50,50,7,CrazY,0
+1749948071306,90735,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-4,true,4803029,50,50,2,CrazY,0
+1749948076848,85309,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-17,true,4803039,50,50,14,CrazY,0
+1749948074845,87385,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-46,true,4803043,50,50,23,CrazY,1
+1749948077194,85459,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-39,true,4803038,50,50,1,CrazY,0
+1749948074028,90969,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-16,true,4803041,50,50,16,CrazY,0
+1749948072829,120391,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-33,true,4803058,50,50,12,CrazY,0
+1749948072829,121317,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-32,true,4803043,50,50,17,CrazY,1
+1749948070660,126948,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-9,true,4803031,50,50,8,CrazY,1
+1749948070984,126691,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-20,true,4803030,49,49,3,CrazY,0
+1749948070814,126964,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-22,true,4803051,48,48,11,CrazY,1
+1749948070489,127438,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-18,true,4803023,47,47,6,CrazY,0
+1749948071822,127682,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-27,true,4803051,46,46,16,CrazY,1
+1749948071823,127682,http://127.0.0.1:8000/,200,"Embedded resource download error:https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3326.0505309511724!2d-71.51950702507775!3d-32.92984577358292!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9689de9481b3f3e1%3A0x47037cf14bb98e02!2sSan%20Fabi%C3%A1n%2022040%2C%20Conc%C3%B3n%2C%20Valpara%C3%ADso!5e0!3m2!1ses-419!2scl!4v1716767766937!5m2!1ses-419!2scl code:200 message:Embedded resource download error:https://maps.googleapis.com/maps/api/js?client=google-maps-embed&paint_origin=&libraries=geometry,search&v=weekly&loading=async&language=es_419&region=cl&callback=onApiLoad code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, , ",prueba_local-ThreadStarter 1-29,false,4792529,46,46,5,CrazY,0
+1749948071823,127916,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-28,true,4803029,44,44,9,CrazY,0
+1749948072829,127284,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-34,true,4803045,43,43,8,CrazY,0
+1749948157794,42601,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-14,true,4803054,42,42,3,CrazY,1
+1749948072995,127566,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-11,true,4803028,41,41,2,CrazY,0
+1749948157478,43087,http://127.0.0.1:8000/,200,"Embedded resource download error:https://cdn.jsdelivr.net/npm/sweetalert2@11 code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, ",prueba_local-ThreadStarter 1-15,false,4726067,40,40,2,CrazY,0
+1749948072912,127746,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-3,true,4803027,39,39,4,CrazY,0
+1749948157755,43208,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-6,true,4803046,38,38,3,CrazY,1
+1749948073834,127768,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-40,true,4803052,37,37,12,CrazY,1
+1749948158580,43479,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-36,true,4803052,36,36,2,CrazY,0
+1749948074845,127322,http://127.0.0.1:8000/,200,"Embedded resource download error:https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3326.0505309511724!2d-71.51950702507775!3d-32.92984577358292!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9689de9481b3f3e1%3A0x47037cf14bb98e02!2sSan%20Fabi%C3%A1n%2022040%2C%20Conc%C3%B3n%2C%20Valpara%C3%ADso!5e0!3m2!1ses-419!2scl!4v1716767766937!5m2!1ses-419!2scl code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, ",prueba_local-ThreadStarter 1-44,false,4789449,35,35,14,CrazY,0
+1749948074845,127331,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-45,true,4803042,34,34,4,CrazY,0
+1749948075622,126599,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-5,true,4803032,33,33,2,CrazY,0
+1749948075857,126757,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-47,true,4803049,32,32,10,CrazY,0
+1749948075857,126759,http://127.0.0.1:8000/,200,"Embedded resource download error:https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3326.0505309511724!2d-71.51950702507775!3d-32.92984577358292!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9689de9481b3f3e1%3A0x47037cf14bb98e02!2sSan%20Fabi%C3%A1n%2022040%2C%20Conc%C3%B3n%2C%20Valpara%C3%ADso!5e0!3m2!1ses-419!2scl!4v1716767766937!5m2!1ses-419!2scl code:200 message:Embedded resource download error:https://maps.googleapis.com/maps/api/js?client=google-maps-embed&paint_origin=&libraries=geometry,search&v=weekly&loading=async&language=es_419&region=cl&callback=onApiLoad code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, , ",prueba_local-ThreadStarter 1-49,false,4792552,32,32,11,CrazY,0
+1749948075857,126769,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-50,true,4803041,30,30,6,CrazY,0
+1749948074845,127805,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-43,true,4803051,29,29,11,CrazY,0
+1749948159329,43390,http://127.0.0.1:8000/,200,"Embedded resource download error:https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3326.0505309511724!2d-71.51950702507775!3d-32.92984577358292!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9689de9481b3f3e1%3A0x47037cf14bb98e02!2sSan%20Fabi%C3%A1n%2022040%2C%20Conc%C3%B3n%2C%20Valpara%C3%ADso!5e0!3m2!1ses-419!2scl!4v1716767766937!5m2!1ses-419!2scl code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js code:Non HTTP response code: java.lang.IllegalStateException message:Non HTTP response message: Connection pool shut down, https://cdn.jsdelivr.net/npm/sweetalert2@11 code:Non HTTP response code: java.lang.IllegalStateException message:Non HTTP response message: Connection pool shut down, ",prueba_local-ThreadStarter 1-42,false,4631851,28,28,2,CrazY,1
+1749948159754,43113,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-37,true,4803037,27,27,2,CrazY,1
+1749948161156,42104,http://127.0.0.1:8000/,200,"Embedded resource download error:https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3326.0505309511724!2d-71.51950702507775!3d-32.92984577358292!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9689de9481b3f3e1%3A0x47037cf14bb98e02!2sSan%20Fabi%C3%A1n%2022040%2C%20Conc%C3%B3n%2C%20Valpara%C3%ADso!5e0!3m2!1ses-419!2scl!4v1716767766937!5m2!1ses-419!2scl code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, https://cdn.jsdelivr.net/npm/sweetalert2@11 code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, ",prueba_local-ThreadStarter 1-13,false,4633901,26,26,3,CrazY,1
+1749948075857,127902,http://127.0.0.1:8000/,200,"Embedded resource download error:https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3326.0505309511724!2d-71.51950702507775!3d-32.92984577358292!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9689de9481b3f3e1%3A0x47037cf14bb98e02!2sSan%20Fabi%C3%A1n%2022040%2C%20Conc%C3%B3n%2C%20Valpara%C3%ADso!5e0!3m2!1ses-419!2scl!4v1716767766937!5m2!1ses-419!2scl code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, ",prueba_local-ThreadStarter 1-48,false,4789439,25,25,3,CrazY,0
+1749948162158,42191,http://127.0.0.1:8000/,200,"Embedded resource download error:https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3326.0505309511724!2d-71.51950702507775!3d-32.92984577358292!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9689de9481b3f3e1%3A0x47037cf14bb98e02!2sSan%20Fabi%C3%A1n%2022040%2C%20Conc%C3%B3n%2C%20Valpara%C3%ADso!5e0!3m2!1ses-419!2scl!4v1716767766937!5m2!1ses-419!2scl code:200 message:Embedded resource download error:https://maps.googleapis.com/maps/api/js?client=google-maps-embed&paint_origin=&libraries=geometry,search&v=weekly&loading=async&language=es_419&region=cl&callback=onApiLoad code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, , https://cdn.jsdelivr.net/npm/sweetalert2@11 code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, ",prueba_local-ThreadStarter 1-17,false,4715563,24,24,2,CrazY,0
+1749948161570,42901,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-38,true,4803049,23,23,2,CrazY,0
+1749948070611,134012,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-10,true,4803033,22,22,3,CrazY,0
+1749948070815,134020,http://127.0.0.1:8000/,200,"Embedded resource download error:https://cdn.jsdelivr.net/npm/sweetalert2@11 code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, ",prueba_local-ThreadStarter 1-24,false,4726080,21,21,21,CrazY,1
+1749948071013,133903,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-21,true,4803039,20,20,2,CrazY,0
+1749948070816,134160,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-26,true,4803056,19,19,21,CrazY,1
+1749948155471,49509,http://127.0.0.1:8000/,200,"Embedded resource download error:https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, https://cdn.jsdelivr.net/npm/sweetalert2@11 code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket Closed, ",prueba_local-ThreadStarter 1-2,false,4647165,18,18,4,CrazY,1
+1749948162654,42378,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-39,true,4803033,17,17,3,CrazY,1
+1749948155839,49201,http://127.0.0.1:8000/,200,"Embedded resource download error:https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3326.0505309511724!2d-71.51950702507775!3d-32.92984577358292!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9689de9481b3f3e1%3A0x47037cf14bb98e02!2sSan%20Fabi%C3%A1n%2022040%2C%20Conc%C3%B3n%2C%20Valpara%C3%ADso!5e0!3m2!1ses-419!2scl!4v1716767766937!5m2!1ses-419!2scl code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, ",prueba_local-ThreadStarter 1-1,false,4789451,16,16,3,CrazY,1
+1749948071823,133219,http://127.0.0.1:8000/,200,"Embedded resource download error:https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3326.0505309511724!2d-71.51950702507775!3d-32.92984577358292!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9689de9481b3f3e1%3A0x47037cf14bb98e02!2sSan%20Fabi%C3%A1n%2022040%2C%20Conc%C3%B3n%2C%20Valpara%C3%ADso!5e0!3m2!1ses-419!2scl!4v1716767766937!5m2!1ses-419!2scl code:200 message:Embedded resource download error:https://maps.googleapis.com/maps/api/js?client=google-maps-embed&paint_origin=&libraries=geometry,search&v=weekly&loading=async&language=es_419&region=cl&callback=onApiLoad code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, , ",prueba_local-ThreadStarter 1-30,false,4792534,16,16,5,CrazY,0
+1749948070817,134275,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-25,true,4803058,14,14,28,CrazY,0
+1749948155121,49974,http://127.0.0.1:8000/,200,"Embedded resource download error:https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, ",prueba_local-ThreadStarter 1-7,false,4724479,13,13,3,CrazY,1
+1749948071823,133273,http://127.0.0.1:8000/,200,"Embedded resource download error:https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3326.0505309511724!2d-71.51950702507775!3d-32.92984577358292!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9689de9481b3f3e1%3A0x47037cf14bb98e02!2sSan%20Fabi%C3%A1n%2022040%2C%20Conc%C3%B3n%2C%20Valpara%C3%ADso!5e0!3m2!1ses-419!2scl!4v1716767766937!5m2!1ses-419!2scl code:200 message:Embedded resource download error:https://maps.googleapis.com/maps/api/js?client=google-maps-embed&paint_origin=&libraries=geometry,search&v=weekly&loading=async&language=es_419&region=cl&callback=onApiLoad code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, , ",prueba_local-ThreadStarter 1-31,false,4792543,13,13,17,CrazY,0
+1749948155637,49461,http://127.0.0.1:8000/,200,"Embedded resource download error:https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3326.0505309511724!2d-71.51950702507775!3d-32.92984577358292!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9689de9481b3f3e1%3A0x47037cf14bb98e02!2sSan%20Fabi%C3%A1n%2022040%2C%20Conc%C3%B3n%2C%20Valpara%C3%ADso!5e0!3m2!1ses-419!2scl!4v1716767766937!5m2!1ses-419!2scl code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, https://cdn.jsdelivr.net/npm/sweetalert2@11 code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, ",prueba_local-ThreadStarter 1-23,false,4633917,12,12,2,CrazY,0
+1749948162231,43198,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-46,true,4803049,10,10,3,CrazY,1
+1749948085855,119576,http://127.0.0.1:8000/,200,"Embedded resource download error:https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3326.0505309511724!2d-71.51950702507775!3d-32.92984577358292!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9689de9481b3f3e1%3A0x47037cf14bb98e02!2sSan%20Fabi%C3%A1n%2022040%2C%20Conc%C3%B3n%2C%20Valpara%C3%ADso!5e0!3m2!1ses-419!2scl!4v1716767766937!5m2!1ses-419!2scl code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, ",prueba_local-ThreadStarter 1-19,false,4789424,10,10,7,CrazY,0
+1749948162042,43415,http://127.0.0.1:8000/,200,"Embedded resource download error:https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, ",prueba_local-ThreadStarter 1-4,false,4724465,8,8,2,CrazY,0
+1749948156481,49149,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-8,true,4803040,7,7,2,CrazY,0
+1749948073093,133618,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-12,true,4803032,6,6,3,CrazY,0
+1749948122107,84681,http://127.0.0.1:8000/,200,"Embedded resource download error:https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, ",prueba_local-ThreadStarter 1-35,false,4724479,5,5,12,CrazY,0
+1749948164998,42904,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-16,true,4803045,4,4,2,CrazY,0
+1749948159109,49328,http://127.0.0.1:8000/,200,"Embedded resource download error:https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js code:Non HTTP response code: java.net.SocketException message:Non HTTP response message: Socket operation on nonsocket: configureBlocking, ",prueba_local-ThreadStarter 1-41,false,4724488,3,3,3,CrazY,1
+1749948194147,16845,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-32,true,4803036,2,2,3,CrazY,1
+1749948193220,21834,http://127.0.0.1:8000/,200,OK,prueba_local-ThreadStarter 1-33,true,4803025,1,1,3,CrazY,1

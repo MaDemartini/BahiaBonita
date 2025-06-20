@@ -45,8 +45,10 @@ urlpatterns = [
     path('contacto/', views.contacto, name='contacto'),
 
     # Transbank
-    path('transbank/inicio_pago/<int:id_reserva>/', views.iniciar_pago, name='inicio_pago'),
+    path('transbank/inicio_pago/', views.iniciar_pago, name='inicio_pago'),
     path('transbank/retorno/', views.confirm_pago, name='confirm_pago'),
+    # Transbank pago exitoso
+    # path('pago_exitoso/', views.confirm_pago, name='confirm_pago'),
 
     # API (Django REST Framework)
     path('', include(router.urls)),
@@ -56,7 +58,10 @@ urlpatterns = [
     
     # validar reservas    
     path('validar_reserva/', views.validar_reserva, name='validar_reserva'),
-
+    
+    # fechas reservadas para flatpickr
+    path('reservas/<int:depto_id>/fechas/', views.fechas_reservadas, name='fechas_reservadas'),
+    
     
     #API paises de rapidAPI geocities
     # path('api/paises/', views.get_paises, name='get_paises'),

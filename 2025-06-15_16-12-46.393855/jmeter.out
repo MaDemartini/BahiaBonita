@@ -1,0 +1,6 @@
+Created the tree successfully using C:\Users\jaime\OneDrive\Escritorio\BahiaBonita\2025-06-15_16-12-46.393855\modified_requests.jmx
+Starting standalone test @ June 15, 2025 4:12:54 PM CLT (1750018374295)
+Waiting for possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
+Command: Shutdown received from /127.0.0.1
+Tidying up ...    @ June 15, 2025 4:13:36 PM CLT (1750018416568)
+... end of run

@@ -142,7 +142,7 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Transbank settings
-TRANSBANK_API_URL = "https://webpay3gint.transbank.cl"  # o producción
+TRANSBANK_API_URL = "https://webpay3gint.transbank.cl" # ambiente integración 
 TRANSBANK_COMMERCE_CODE = "597055555532"
 TRANSBANK_API_KEY = "579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C"
 
@@ -154,7 +154,7 @@ URL_API_CONTACTO = "http://localhost:8000/api/contacto/"
 URL_API_ADDDEPTO = "http://localhost:8000/api/depto/"
 URL_API_LIST_DEPTO = "http://localhost:8000/api/depto/"
 URL_API_CLIENTE = "http://localhost:8000/api/cliente/"
-URL_API_RESERVA = "http://localhost:8000/api/reservas/"
+URL_API_RESERVA = "http://localhost:8000/api/reserva/"
 
 # clave api rapidAPI
 # RAPIDAPI_KEY = "265ae1d89fmsh43cb1b76b5dda66p19835fjsnd2f11953b0d6"

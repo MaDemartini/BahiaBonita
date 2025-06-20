@@ -1,0 +1,12 @@
+---
+execution:
+- concurrency: 50
+  hold-for: 2m
+  ramp-up: 10s
+  scenario: prueba_local
+scenarios:
+  prueba_local:
+    requests:
+    - method: GET
+      url: http://127.0.0.1:8000/
+

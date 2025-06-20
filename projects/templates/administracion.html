@@ -10,7 +10,8 @@
       <br>
       <h2>Administracion general</h2>
       <div class="container-fluid d-flex justify-content-center gap-5">
-        <!-- Botón 1 -->
+
+        <!-- ADD DEPTOS -->
         <div class="d-flex flex-column align-items-center">
           <button type="button" class="btn rounded-circle btn_menu_admin d-flex align-items-center justify-content-center"
                   data-bs-toggle="modal" data-bs-target="#modalAgregar">
@@ -19,15 +20,25 @@
           <span class="mt-2">Agregar departamento</span>
         </div>
 
-        <!-- Botón 2 -->
+        <!-- RESERVAS -->
+         <div class="d-flex flex-column align-items-center">
+          <button type="button" class="btn rounded-circle btn_menu_admin d-flex align-items-center justify-content-center"
+                  data-bs-toggle="modal" data-bs-target="#modalAgregar">
+            <i class="fa-solid fa-calendar-days"></i>
+          </button>
+          <span class="mt-2">Reservas</span>
+        </div>       
+
+        <!-- ADD COLABORADORES -->
         <div class="d-flex flex-column align-items-center">
           <button type="button" class="btn rounded-circle btn_menu_admin d-flex align-items-center justify-content-center"
                   data-bs-toggle="modal" data-bs-target="#modalAgregarColaborador">
             <i class="fa-solid fa-person"></i>
           </button>
           <span class="mt-2">Añadir colaborador</span>
-        </div>
+        </div>        
 
+        <!-- INFORMES -->
         <div class="d-flex flex-column align-items-center">
           <button type="button" class="btn rounded-circle btn_menu_admin d-flex align-items-center justify-content-center"
                   data-bs-toggle="modal" data-bs-target="#modalinfromes">
@@ -35,15 +46,9 @@
           </button>
           <span class="mt-2">Informes</span>
         </div>
-      </div>
+      </div>   
+      <br>    
       
-        
-      
-      
-
-      
-      
-
     <h3>Lista de departamentos</h3>
 
     <div class="table-responsive">
@@ -52,32 +57,40 @@
         <thead class="table-dark">
           <tr>
 
-            <th>Nº Depto</th>
-            <th>Dormitorios</th>
-            <th>Baños</th>
-            <th>Piso</th>
-            <th>Capacidad</th>
-            <th>Valor</th>
-            <th>Mantenimiento</th>
-            <th colspan="2">Opciones</th>
+            <th class="text-center">Nº Depto</th>
+            <th class="text-center">Dormitorios</th>
+            <th class="text-center">Baños</th>
+            <th class="text-center">Piso</th>
+            <th class="text-center">Capacidad</th>
+            <th class="text-center">Valor</th>
+            <th class="text-center">Disponibilidad</th>
+            <th class="text-center">Mantenimiento</th>            
+            <th class="text-center">Opciones</th>
           </tr>
         </thead>
         <tbody>
           {% for d in page_obj %}
           <tr>
             <td style="display: none;">{{ d.id_departamento }}</td>
-            <td>{{ d.num_depto }}</td>
-            <td>{{ d.cant_dormitorios }}</td>
-            <td>{{ d.cant_banos }}</td>
-            <td>{{ d.piso }}</td>
-            <td>{{ d.cant_personas }}</td>
-            <td>${{ d.valor_dia }}</td>
-            <td>{% if d.mantenimiento %}Sí{% else %}No{% endif %}</td>
-            <td>
+            <td class="text-center">{{ d.num_depto }}</td>
+            <td class="text-center">{{ d.cant_dormitorios }}</td>
+            <td class="text-center">{{ d.cant_banos }}</td>
+            <td class="text-center">{{ d.piso }}</td>
+            <td class="text-center">{{ d.cant_personas }}</td>
+            <td class="text-center">${{ d.valor_dia }}</td>
+            <td class="text-center">
+              {% if depto.ocupado %}
+                <i class="bi bi-circle-fill" style="color: red; size: 40px;" ></i>
+              {% else %}
+                <i class="bi bi-circle-fill" style="color: green; size: 100px;"></i>
+              {% endif %}
+            </td>
+            <td class="text-center">{% if d.mantenimiento %}Sí{% else %}No{% endif %}</td>
+            <td class="text-center">
 
               <!-- boton editar con la data -->
               <button type="button" class="btn btn-sm btn-warning"
-                data-bs-toggle="modal" data-bs-target="#modalEditar"
+                data-bs-toggle="modal" data-bs-target="#modalEditarDepto"
                 data-id="{{ d.id_departamento }}"
                 data-num="{{ d.num_depto }}"
                 data-dormitorios="{{ d.cant_dormitorios }}"
@@ -101,6 +114,7 @@
           {% endfor %}
         </tbody>
       </table>
+      <!-- PAGINACIÓN DEPARTAMENTOS -->
       <nav aria-label="Paginación">
         <ul class="pagination justify-content-center">
           {% if page_obj.has_previous %}
@@ -134,6 +148,7 @@
       </nav>
 
     </div>
+    <br>
 
     <h2>Usuarios registrados</h2>
     <h3>Lista de Clientes</h3>
@@ -144,24 +159,24 @@
         <thead class="table-dark">
           <tr>
 
-            <th>Nombre</th>
-            <th>Rut</th>
+            <th class="text-center">Nombre</th>
+            <th class="text-center">Rut o Pasaporte</th>
 
-            <th colspan="4">Opciones</th>
+            <th class="text-center">Opciones</th>
           </tr>
         </thead>
         <tbody>
           <p>Total de clientes: {{ clientes|length }}</p>
           {% for c in clientes %}
           <tr>
-            <td>{{c.persona.nombre}} {{c.persona.s_nombre}}
+            <td class="text-center">{{c.persona.nombre}} {{c.persona.s_nombre}}
               {{c.persona.apellido}} {{c.persona.s_apellido}}</td>
-            <td>{{ c.persona.rut }}-{{ c.persona.dv }}</td>
-            <td>
+            <td class="text-center">{{ c.persona.rut }}-{{ c.persona.dv }}</td>
+            <td class="text-center">
 
               <!-- boton editar con la data -->
               <button type="button" class="btn btn-sm btn-warning"
-                data-bs-toggle="modal" data-bs-target="#modalEditar"
+                data-bs-toggle="modal" data-bs-target="#modalEditarDepto"
                 data-id="{{ d.id_departamento }}"
                 data-num="{{ d.num_depto }}"
                 data-dormitorios="{{ d.cant_dormitorios }}"
@@ -180,15 +195,49 @@
           </tr>
           {% empty %}
           <tr>
-            <td colspan="8">No hay ususarios registrados.</td>
+            <td class="text-center" colspan="8">No hay ususarios registrados.</td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
+      <!-- PAGINACIÓN CLIENTES -->
+      <nav aria-label="Paginación">
+        <ul class="pagination justify-content-center">
+
+          {% if clientes.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page_clientes=1">Primero</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page_clientes={{ clientes.previous_page_number }}">Anterior</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">Primero</span></li>
+            <li class="page-item disabled"><span class="page-link">Anterior</span></li>
+          {% endif %}
+
+          <li class="page-item disabled">
+            <span class="page-link">Página {{ clientes.number }} de {{ clientes.paginator.num_pages }}</span>
+          </li>
+
+          {% if clientes.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page_clientes={{ clientes.next_page_number }}">Siguiente</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page_clientes={{ clientes.paginator.num_pages }}">Último</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link">Siguiente</span></li>
+            <li class="page-item disabled"><span class="page-link">Último</span></li>
+          {% endif %}
+
+        </ul>
+      </nav>
 
     </div>
 
-    <!-- modal agregar -->
+    <!-- modal agregar depto -->
     <div class="modal fade" id="modalAgregar" tabindex="-1"
       aria-labelledby="modalAgregarLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
@@ -213,8 +262,8 @@
       </div>
     </div>
 
-    <!-- modal Editar -->
-    <div class="modal fade" id="modalEditar" tabindex="-1"
+    <!-- modal Editar depto -->
+    <div class="modal fade" id="modalEditarDepto" tabindex="-1"
       aria-labelledby="modalEditarLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -285,10 +334,10 @@ function getCookie(name) {
     return cookieValue;
 }
 document.addEventListener('DOMContentLoaded', function () {
-    const modalEditar = document.getElementById('modalEditar');
+    const modalEditarDepto = document.getElementById('modalEditarDepto');
 
     // Cargar datos en el modal
-    modalEditar.addEventListener('show.bs.modal', function (event) {
+    modalEditarDepto.addEventListener('show.bs.modal', function (event) {
         const btn = event.relatedTarget;
         document.getElementById('editar-id').value = btn.getAttribute('data-id');
         document.getElementById('editar-num').value = btn.getAttribute('data-num');

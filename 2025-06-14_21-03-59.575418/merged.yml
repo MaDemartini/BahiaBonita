@@ -1,0 +1,17 @@
+---
+execution:
+- concurrency: 50
+  hold-for: 2m
+  ramp-up: 10s
+  scenario: prueba_local
+reporting:
+- module: final-stats
+- module: console
+- module: html
+  report-file: report_index.html
+scenarios:
+  prueba_local:
+    requests:
+    - method: GET
+      url: http://127.0.0.1:8000/
+

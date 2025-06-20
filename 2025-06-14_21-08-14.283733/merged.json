@@ -1,0 +1,34 @@
+{
+ "execution": [
+  {
+   "concurrency": 50,
+   "ramp-up": "10s",
+   "hold-for": "2m",
+   "scenario": "prueba_local"
+  }
+ ],
+ "scenarios": {
+  "prueba_local": {
+   "requests": [
+    {
+     "url": "http://127.0.0.1:8000/",
+     "method": "GET"
+    }
+   ]
+  }
+ },
+ "reporting": [
+  {
+   "module": "final-stats"
+  },
+  {
+   "module": "junit-xml"
+  },
+  {
+   "module": "passfail"
+  },
+  {
+   "module": "console"
+  }
+ ]
+}

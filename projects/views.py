@@ -9,16 +9,16 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator
 from django.utils.dateparse import parse_date
 from django.core.mail import send_mail
-
-
-from .models import Cliente, Departamento, Reserva, Persona, Administrador, PersonalAseo, Recepcionista, Rol  
-from .forms import ContactoForm, LoginForm, RegisterForm, AddDeptoForm, ReservaForm
 from django.shortcuts import render, HttpResponse, redirect,  get_object_or_404
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from django.contrib.auth.hashers import check_password, make_password
 from django.views.decorators.http import require_GET
 from django.views.decorators.csrf import csrf_exempt
+from .models import Cliente, Departamento, Reserva, Persona, Administrador, PersonalAseo, Recepcionista, Rol  
+from .forms import ContactoForm, LoginForm, RegisterForm, AddDeptoForm, ReservaForm
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+
 
 
 
@@ -54,30 +54,57 @@ def jwt_required(view_func):
 #pago transbank API
 
 @jwt_required
-def iniciar_pago(request, id_reserva):
-    reserva = get_object_or_404(Reserva, pk=id_reserva)
-    valor_total = reserva.valor_total
+def iniciar_pago(request):
+    #ver id_cliente en sesión
+    print("ID CLIENTE EN SESION (inicio pago):", request.session.get("id_cliente"))
+    # Obtener datos del formulario
+    datos = {
+        "fecha_ingreso": request.POST.get("fecha_ingreso"),
+        "fecha_salida": request.POST.get("fecha_salida"),
+        "cant_adultos": int(request.POST.get("cant_adultos")),
+        "cant_ninos": int(request.POST.get("cant_ninos")),
+        "departamento_id": int(request.POST.get("departamento_id")),
+        "cliente_id": request.session.get("id_cliente"),
+    }
+    
+    
+    
+    
+    total_personas = datos["cant_adultos"] + datos["cant_ninos"]
+    datos["cant_personas"] = total_personas
 
+    # Guardar en sesión
+    request.session["datos_reserva"] = datos
+
+    # Calcular valor total
+    departamento = Departamento.objects.get(pk=datos["departamento_id"])
+    fi = parse_date(datos["fecha_ingreso"])
+    fs = parse_date(datos["fecha_salida"])
+    dias = (fs - fi).days
+    valor_total = dias * departamento.valor_dia
+
+    # Crear transacción Webpay
     url = f"{settings.TRANSBANK_API_URL}/rswebpaytransaction/api/webpay/v1.2/transactions"
-
     headers = {
         "Tbk-Api-Key-Id": settings.TRANSBANK_COMMERCE_CODE,
         "Tbk-Api-Key-Secret": settings.TRANSBANK_API_KEY,
         "Content-Type": "application/json"
     }
-
-    data = {
-        "buy_order": f"orden_{reserva.id_reserva}",
-        "session_id": f"session_{request.session.session_key}",
-        "amount": valor_total,
+    data = {        
+        "buy_order": f"orden_{request.session.session_key[:20]}",
+        "session_id": request.session.session_key[:20],
+        "amount": int(valor_total), 
         "return_url": request.build_absolute_uri("/transbank/retorno/")
-    }
+        }
 
     try:
+        import json
+        print("Datos enviados a Transbank:\n", json.dumps(data, indent=2))
+        print("Headers:\n", headers)
+    
         response = requests.post(url, headers=headers, json=data, timeout=5)
         response.raise_for_status()
         r = response.json()
-         # Redirige al usuario a la URL de pago de Transbank
         return redirect(f"{r['url']}?token_ws={r['token']}")
     except requests.RequestException as e:
         return JsonResponse({"error": str(e)}, status=500)
@@ -86,10 +113,18 @@ def iniciar_pago(request, id_reserva):
 # Esta vista se llama desde el Webpay después de que el usuario completa el pago
 
 def confirm_pago(request):
+    print("ID CLIENTE EN SESION (confirm pago):", request.session.get("id_cliente"))
     token = request.GET.get("token_ws")
     
     if not token:
         return JsonResponse({"error": "Token no proporcionado"}, status=422)
+    
+    # Bloquear reutilización
+    token_usado = request.session.get("token_usado")
+    if token_usado == token:
+        return render(request, 'pago_exitoso.html', {
+            "mensaje": "Reserva ya fue confirmada. No es necesario repetir el proceso."
+        })
 
     url = f"{settings.TRANSBANK_API_URL}/rswebpaytransaction/api/webpay/v1.2/transactions/{token}"
 
@@ -102,7 +137,77 @@ def confirm_pago(request):
         response = requests.put(url, headers=headers)
         response.raise_for_status()
         datos_pago = response.json()
-        return render(request, 'pago_exitoso.html', {'datos_pago': datos_pago})
+
+        if datos_pago["status"] == "AUTHORIZED":
+            datos = request.session.get("datos_reserva")
+            if not datos:
+                return JsonResponse({"error": "Datos de reserva no encontrados."}, status=400)
+            
+            # Obtener cliente desde sesión
+            cliente_id = request.session.get("id_cliente")
+            if not cliente_id:
+                return JsonResponse({"error": "Cliente no identificado en sesión."}, status=400)
+
+            try:
+                cliente = Cliente.objects.get(id_cliente=cliente_id)
+            except Cliente.DoesNotExist:
+                return JsonResponse({"error": "Cliente no encontrado"}, status=404)
+            
+            # Obtener objeto Departamento a partir del ID
+            try:
+                departamento = Departamento.objects.get(id_departamento=datos["departamento_id"])
+            except Departamento.DoesNotExist:
+                return JsonResponse({"error": "Departamento no encontrado"}, status=404)
+
+            reserva = Reserva.objects.create(
+                cliente=cliente,
+                departamento=departamento                ,
+                pagado=True,
+                fecha_reserva= date.today(),
+                fecha_ingreso=datos["fecha_ingreso"],
+                fecha_salida=datos["fecha_salida"],
+                cant_personas=datos["cant_adultos"] + datos["cant_ninos"],
+                valor_total=datos_pago["amount"],
+                tipo_reserva="Online"
+            )
+            
+            # Datos para el correo
+            asunto = "Confirmación de Reserva – Bahía Bonita"
+            mensaje = f"""
+            Estimado/a {cliente.persona.nombre} {cliente.persona.apellido} {cliente.persona.s_apellido},
+
+            Su reserva ha sido confirmada exitosamente.
+
+            🛏 Departamento: {reserva.departamento.num_depto}
+            📅 Ingreso: {reserva.fecha_ingreso}
+            📅 Salida: {reserva.fecha_salida}
+            👤 Personas: {reserva.cant_personas}
+            💵 Total pagado: ${reserva.valor_total:.0f}
+
+            Muchas gracias por preferirnos.
+            Bahía Bonita, Concón, Chile.
+            Si tiene alguna consulta, no dude en contactarnos al +56 9 3095 6242.       
+            """
+            email_cliente = cliente.persona.email
+
+            # Enviar el correo
+            send_mail(
+                asunto,
+                mensaje,
+                settings.DEFAULT_FROM_EMAIL,
+                [email_cliente],
+                fail_silently=False
+            )
+
+            # Guardar token como usado
+            request.session["token_usado"] = token
+            # Elimina los datos para no duplicar reservas
+            del request.session["datos_reserva"]
+
+            return render(request, 'pago_exitoso.html', {'reserva': reserva})
+        else:
+            return render(request, 'pago_error.html', {'mensaje': 'El pago no fue autorizado.'})
+
     except requests.RequestException as e:
         return JsonResponse({"error": str(e)}, status=500)
     
@@ -214,9 +319,22 @@ def loginPage(request):
             if response and response.status_code == 200:
                 user_data = response.json()
                 print("DEBUG: token recibido:", user_data.get('token'))
-                # Guarda la sesión o token, si lo usas
+                # Guardar token y datos de persona
                 request.session['jwt_token'] = user_data.get('token')
                 request.session['usuario'] = user_data
+                
+                # Buscar persona en BD (por email o id_persona)
+                persona_id = user_data.get("id")
+                try:
+                    persona = Persona.objects.get(id_persona=persona_id)
+                    cliente = Cliente.objects.get(persona=persona)
+                    request.session["id_cliente"] = cliente.id_cliente  # ID del cliente real
+                    print("ID CLIENTE GUARDADO EN SESIÓN:", cliente.id_cliente)
+                except Cliente.DoesNotExist:
+                    print("No se encontró un cliente asociado a la persona.")
+                    messages.error(request, "No se encontró cliente asociado a este usuario.")
+                    return redirect("login")
+                
                 messages.success(request, f"¡Bienvenido, {user_data.get('nombre', '')}!")
 
                 return redirect('index')
@@ -256,17 +374,21 @@ def administracion(request):
         if response_depto.status_code == 200:
             departamentos = response_depto.json()        
             paginator = Paginator(departamentos, 10)  # Muestra la cantidad de departamentos por página
-            page_number = request.GET.get('page')
-            page_obj = paginator.get_page(page_number)
+            page_number_deptos = request.GET.get('page_deptos')
+            page_obj = paginator.get_page(page_number_deptos)
     except Exception as e:
         messages.error(request, f"Error al cargar los departamentos: {e}")  
          
 
    #obtener clientes desde la API
+    
     try:
         response_clientes = requests.get(settings.URL_API_CLIENTE)
         if response_clientes.status_code == 200:
             clientes = response_clientes.json()
+            paginator_clientes = Paginator(clientes, 10)
+            page_number_clientes = request.GET.get('page_clientes')
+            clientes = paginator_clientes.get_page(page_number_clientes)
     except Exception as e:
         messages.error(request, f"Error al cargar clientes: {e}")
 
@@ -289,6 +411,8 @@ def index(request):
 
 def servicios(request):
     return render(request, 'servicios.html')
+
+#########################################################################
 
 def departamentos(request):
     departamentos = []
@@ -334,6 +458,39 @@ def departamentos(request):
         }
     }
     return render(request, 'departamentos.html', context)
+
+#########################################################################
+# Mostrar la disponibilidad de los departamentos
+
+@require_GET
+def disp_deptos(request):
+    response = requests.get(settings.URL_API_ADDDEPTO)
+    if response.status_code != 200:
+        return render(request, "admin_departamentos.html", {'departamentos': []})
+
+    departamentos = response.json()
+
+    # Obtener reservas
+    response_reservas = requests.get(settings.URL_API_RESERVA)
+    reservas = response_reservas.json() if response_reservas.status_code == 200 else []
+
+    fecha_hoy = date.today().isoformat()
+
+    # Calcular disponibilidad
+    for depto in departamentos:
+        depto['ocupado'] = any(
+            str(r.get('departamento')) == str(depto['id']) and
+            r.get('fecha_ingreso') <= fecha_hoy <= r.get('fecha_salida')
+            for r in reservas
+        )
+
+    return render(request, "admin_departamentos.html", {'departamentos': departamentos})
+
+            
+            
+            
+    
+    
 
 #########################################################################
 # Obtener Cliente de sesión
@@ -405,6 +562,19 @@ def crear_reserva(request, departamento):
     }
 
     return render(request, 'crear_reserva.html', context)
+
+##########################################################################
+# fechas reservadas
+def fechas_reservadas(request, depto_id):
+    """Retorna las fechas reservadas para un departamento en formato JSON."""
+    reservas = Reserva.objects.filter(departamento_id=depto_id).values('fecha_ingreso', 'fecha_salida')
+    rangos = [
+        {
+            'desde': r['fecha_ingreso'].isoformat(),
+            'hasta': r['fecha_salida'].isoformat(),
+        } for r in reservas
+    ]
+    return JsonResponse({'fechas': rangos})
 
 ##########################################################################
 

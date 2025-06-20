@@ -1,0 +1,17 @@
+---
+execution:
+- concurrency: 100
+  hold-for: 1m
+  ramp-up: 10s
+  scenario: prueba_local
+reporting:
+- module: final-stats
+- module: console
+- filename: resultados_test_50_usuarios.xml
+  module: junit-xml
+scenarios:
+  prueba_local:
+    requests:
+    - method: GET
+      url: http://127.0.0.1:8000/
+

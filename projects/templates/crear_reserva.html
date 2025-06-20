@@ -18,7 +18,7 @@
       {% if departamento.numero %}
         <p><strong>Número de Departamento:</strong> {{ departamento.numero }}</p>
       {% else %}
-        <p><strong>ID de Departamento:</strong> {{ departamento.id_departamento }}</p>
+        <p style="display: none;"><strong>ID de Departamento:</strong> {{ departamento.id_departamento }}</p>
       {% endif %}
       <p><strong>Descripción:</strong> {{ departamento.descripcion }}</p>
       <p><strong>Capacidad:</strong> {{ departamento.cant_personas }} persona(s)</p>
@@ -65,12 +65,21 @@
 
       <div class="mb-3">
         <label class="form-label">Fecha de Ingreso</label>
-        <input type="date" name="fecha_ingreso" id="fecha_ingreso" class="form-control" required>
+        <div class="input-group calendar-input">
+          <input type="text" name="fecha_ingreso" id="fecha_ingreso" placeholder="Click aquí para seleccionar fecha" class="form-control" required data-departamento="{{ departamento.id_departamento }}">
+          <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+        </div>
       </div>
+
       <div class="mb-3">
         <label class="form-label">Fecha de Salida</label>
-        <input type="date" name="fecha_salida" id="fecha_salida" class="form-control" required>
+        <div class="input-group calendar-input">
+          <input type="text" name="fecha_salida" id="fecha_salida" placeholder="Click aquí para seleccionar fecha" class="form-control" required>
+          <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+        </div>
       </div>
+      <!--  -->
+      <div id="error_fechas" class="text-danger mt-2"></div>
 
       <div class="mb-3">
         <label class="form-label">Cantidad de Adultos</label>
@@ -83,8 +92,14 @@
       </div>
 
       <div id="error-capacidad" class="text-danger mt-2" style="display:none;"></div>
+
+      <span id="reserva-precio-noche" data-valor="{{ departamento.valor_dia }}"></span>
+      <span id="reserva-capacidad" data-valor="{{ departamento.cant_personas }}"></span>
+      <span id="reserva-id" data-valor="{{ departamento.id_departamento }}"></span>
+      <span id="crear-reserva-url" data-url="{% url 'crear_reserva_ajax' %}"></span>
       
     </form>
+    
   </div>
 </div>
 
@@ -108,7 +123,12 @@
     </div>
   </div>
 </div>
-<script>
+
+
+
+
+
+<!-- <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('form-reserva');
     const errorDiv = document.getElementById('error-capacidad');
@@ -154,12 +174,10 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 
-<script>
-  const departamentoId = {{ departamento.id_departamento }};
-</script>
+
 
 <!-- Script para comprobante y validación -->
-<script>
+<!--<script>
   const nombreInput = document.getElementById('nombre');
   const apellidoInput = document.getElementById('apellido');
   const ingresoInput = document.getElementById('fecha_ingreso');
@@ -209,10 +227,6 @@ document.addEventListener('DOMContentLoaded', function() {
       actualizarComprobante();
       crearReservaEnServidor(); // <-- solo la llamas si los datos están listos
     });
-  });
-
-  [nombreInput, apellidoInput, ingresoInput, salidaInput, adultosInput, ninosInput].forEach(el => {
-    if (el) el.addEventListener('input', actualizarComprobante);
   });
 
   let reservaCreada = false;
@@ -267,7 +281,7 @@ function crearReservaEnServidor() {
 window.addEventListener('load', () => {
   actualizarComprobante();
 });  
-</script>
+</script> -->
 
 
 

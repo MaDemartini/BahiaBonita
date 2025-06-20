@@ -1,0 +1,18 @@
+execution:
+  - concurrency: 50         # usuarios simultáneos
+    ramp-up: 10s            # suben gradualmente en 10 segundos
+    hold-for: 2m            # duración total
+    scenario: prueba_local
+
+scenarios:
+  prueba_local:
+    requests:
+      - url: http://127.0.0.1:8000/
+        method: GET
+
+reporting:
+  - module: final-stats
+  - module: console
+  - module: junit-xml
+    filename: resultados_test_50_usuarios.xml
+  

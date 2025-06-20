@@ -1,0 +1,17 @@
+---
+execution:
+- concurrency: 50
+  hold-for: 2m
+  ramp-up: 10s
+  scenario: prueba_local
+reporting:
+- module: final-stats
+- module: junit-xml
+- module: passfail
+- module: console
+scenarios:
+  prueba_local:
+    requests:
+    - method: GET
+      url: http://127.0.0.1:8000/
+

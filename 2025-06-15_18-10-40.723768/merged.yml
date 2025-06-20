@@ -1,0 +1,21 @@
+---
+execution:
+  concurrency: 1
+  hold-for: 10s
+  ramp-up: 0s
+  scenario: enviar_contacto_api
+scenarios:
+  enviar_contacto_api:
+    requests:
+    - body: |-
+        {
+          "nombre": "Taurus Test",
+          "telefono": "999999999",
+          "email": "test@bahiabonita.cl",
+          "mensaje": "Esto es una prueba automatizada vía API."
+        }
+      headers:
+        Content-Type: application/json
+      method: POST
+      url: http://127.0.0.1:8000/contacto/
+

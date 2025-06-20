@@ -418,12 +418,21 @@ form {
     font-size: 40px;
 }
 
+.btn_menu_admin .fa-calendar-days {
+    font-size: 40px;
+}
+
 .btn_menu_admin .fa-person {
     font-size: 40px;
 }
 
 .btn_menu_admin .fa-chart-pie {
     font-size: 40px;
+}
+
+/* Icono calendario en campos de fecha */
+.calendar-input .input-group-text {
+    cursor: pointer;
 }
 
 .btn_reserva {
