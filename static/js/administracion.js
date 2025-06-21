@@ -130,3 +130,34 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.calendario-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var deptoId = btn.getAttribute('data-depto');
+            var input = document.getElementById('calendario-' + deptoId);
+            input.style.display = 'block';
+
+            // Obtener fechas reservadas para este departamento
+            var fechas = (window.fechasReservadas[deptoId] || []).map(function(r) {
+                var start = new Date(r.desde);
+                var end = new Date(r.hasta);
+                var dates = [];
+                for (var d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                    dates.push(new Date(d).toISOString().slice(0,10));
+                }
+                return dates;
+            }).flat();
+
+            // Inicializar Flatpickr solo una vez
+            if (!input._flatpickr) {
+                flatpickr(input, {                
+                    disable: fechas
+                    
+                });
+            }
+            // Mostrar el calendario
+            input._flatpickr.open();
+        });
+    });
+});

@@ -8,11 +8,14 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.core.paginator import Paginator
 from django.utils.dateparse import parse_date
+from django.utils.safestring import mark_safe
 from django.core.mail import send_mail
 from django.shortcuts import render, HttpResponse, redirect,  get_object_or_404
 from django.contrib.auth.hashers import check_password, make_password
 from django.views.decorators.http import require_GET
 from django.views.decorators.csrf import csrf_exempt
+
+from projects.utils import resumen_calendar_deptos
 from .models import Cliente, Departamento, Reserva, Persona, Administrador, PersonalAseo, Recepcionista, Rol  
 from .forms import ContactoForm, LoginForm, RegisterForm, AddDeptoForm, ReservaForm
 from rest_framework.decorators import api_view
@@ -391,8 +394,11 @@ def administracion(request):
             clientes = paginator_clientes.get_page(page_number_clientes)
     except Exception as e:
         messages.error(request, f"Error al cargar clientes: {e}")
+        
+    fechas_reservadas = resumen_calendar_deptos()
 
-    return render(request, 'administracion.html', {'AddDepto_modal_form': AddDepto_modal_form,'clientes': clientes, 'page_obj' : page_obj})
+    return render(request, 'administracion.html', {'AddDepto_modal_form': AddDepto_modal_form,'clientes': clientes, 'page_obj' : page_obj, 'fechas_reservadas': mark_safe(json.dumps(fechas_reservadas)),
+                                                   'hoy': date.today().strftime('%Y-%m-%d'),})
 #eliminar deptos mediante API
 def eliminar_depto(request, id):
     url = f"{settings.URL_API_ADDDEPTO}{id}/"  # Asegúrate de que esta URL esté definida en tu settings.py
@@ -824,6 +830,9 @@ def validar_reserva(request):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+##################################################################
+
 
             
         

@@ -36,7 +36,7 @@ class Cliente(models.Model):
 
 class Administrador(models.Model):
     id_administrador = models.AutoField(primary_key=True)
-    persona = models.ForeignKey(Persona, on_delete=models.CASCADE)    
+    persona = models.ForeignKey(Persona, on_delete=models.CASCADE)   
     fecha_creacion = models.DateTimeField(auto_now=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)
     fecha_eliminacion = models.DateTimeField(blank=True, null=True)
