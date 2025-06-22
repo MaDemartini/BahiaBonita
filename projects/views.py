@@ -15,7 +15,7 @@ from django.contrib.auth.hashers import check_password, make_password
 from django.views.decorators.http import require_GET
 from django.views.decorators.csrf import csrf_exempt
 
-from projects.utils import resumen_calendar_deptos
+from projects.utils import resumen_calendar_deptos, verificar_sesion_jwt
 from .models import Cliente, Departamento, Reserva, Persona, Administrador, PersonalAseo, Recepcionista, Rol  
 from .forms import ContactoForm, LoginForm, RegisterForm, AddDeptoForm, ReservaForm
 from rest_framework.decorators import api_view
@@ -29,37 +29,19 @@ from rest_framework.response import Response
 # Create your views here.
 
 ########################################################################
-#creacion del decorador jwt_required
-def jwt_required(view_func):
-    @wraps(view_func)
-    def wrapper(request, *args, **kwargs):
-        print("==> JWT decorador activado")
-        token = request.session.get('jwt_token')
-        print("==> token en sesión:", token)
-        if not token:
-            return redirect(f"/login/?next={request.path}")
 
-        try:
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-            request.jwt_payload = payload  # opcional, si quieres acceder a datos del token
-        except jwt.ExpiredSignatureError:
-            messages.error(request, "Tu sesión ha expirado.")
-            return redirect("/login/")
-        except jwt.InvalidTokenError:
-            messages.error(request, "Token inválido.")
-            return redirect("/login/")
-
-        return view_func(request, *args, **kwargs)
-    return wrapper
-
-########################################################################
 
 #pago transbank API
 
-@jwt_required
+@verificar_sesion_jwt
 def iniciar_pago(request):
     #ver id_cliente en sesión
     print("ID CLIENTE EN SESION (inicio pago):", request.session.get("id_cliente"))
+    
+    # Obtener cliente desde sesión
+    cliente_id = request.session.get("id_cliente")
+    if not cliente_id:
+        return JsonResponse({"error": "Cliente no identificado en sesión."}, status=400)
     # Obtener datos del formulario
     datos = {
         "fecha_ingreso": request.POST.get("fecha_ingreso"),
@@ -115,6 +97,7 @@ def iniciar_pago(request):
 # Confirmación de pago
 # Esta vista se llama desde el Webpay después de que el usuario completa el pago
 
+@verificar_sesion_jwt
 def confirm_pago(request):
     print("ID CLIENTE EN SESION (confirm pago):", request.session.get("id_cliente"))
     token = request.GET.get("token_ws")
@@ -287,25 +270,57 @@ def api_login(request):
 
     try:
         persona = Persona.objects.get(email=email)
-        if check_password(password, persona.password):  # Solo si guardas password hasheado
+        if check_password(password, persona.password):
+            rol = persona.rol.nombre
+            id_rol_usuario = None
             
+            if rol == "Cliente":
+                try:
+                    cliente = Cliente.objects.get(persona=persona)
+                    id_rol_usuario = cliente.id_cliente
+                except Cliente.DoesNotExist:
+                    pass # con pass logramos que no se genenre error al no encontrar a un cliente y pasa de largo al siguiente rol
+            elif rol == "Administrador":
+                try:
+                    admin = Administrador.objects.get(persona=persona)
+                    id_rol_usuario = admin.id_administrador
+                except Administrador.DoesNotExist:
+                    pass
+            elif rol == "Recepcionista":
+                try:
+                    recep = Recepcionista.objects.get(persona=persona)
+                    id_rol_usuario = recep.id_recepcionista
+                except Recepcionista.DoesNotExist:
+                    pass
+            elif rol == "Aseo":
+                try:
+                    aseo = PersonalAseo.objects.get(persona=persona)
+                    id_rol_usuario = aseo.id_personal_aseo
+                except PersonalAseo.DoesNotExist:
+                    pass          
+            
+            # Obtener el ID del cliente si es rol Cliente
             payload = {
                 "id": persona.id_persona,
                 "email": persona.email,
-                "exp": datetime.now(timezone.utc) + timedelta(hours=2),  # Expira en 2 hora
+                "rol": rol,
+                "id_rol_usuario": id_rol_usuario,
+                "exp": datetime.now(timezone.utc) + timedelta(hours=2),
                 "iat": datetime.now(timezone.utc)
             }
+            # Generar el token JWT
             token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')           
             
             return Response({
                 "token": token,
                 "id": persona.id_persona,
-                "nombre": persona.nombre,                
+                "id_rol_usuario": id_rol_usuario,
+                "nombre": persona.nombre,
                 "email": persona.email,
-                # "rol": persona.rol  # o usa una función get_rol(persona)
+                "rol": rol
             }, status=200)
-        else:
-            return Response({"error": "Contraseña incorrecta"}, status=401)
+
+        return Response({"error": "Contraseña incorrecta"}, status=401)
     except Persona.DoesNotExist:
         return Response({"error": "Usuario no encontrado"}, status=404)
     
@@ -325,31 +340,46 @@ def loginPage(request):
                 # Guardar token y datos de persona
                 request.session['jwt_token'] = user_data.get('token')
                 request.session['usuario'] = user_data
+                request.session['rol'] = user_data.get('rol')
                 
-                # Buscar persona en BD (por email o id_persona)
-                persona_id = user_data.get("id")
-                try:
-                    persona = Persona.objects.get(id_persona=persona_id)
-                    cliente = Cliente.objects.get(persona=persona)
-                    request.session["id_cliente"] = cliente.id_cliente  # ID del cliente real
-                    print("ID CLIENTE GUARDADO EN SESIÓN:", cliente.id_cliente)
-                except Cliente.DoesNotExist:
-                    print("No se encontró un cliente asociado a la persona.")
-                    messages.error(request, "No se encontró cliente asociado a este usuario.")
+                # Guardar rol y ID de rol en sesión
+                rol = user_data.get("rol")
+                id_rol_usuario = user_data.get("id_rol_usuario")
+                
+                # Guardar el ID según el tipo de usuario
+                if rol == "Cliente":
+                    request.session["id_cliente"] = id_rol_usuario
+                    messages.success(request, f"Bienvenido, {user_data.get('nombre')} (Cliente)")
+                    return redirect("index")
+
+                elif rol == "Administrador":
+                    request.session["id_administrador"] = id_rol_usuario
+                    messages.success(request, f"Bienvenido, {user_data.get('nombre')} (Administrador)")
+                    return redirect("administracion")
+
+                elif rol == "Recepcionista":
+                    request.session["id_recepcionista"] = id_rol_usuario
+                    messages.success(request, f"Bienvenido, {user_data.get('nombre')} (Recepcionista)")
+                    return redirect("recepcion_panel")
+
+                elif rol == "Aseo":
+                    request.session["id_personal_aseo"] = id_rol_usuario
+                    messages.success(request, f"Bienvenido, {user_data.get('nombre')} (Personal Aseo)")
+                    return redirect("aseo_panel")
+
+                else:
+                    messages.error(request, "Rol no reconocido o autorizado.")
                     return redirect("login")
-                
-                messages.success(request, f"¡Bienvenido, {user_data.get('nombre', '')}!")
-
-                return redirect('index')
-
             else:
                 messages.error(request, "Correo o contraseña incorrectos")
-    return render(request, 'login.html', {'form': form})
+
+    return render(request, 'login.html', {'form': form})                
+               
 
 #########################################################################
 #crear deptos mediante API
 
-@jwt_required
+@verificar_sesion_jwt
 def administracion(request):
     departamentos = []
     clientes = []
@@ -512,7 +542,7 @@ def get_cliente_from_session(request):
     except Cliente.DoesNotExist:
         return None
     
-@jwt_required
+@verificar_sesion_jwt
 def crear_reserva(request, departamento):
     cliente = get_cliente_from_session(request)
     if not cliente:
@@ -630,55 +660,58 @@ def guardar_reserva(request):
 #logout
 
 def logout(request):
-    # Elimina datos de autenticación manualmente
-    request.session.pop('jwt_token', None)
-    request.session.pop('usuario', None)
-    # Limpiar la sesión completamente
+    # Limpia la sesión completamente
     request.session.flush()
+    #limpia notificaciones anteriores
     list(messages.get_messages(request))
     return redirect('index')
 
 ##########################################################################
 #perfil
 
+@verificar_sesion_jwt
 def profile(request):
-    # Email desde la sesión (puede venir desde login personalizado)
-    email = request.session.get('usuario', {}).get('email')
+    id_persona = request.session.get('usuario', {}).get('id')
+    
+    # Verifica si el ID de persona está en la sesión
+    print("ID PERSONA EN SESIÓN (profile):", id_persona)
+    
 
-    if not email:
+    if not id_persona:
         return render(request, 'profile.html', {
-            'error': 'No hay sesión activa o falta el correo.'
+            'error': 'No hay sesión activa o falta el ID de persona.'
         })
 
     try:
-        # Llama al endpoint con filtro por email
-        url = f"{settings.URL_API_REGISTRO}?email={email}"
+        # Llama al endpoint con el ID de persona
+        url = f"{settings.URL_API_REGISTRO}?id_persona={id_persona}"
         response = requests.get(url)
 
         if response.status_code == 200:
-            personas = response.json()
-
-            # Verifica si viene como lista o diccionario (depende de tu API)
-            if isinstance(personas, list) and personas:
-                persona = personas[0]  # Primer resultado
-            elif isinstance(personas, dict) and 'nombre' in personas:
-                persona = personas
-            else:
-                return render(request, 'profile.html', {
-                    'error': 'No se encontró una persona con ese correo.'
-                })
-
-            nombre = persona.get('nombre')
-            apellido = persona.get('apellido')
-            direccion = persona.get('direccion')
-            telefono = persona.get('telefono')
+            personas = response.json() 
+            print("Datos de persona obtenidos:", personas)  # para depuración 
             
+            # Verifica si personas es una lista o un dic
+            if isinstance(personas, list):
+                persona = next((p for p in personas if str(p.get('id_persona')) == str(id_persona)), None)
+            elif isinstance(personas, dict):
+                # Por si la API cambia y devuelve un único dic en lugar de lista
+                persona = personas if str(personas.get("id_persona")) == str(id_persona) else None
+            else:
+                persona = None
+
+            if not persona:
+                return render(request, 'profile.html', {
+                    'error': 'No se encontró una persona con ese nombre.'
+                })         
+
             return render(request, 'profile.html', {
-                'nombre': nombre,
-                'apellido': apellido,
-                'email': email,
-                'direccion': direccion,
-                'telefono': telefono,
+                'nombre': persona.get('nombre'),
+                'apellido': persona.get('apellido'),
+                's_apellido': persona.get('s_apellido'),
+                'email': persona.get('email'),
+                'direccion': persona.get('direccion'),
+                'telefono': persona.get('telefono'),
             })
         else:
             return render(request, 'profile.html', {
@@ -689,6 +722,7 @@ def profile(request):
         return render(request, 'profile.html', {
             'error': f'Error al consultar la API: {str(e)}'
         })
+
 
 ##########################################################################
 #Subir imagen a supabase
@@ -762,7 +796,7 @@ def estadisticas(request):
 #################################################################
 #reserva AJAX
 @csrf_exempt
-@jwt_required
+@verificar_sesion_jwt
 def crear_reserva_ajax(request):
     if request.method == 'POST':
         try:

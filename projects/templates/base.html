@@ -47,8 +47,11 @@
                         <a href="/contacto"
                             class="btn btn-outline-primary px-4 fw-semibold">Contacto</a>
                         {% if request.session.usuario %}
-                        <a href="{% url 'profile' %}"
-                            class="btn btn-outline-primary px-4 fw-semibold">Perfil de usuario</a>                     
+                        <a href="{% url 'profile' %}" class="user_profile">
+                            <i class="bi bi-person-square"></i>
+                            <span class="visually-hidden">Perfil de usuario</span>
+                        </a> 
+                                            
                         {% else %}
                         <a href="{% url 'registro' %}"
                             class="btn btn-outline-secondary px-4 fw-semibold">Registro</a>

@@ -68,13 +68,14 @@ a {
 .card {
     border: none;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-    transition: transform 0.2s ease;
+    box-shadow: 0 20px 20px rgba(0,0,0,0.35);
+    transition: box-shadow 0.3s ease;
     background-color: #ffffff;
 }
 
 .card:hover {
-    transform: translateY(-5px);
+    transform: none;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
 }
 
 .card-title {
@@ -449,9 +450,43 @@ form {
 
 .btn_reserva:hover {
     transform: scale(1.05);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+    
 }
 
+.user_profile {    
+    color: #0099cc; 
+    border: none;  
+    font-size: 47.5px;            
+    transition: transform 0.2s, box-shadow 0.2s;
+}
 
+.perfil-icono:hover {
+    transform: scale(1.05);
+    
+}
 
-/* Fin de archivo */
+.bi-person-bounding-box {
+    
+    font-size: 150px;     /* Ajusta el tamaño general del ícono */
+    color: #0099cc;      /* (opcional) cambia el color */     
+}
+
+.log-out {
+    
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: #dc3545; /* rojo Bootstrap */
+    color: white;
+    font-size: 20px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    right: -35px;     /* <- Alineación al borde derecho */
+    
+    text-decoration: none;
+    
+    
+    
+}

@@ -37,90 +37,90 @@
   <!-- Formulario de Reserva y Comprobante -->
   <div class="row">
     <!-- Formulario -->
-<div class="col-md-6">
-  <div class="card p-4 shadow-sm border-0 bg-white">
-    <h4 class="mb-3">Formulario de Reserva</h4>
-    <form method="post" id="form-reserva" novalidate>
-      {% csrf_token %}
-      {% if cliente %}
-        <input type="hidden" name="id_cliente" value="{{ cliente.id_cliente }}">
-        <div class="mb-3">
-          <label class="form-label">Nombre</label>
-          <input type="text" name="nombre" id="nombre" class="form-control" value="{{ cliente.persona.nombre }} {{ cliente.persona.s_nombre }}" readonly>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Apellido</label>
-          <input type="text" name="apellido" id="apellido" class="form-control" value="{{ cliente.persona.apellido }} {{ cliente.persona.s_apellido }}" readonly>
-        </div>
-      {% else %}
-        <div class="mb-3">
-          <label class="form-label">Nombre</label>
-          <input type="text" name="nombre" id="nombre" class="form-control" required>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Apellido</label>
-          <input type="text" name="apellido" id="apellido" class="form-control" required>
-        </div>
-      {% endif %}
-
-      <div class="mb-3">
-        <label class="form-label">Fecha de Ingreso</label>
-        <div class="input-group calendar-input">
-          <input type="text" name="fecha_ingreso" id="fecha_ingreso" placeholder="Click aquí para seleccionar fecha" class="form-control" required data-departamento="{{ departamento.id_departamento }}">
-          <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
-        </div>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Fecha de Salida</label>
-        <div class="input-group calendar-input">
-          <input type="text" name="fecha_salida" id="fecha_salida" placeholder="Click aquí para seleccionar fecha" class="form-control" required>
-          <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
-        </div>
-      </div>
-      <!--  -->
-      <div id="error_fechas" class="text-danger mt-2"></div>
-
-      <div class="mb-3">
-        <label class="form-label">Cantidad de Adultos</label>
-        <input type="number" name="cant_adultos" id="cant_adultos" class="form-control" required min="0" max="{{ departamento.cant_personas }}">
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Cantidad de Niños</label>
-        <input type="number" name="cant_ninos" id="cant_ninos" class="form-control" required min="0" max="{{ departamento.cant_personas }}">
-      </div>
-
-      <div id="error-capacidad" class="text-danger mt-2" style="display:none;"></div>
-
-      <span id="reserva-precio-noche" data-valor="{{ departamento.valor_dia }}"></span>
-      <span id="reserva-capacidad" data-valor="{{ departamento.cant_personas }}"></span>
-      <span id="reserva-id" data-valor="{{ departamento.id_departamento }}"></span>
-      <span id="crear-reserva-url" data-url="{% url 'crear_reserva_ajax' %}"></span>
-      
-    </form>
-    
-  </div>
-</div>
-
-    <!-- Comprobante -->
     <div class="col-md-6">
-      <div class="card p-4 shadow-sm bg-light border-0">
-        <h4 class="mb-3">Comprobante de Reserva</h4>
-        <p><strong>Número Departamento:</strong> {{ departamento.num_depto }}</p>
-        <p><strong>Cliente:</strong> <span id="comp_nombre_apellido">{% if cliente %}{{ cliente.nombre }} {{ cliente.apellido }}{% else %}Nombre y apellido serán ingresados{% endif %}</span></p>
-        <p><strong>Fecha Ingreso:</strong> <span id="comp_fecha_ingreso">-</span></p>
-        <p><strong>Fecha Salida:</strong> <span id="comp_fecha_salida">-</span></p>
-        <p><strong>Adultos:</strong> <span id="comp_cant_adultos">-</span></p>
-        <p><strong>Niños:</strong> <span id="comp_cant_ninos">-</span></p>
-        <p><strong>Total Personas:</strong> <span id="comp_cant_total">-</span></p>
-        <p><strong>Total Estimado:</strong> $<span id="comp_valor_total">-</span></p>
+      <div class="card p-4 shadow-sm border-0 bg-white">
+        <h4 class="mb-3">Formulario de Reserva</h4>
+        <form method="post" id="form-reserva" novalidate>
+          {% csrf_token %}
+          {% if cliente %}
+            <input type="hidden" name="id_cliente" value="{{ cliente.id_cliente }}">
+            <div class="mb-3">
+              <label class="form-label">Nombre</label>
+              <input type="text" name="nombre" id="nombre" class="form-control" value="{{ cliente.persona.nombre }} {{ cliente.persona.s_nombre }}" readonly>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Apellido</label>
+              <input type="text" name="apellido" id="apellido" class="form-control" value="{{ cliente.persona.apellido }} {{ cliente.persona.s_apellido }}" readonly>
+            </div>
+          {% else %}
+            <div class="mb-3">
+              <label class="form-label">Nombre</label>
+              <input type="text" name="nombre" id="nombre" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Apellido</label>
+              <input type="text" name="apellido" id="apellido" class="form-control" required>
+            </div>
+          {% endif %}
 
-        <div id="btn-pago">
-          <button class="btn btn-secondary w-100 mt-3" disabled>Completa el formulario para continuar al pago</button>
-        </div>
+          <div class="mb-3">
+            <label class="form-label">Fecha de Ingreso</label>
+            <div class="input-group calendar-input">
+              <input type="text" name="fecha_ingreso" id="fecha_ingreso" placeholder="Click aquí para seleccionar fecha" class="form-control" required data-departamento="{{ departamento.id_departamento }}">
+              <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Fecha de Salida</label>
+            <div class="input-group calendar-input">
+              <input type="text" name="fecha_salida" id="fecha_salida" placeholder="Click aquí para seleccionar fecha" class="form-control" required>
+              <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+            </div>
+          </div>
+          <!--  -->
+          <div id="error_fechas" class="text-danger mt-2"></div>
+
+          <div class="mb-3">
+            <label class="form-label">Cantidad de Adultos</label>
+            <input type="number" name="cant_adultos" id="cant_adultos" class="form-control" required min="0" max="{{ departamento.cant_personas }}">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Cantidad de Niños</label>
+            <input type="number" name="cant_ninos" id="cant_ninos" class="form-control" required min="0" max="{{ departamento.cant_personas }}">
+          </div>
+
+          <div id="error-capacidad" class="text-danger mt-2" style="display:none;"></div>
+
+          <span id="reserva-precio-noche" data-valor="{{ departamento.valor_dia }}"></span>
+          <span id="reserva-capacidad" data-valor="{{ departamento.cant_personas }}"></span>
+          <span id="reserva-id" data-valor="{{ departamento.id_departamento }}"></span>
+          <span id="crear-reserva-url" data-url="{% url 'crear_reserva_ajax' %}"></span>
+          
+        </form>
+        
       </div>
     </div>
+
+      <!-- Comprobante -->
+      <div class="col-md-6">
+        <div class="card p-4 shadow-sm bg-light border-0">
+          <h4 class="mb-3">Comprobante de Reserva</h4>
+          <p><strong>Número Departamento:</strong> {{ departamento.num_depto }}</p>
+          <p><strong>Cliente:</strong> <span id="comp_nombre_apellido">{% if cliente %}{{ cliente.nombre }} {{ cliente.apellido }}{% else %}Nombre y apellido serán ingresados{% endif %}</span></p>
+          <p><strong>Fecha Ingreso:</strong> <span id="comp_fecha_ingreso">-</span></p>
+          <p><strong>Fecha Salida:</strong> <span id="comp_fecha_salida">-</span></p>
+          <p><strong>Adultos:</strong> <span id="comp_cant_adultos">-</span></p>
+          <p><strong>Niños:</strong> <span id="comp_cant_ninos">-</span></p>
+          <p><strong>Total Personas:</strong> <span id="comp_cant_total">-</span></p>
+          <p><strong>Total Estimado:</strong> $<span id="comp_valor_total">-</span></p>
+
+          <div id="btn-pago">
+            <button class="btn btn-secondary w-100 mt-3" disabled>Completa el formulario para continuar al pago</button>
+          </div>
+        </div>
+      </div>
   </div>
 </div>
 

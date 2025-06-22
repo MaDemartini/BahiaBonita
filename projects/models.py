@@ -24,7 +24,18 @@ class Persona(models.Model):
     password = models.CharField(max_length=100)    
     fecha_creacion = models.DateTimeField(auto_now=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)
-    fecha_eliminacion = models.DateTimeField(blank=True, null=True)    
+    fecha_eliminacion = models.DateTimeField(blank=True, null=True)
+    
+    def save(self, *args, **kwargs):
+        if self.nombre:
+            self.nombre = self.nombre.capitalize()
+        if self.s_nombre:
+            self.s_nombre = self.s_nombre.capitalize()
+        if self.apellido:
+            self.apellido = self.apellido.capitalize()
+        if self.s_apellido:
+            self.s_apellido = self.s_apellido.capitalize()
+        super().save(*args, **kwargs)    
 
 
 class Cliente(models.Model):
@@ -36,7 +47,12 @@ class Cliente(models.Model):
 
 class Administrador(models.Model):
     id_administrador = models.AutoField(primary_key=True)
-    persona = models.ForeignKey(Persona, on_delete=models.CASCADE)   
+    persona = models.ForeignKey(Persona, on_delete=models.CASCADE)
+    fotoAdministrador = models.CharField(max_length=100, null=True, blank=True)
+    profesión = models.CharField(max_length=50, null=True, blank=True)
+    cert_antecedentes = models.CharField(max_length=50, null=True, blank=True) 
+    tipo_prevision = models.CharField(max_length=50, blank=False)
+    sueldo = models.IntegerField()  
     fecha_creacion = models.DateTimeField(auto_now=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)
     fecha_eliminacion = models.DateTimeField(blank=True, null=True)
@@ -49,7 +65,8 @@ class PersonalAseo(models.Model):
     fecha_eliminacion = models.DateTimeField(blank=True, null=True)
 
 class Recepcionista(models.Model):
-    id_recepcionista = models.AutoField(primary_key=True)    
+    id_recepcionista = models.AutoField(primary_key=True)
+    persona = models.ForeignKey(Persona, on_delete=models.CASCADE)     
     fecha_creacion = models.DateTimeField(auto_now=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)
     fecha_eliminacion = models.DateTimeField(blank=True, null=True)

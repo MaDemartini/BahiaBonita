@@ -1,5 +1,9 @@
+from functools import wraps
+from pyexpat.errors import messages
+from django.shortcuts import redirect
+import jwt
+from jwt.exceptions import ExpiredSignatureError, DecodeError
 from django.conf import settings
-import requests
 
 
 def validar_dv(rut: str, dv: str) -> bool:
@@ -43,3 +47,45 @@ def resumen_calendar_deptos():
             'hasta': r['fecha_salida'].isoformat(),
         })
     return fechas_reservadas
+
+#############################################
+
+# Reutiliza verificar_token dentro del decorador para cerrar la sesion automaticamente si el token es inválido o ha expirado.
+def verificar_token(request):
+    token = request.session.get('jwt_token')
+    if not token:
+        return False
+    try:
+        jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+        return True
+    except (jwt.ExpiredSignatureError, jwt.DecodeError):
+        return False
+
+def verificar_sesion_jwt(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not verificar_token(request):
+            request.session.flush()
+            messages.error(request, "Tu sesión ha expirado o es inválida.")
+            return redirect('login')
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
+
+#############################################
+#creación de password para personal
+
+def password_personal(persona):    
+    iniciales = ''
+    if persona.nombre:
+        iniciales += persona.nombre[:2].upper()
+    if persona.s_nombre:
+        iniciales += persona.s_nombre[:2].upper()
+    if persona.apellido:
+        iniciales += persona.apellido[:2].upper()
+    if persona.s_apellido:
+        iniciales += persona.s_apellido[:2].upper()
+
+    anno = str(persona.fecha_nacimiento.year)[:4] if persona.fecha_nacimiento else '00'
+    correo = persona.email[:2].lower() if persona.email else 'xx'
+
+    return f"{iniciales}{anno}{correo}"

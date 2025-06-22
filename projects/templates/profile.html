@@ -2,33 +2,46 @@
 {% load static %}
 
 {% block content %}
-<div class="container text-center mt-5">
-  <h2 class="mb-4">Perfil de Usuario</h2>
-  <hr class="w-25 mx-auto">
+<div class="card p-4 shadow-sm border-0 bg-white">
+  <div class="container text-center mt-5">
+    <h2 class="mb-4">Perfil de Usuario</h2>
+    <hr class="w-25 mx-auto">
 
-  <!-- Imagen o icono -->
-  <div id="preview-container">
-    <i id="default-icon" class="bi bi-person-circle icono-usuario"></i>
-    <img id="preview-image" src="#" alt="Vista previa" style="display: none; width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
-  </div>
+    <!-- Imagen o icono -->
+    <div id="preview-container">
+      <i id="icon-profile" class="bi bi-person-bounding-box"></i>
+      <!-- <img id="preview-image" src="#" alt="Vista previa"> -->
+    </div>
 
-  <!-- Input de archivo -->
-  <div class="mt-3">
-    <label for="archivo" class="btn btn-primary">Subir nueva foto</label>
-    <input type="file" id="archivo" accept="image/*" hidden>
+    <!-- Input de archivo -->
+    <div class="mt-3">
+      <label for="archivo" class="btn btn-primary">Subir nueva foto</label>
+      <input type="file" id="archivo" accept="image/*" hidden>
+    </div>
+    <br>
+    <div>
+      <h4>Hola {{nombre}} {{apellido}} {{s_apellido}}</h4>
+      <p>En este panel puedes ver toda tu información personal</p>
+      <p>podras editar tu información, subir una foto de perfil, recuperar tu contraseña, ver todas tus reservas, dejar felicitaciones y sugerencias.</p>
+
+      <br><br>
+      
+      <a href="{% url 'logout' %}" 
+      class="btn btn-danger log-out rounded-circle d-flex align-items-center justify-content-center"    
+      title="Cerrar sesión">
+      <i class="fa-solid fa-right-from-bracket"></i>    
+      </a>
+      
+      
+
+    </div>
+    
+
+      
+    
   </div>
-  <br>
-  <p>Hola {{ nombre }} {{ apellido }}</p>  
 </div>
 
-<div class="container-fluid">
-  <a href="{% url 'logout' %}" 
-   class="btn btn-danger rounded-circle d-flex align-items-center justify-content-center"
-   style="width: 50px; height: 50px; position: fixed; bottom: 380px; right: 100px;"
-   title="Cerrar sesión">
-  <i class="fa-solid fa-right-from-bracket"></i>
-</a>
-</div>
 
 
 
