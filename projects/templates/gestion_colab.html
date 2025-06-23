@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+ <!-- Botón sándwich -->
+  <div class="menu-btn" onclick="toggleSidebar()">
+    <span></span>
+    <span></span>
+    <span></span>       
+  </div>
+  
+  
+
+  <!-- Menú lateral -->
+  <div id="sidebar" class="sidebar">
+    <a href="#">Inicio</a>
+    <a href="#">Gestión de colaboradores</a>
+    <a href="#">Reservas</a>
+    <a href="#">Cerrar sesión</a>
+  </div>
+
+<script src="{% static 'js/gestion_colab.js' %}"></script>
+{% endblock %}

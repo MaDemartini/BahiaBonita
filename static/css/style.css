@@ -18,6 +18,13 @@ a {
     color: inherit;
 }
 
+
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 /* Navbar */
 .navbar {
     padding: 1rem 2rem;
@@ -486,7 +493,52 @@ form {
     right: -35px;     /* <- Alineación al borde derecho */
     
     text-decoration: none;
-    
-    
-    
+}
+
+/* Botón hamburguesa */
+.menu-btn {
+  cursor: pointer;
+  width: 30px;
+  height: 25px;
+  position: relative;
+  z-index: 2;
+}
+
+.menu-btn span {
+  background-color: #333;
+  position: absolute;
+  height: 4px;
+  width: 100%;
+  left: 0;
+  transition: 0.3s;
+}
+
+.menu-btn span:nth-child(1) { top: 0; }
+.menu-btn span:nth-child(2) { top: 10px; }
+.menu-btn span:nth-child(3) { top: 20px; }
+
+/* Menú lateral */
+.sidebar {
+  height: 100vh;
+  width: 250px;
+  background-color: #f8f9fa;
+  position: fixed;
+  top: 0;
+  left: -250px;
+  transition: 0.3s ease-in-out;
+  padding: 1rem;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  z-index: 1;
+}
+
+.sidebar.show {
+  left: 0;
+}
+
+.sidebar a {
+  display: block;
+  margin: 1rem 0;
+  color: #333;
+  text-decoration: none;
+  font-weight: bold;
 }

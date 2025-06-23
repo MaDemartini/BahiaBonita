@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ValidationError
 
 class Rol(models.Model):
     id_rol = models.AutoField(primary_key=True)
@@ -35,9 +36,8 @@ class Persona(models.Model):
             self.apellido = self.apellido.capitalize()
         if self.s_apellido:
             self.s_apellido = self.s_apellido.capitalize()
-        super().save(*args, **kwargs)    
-
-
+        super().save(*args, **kwargs)
+        
 class Cliente(models.Model):
     id_cliente = models.AutoField(primary_key=True)
     persona = models.ForeignKey(Persona, on_delete=models.CASCADE)    
@@ -45,28 +45,83 @@ class Cliente(models.Model):
     fecha_modificacion = models.DateTimeField(auto_now=True)
     fecha_eliminacion = models.DateTimeField(blank=True, null=True)
 
+#################################################################################
+# tablas de rrhh
+
+class Turno(models.Model):
+    id_turno = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=20, unique=True)
+    desde = models.DateField()
+    hasta = models.DateField()
+    hora_inicio = models.TimeField()
+    hora_fin = models.TimeField()
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    fecha_modificacion = models.DateTimeField(auto_now=True)  
+  
+class Prevision(models.Model):
+    id_prevision = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=50, unique=True) 
+    
+class Isapre(models.Model):
+    id_isapre = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=50, unique=True)    
+       
+    
+class Sueldo(models.Model):
+    id_sueldo = models.AutoField(primary_key=True)
+    monto = models.IntegerField()
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    
+    
+class HorasExtras(models.Model):
+    id_horas_extras = models.AutoField(primary_key=True)
+    cantidad_horas = models.IntegerField()
+    valor_hora = models.IntegerField()
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+      
+    
+class Contrato(models.Model):
+    id_contrato = models.AutoField(primary_key=True)
+    tipo_contrato = models.CharField(max_length=50, unique=True)
+    fecha_inicio = models.DateField()
+    fecha_fin = models.DateField(null=True, blank=True)
+    prevision = models.ForeignKey(Prevision, on_delete=models.CASCADE, null=True, blank=True)    
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+      
+    
+#################################################################################
+
 class Administrador(models.Model):
-    id_administrador = models.AutoField(primary_key=True)
+    id_administrador = models.AutoField(primary_key=True)    
     persona = models.ForeignKey(Persona, on_delete=models.CASCADE)
+    provision = models.ForeignKey(Prevision, on_delete=models.CASCADE, null=True, blank=True)
+    sueldo = models.ForeignKey(Sueldo, on_delete=models.CASCADE, null=True, blank=True)
+    turno = models.ForeignKey(Turno, on_delete=models.CASCADE, null=True, blank=True) 
+    contrato = models.ForeignKey(Contrato, on_delete=models.CASCADE, null=True, blank=True)   
     fotoAdministrador = models.CharField(max_length=100, null=True, blank=True)
     profesión = models.CharField(max_length=50, null=True, blank=True)
-    cert_antecedentes = models.CharField(max_length=50, null=True, blank=True) 
-    tipo_prevision = models.CharField(max_length=50, blank=False)
-    sueldo = models.IntegerField()  
+    cert_antecedentes = models.CharField(max_length=100, null=True, blank=True)             
     fecha_creacion = models.DateTimeField(auto_now=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)
     fecha_eliminacion = models.DateTimeField(blank=True, null=True)
+    
+    def clean(self):
+        if self.sueldo is not None and self.sueldo < 0:
+            raise ValidationError("El sueldo no puede ser negativo.")
+    
 
 class PersonalAseo(models.Model):
     id_personal_aseo = models.AutoField(primary_key=True)
-    persona = models.ForeignKey(Persona, on_delete=models.CASCADE)    
+    persona = models.ForeignKey(Persona, on_delete=models.CASCADE)
+    turno = models.ForeignKey(Turno, on_delete=models.CASCADE, null=True, blank=True)        
     fecha_creacion = models.DateTimeField(auto_now=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)
     fecha_eliminacion = models.DateTimeField(blank=True, null=True)
 
 class Recepcionista(models.Model):
     id_recepcionista = models.AutoField(primary_key=True)
-    persona = models.ForeignKey(Persona, on_delete=models.CASCADE)     
+    persona = models.ForeignKey(Persona, on_delete=models.CASCADE)
+    turno = models.ForeignKey(Turno, on_delete=models.CASCADE, null=True, blank=True)         
     fecha_creacion = models.DateTimeField(auto_now=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)
     fecha_eliminacion = models.DateTimeField(blank=True, null=True)

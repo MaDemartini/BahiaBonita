@@ -2,7 +2,6 @@ from functools import wraps
 import json
 import jwt
 import requests
-from datetime import date, datetime, timedelta, timezone
 from django.conf import settings
 from django.contrib import messages
 from django.http import JsonResponse
@@ -14,17 +13,12 @@ from django.shortcuts import render, HttpResponse, redirect,  get_object_or_404
 from django.contrib.auth.hashers import check_password, make_password
 from django.views.decorators.http import require_GET
 from django.views.decorators.csrf import csrf_exempt
-
+from datetime import date, datetime, timedelta, timezone
 from projects.utils import resumen_calendar_deptos, verificar_sesion_jwt
 from .models import Cliente, Departamento, Reserva, Persona, Administrador, PersonalAseo, Recepcionista, Rol  
 from .forms import ContactoForm, LoginForm, RegisterForm, AddDeptoForm, ReservaForm
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
-
-
-
-
 
 # Create your views here.
 
@@ -867,7 +861,9 @@ def validar_reserva(request):
 
 ##################################################################
 
-
+def gestion_colab(request):
+    return render(request, 'gestion_colab.html')
+    
             
         
         

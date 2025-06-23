@@ -3,11 +3,11 @@ from projects.utils import password_personal
 from django.contrib.auth.hashers import make_password
 from projects.models import Administrador, Persona, Rol
 
-def registrar_personal_hotel(datos, rol_nombre, modelo_personal):
+def registrar_personal_hotel(datos, rol_nombre):
     try:
-        rol = Rol.objects.get(nombre="Administrador")
+        rol = Rol.objects.get(nombre=rol_nombre)
     except Rol.DoesNotExist:
-        raise ValueError("Rol 'Administrador' no existe en la base de datos.")
+        raise ValueError(f"El rol {rol_nombre} no existe en la base de datos.")
 
     # Crear la persona
     persona = Persona.objects.create(
@@ -32,13 +32,14 @@ def registrar_personal_hotel(datos, rol_nombre, modelo_personal):
     persona.save()
 
     # Crear el registro en la tabla Administrador
-    Administrador.objects.create(
-        persona=persona,
-        fotoAdministrador=datos.get('fotoAdministrador'),
-        profesión=datos.get('profesión'),
-        cert_antecedentes=datos.get('cert_antecedentes'),
-        tipo_prevision=datos.get('tipo_prevision'),
-        sueldo=datos.get('sueldo')
-    )
+    if rol.nombre == 'Administrador':        
+        Administrador.objects.create(
+            persona=persona,
+            fotoAdministrador=datos.get('fotoAdministrador'),
+            profesión=datos.get('profesión'),
+            cert_antecedentes=datos.get('cert_antecedentes'),
+            tipo_prevision=datos.get('tipo_prevision'),
+            sueldo=datos.get('sueldo')
+        )
 
     return password_plana #podemos inviar la pass por email o mostrarla en la interfaz de usuario

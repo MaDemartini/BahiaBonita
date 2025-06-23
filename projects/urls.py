@@ -28,6 +28,8 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     #logout
     path('logout/', views.logout, name='logout'),
+    #gestion colaboradores
+    path ('gestion_colab/', views.gestion_colab, name='gestion_colab'),
     
     # La ruta con ID debe ir antes que la genérica
     path('crear_reserva/<int:departamento>/', views.crear_reserva, name='crear_reserva'),
