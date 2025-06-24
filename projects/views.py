@@ -16,6 +16,7 @@ from django.contrib.auth.hashers import check_password, make_password
 from django.views.decorators.http import require_GET
 from django.views.decorators.csrf import csrf_exempt
 from datetime import date, datetime, timedelta, timezone
+from projects.correos_automaticos import enviar_correo_bienvenida, enviar_correo_reserva
 from projects.utils import generar_qr_bytes, resumen_calendar_deptos, verificar_sesion_jwt
 from .models import Cliente, Departamento, Reserva, Persona, Administrador, PersonalAseo, Recepcionista, Rol  
 from .forms import ContactoForm, LoginForm, RegisterForm, AddDeptoForm, ReservaForm
@@ -25,6 +26,7 @@ from rest_framework.response import Response
 # Create your views here.
 
 ########################################################################
+
 
 
 #pago transbank API
@@ -152,59 +154,16 @@ def confirm_pago(request):
                 valor_total=datos_pago["amount"],
                 tipo_reserva="Online"
                 )
-                        
-            qr_data = f"Reserva ID: {reserva.id_reserva}, Cliente: {cliente.persona.nombre} {cliente.persona.apellido} {cliente.persona.s_apellido}, Ingreso: {reserva.fecha_ingreso}, Salida: {reserva.fecha_salida}, Creado el: {reserva.fecha_creacion}"
-            qr_buffer = generar_qr_bytes(qr_data)
+            
+            nombre = cliente.persona.nombre
+            apellido = cliente.persona.apellido
+            s_apellido = cliente.persona.s_apellido             
+            correo = cliente.persona.email         
             
             # Datos para el correo
-            asunto = "Confirmación de Reserva – Bahía Bonita"
-            mensaje_html = f"""
-            <p>Estimado/a {cliente.persona.nombre} {cliente.persona.apellido} {cliente.persona.s_apellido},</p>
+            enviar_correo_reserva(nombre, apellido, s_apellido, correo, reserva)
 
-            <p>Su reserva ha sido confirmada exitosamente.</p>
-
-            <ul>
-            <li><b>Departamento:</b> {reserva.departamento.num_depto}</li>
-            <li><b>Ingreso:</b> {reserva.fecha_ingreso}</li>
-            <li><b>Salida:</b> {reserva.fecha_salida}</li>
-            <li><b>Personas:</b> {reserva.cant_personas}</li>
-            <li><b>Total pagado:</b> ${reserva.valor_total:.0f}</li>
-            </ul>
-
-            <p><b> Muestra este código QR al llegar al check-in:</b></p>
-            <img src="cid:qr_code" alt="Código QR de reserva" style="width:200px;height:200px;" />
-            <br>
-
-            Muchas gracias por preferirnos.<br>
-            Bahía Bonita, Concón, Chile.<br>
-            Si tiene alguna consulta, no dude en contactarnos<br>
-            tel: +56 9 3095 6242.      
-            """
-            
-
-            # Enviar el correo
-            email = EmailMultiAlternatives(
-                subject=asunto,
-                body=mensaje_html,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                to=[cliente.persona.email],
-            )
-
-            email.attach_alternative(mensaje_html, "text/html")            
-
-            # Adjuntar imagen como recurso embebido (inline)
-            qr_image = MIMEImage(qr_buffer.getvalue(), _subtype="png")
-            qr_image.add_header("Content-ID", "<qr_code>")  # <qr_code> se referencia en el HTML
-            qr_image.add_header("Content-Disposition", "inline", filename="qr.png")
-            email.attach(qr_image)
-
-            # Enviar
-            email.send()
-
-            
-            
-            
-            # Guardar token como usado
+             # Guardar token como usado
             request.session["token_usado"] = token
             # Elimina los datos para no duplicar reservas
             del request.session["datos_reserva"]
@@ -258,9 +217,21 @@ def registerPage(request):
                 return render(request, 'register.html', {'form': form})
             response = postApiRegister(post_data)
             print("Respuesta API:", response)  # para depuración
-            if response.get("mensaje") == "Datos guardados exitosamente":
+            if response.get("mensaje") == "Datos guardados exitosamente":           
+                
+                #datos para poder enviar el correo de bienvenida
+                nombre = post_data.get('nombre', '')
+                apellido = post_data.get('apellido', '')
+                s_apellido = post_data.get('s_apellido', '')
+                correo = post_data.get('email', '')               
+                
+                # Enviar correo de bienvenida desde la funcion creada en correos_automaticos.py
+                enviar_correo_bienvenida(nombre, apellido, s_apellido, correo)
+                
                 messages.success(request, "Registro exitoso")
                 return redirect('login')
+            
+            
             else:
                 return render(request, 'register.html', {'form': form, 'error': response.get('error')})
     else:
@@ -692,6 +663,7 @@ def logout(request):
 def profile(request):
     id_persona = request.session.get('usuario', {}).get('id')
     
+    
     # Verifica si el ID de persona está en la sesión
     print("ID PERSONA EN SESIÓN (profile):", id_persona)
     
@@ -731,6 +703,10 @@ def profile(request):
                 'email': persona.get('email'),
                 'direccion': persona.get('direccion'),
                 'telefono': persona.get('telefono'),
+                'fecha_nacimiento': persona.get('fecha_nacimiento'),
+                'ciudad': persona.get('ciudad'),
+                'pais': persona.get('pais'),
+                'reservas': list(Reserva.objects.filter(cliente__persona__id_persona=id_persona).order_by('-fecha_reserva')),
             })
         else:
             return render(request, 'profile.html', {
