@@ -1,3 +1,5 @@
+from django.core.mail import EmailMultiAlternatives
+from email.mime.image import MIMEImage
 from functools import wraps
 import json
 import jwt
@@ -14,7 +16,7 @@ from django.contrib.auth.hashers import check_password, make_password
 from django.views.decorators.http import require_GET
 from django.views.decorators.csrf import csrf_exempt
 from datetime import date, datetime, timedelta, timezone
-from projects.utils import resumen_calendar_deptos, verificar_sesion_jwt
+from projects.utils import generar_qr_bytes, resumen_calendar_deptos, verificar_sesion_jwt
 from .models import Cliente, Departamento, Reserva, Persona, Administrador, PersonalAseo, Recepcionista, Rol  
 from .forms import ContactoForm, LoginForm, RegisterForm, AddDeptoForm, ReservaForm
 from rest_framework.decorators import api_view
@@ -149,36 +151,59 @@ def confirm_pago(request):
                 cant_personas=datos["cant_adultos"] + datos["cant_ninos"],
                 valor_total=datos_pago["amount"],
                 tipo_reserva="Online"
-            )
+                )
+                        
+            qr_data = f"Reserva ID: {reserva.id_reserva}, Cliente: {cliente.persona.nombre} {cliente.persona.apellido} {cliente.persona.s_apellido}, Ingreso: {reserva.fecha_ingreso}, Salida: {reserva.fecha_salida}, Creado el: {reserva.fecha_creacion}"
+            qr_buffer = generar_qr_bytes(qr_data)
             
             # Datos para el correo
             asunto = "Confirmación de Reserva – Bahía Bonita"
-            mensaje = f"""
-            Estimado/a {cliente.persona.nombre} {cliente.persona.apellido} {cliente.persona.s_apellido},
+            mensaje_html = f"""
+            <p>Estimado/a {cliente.persona.nombre} {cliente.persona.apellido} {cliente.persona.s_apellido},</p>
 
-            Su reserva ha sido confirmada exitosamente.
+            <p>Su reserva ha sido confirmada exitosamente.</p>
 
-            🛏 Departamento: {reserva.departamento.num_depto}
-            📅 Ingreso: {reserva.fecha_ingreso}
-            📅 Salida: {reserva.fecha_salida}
-            👤 Personas: {reserva.cant_personas}
-            💵 Total pagado: ${reserva.valor_total:.0f}
+            <ul>
+            <li><b>Departamento:</b> {reserva.departamento.num_depto}</li>
+            <li><b>Ingreso:</b> {reserva.fecha_ingreso}</li>
+            <li><b>Salida:</b> {reserva.fecha_salida}</li>
+            <li><b>Personas:</b> {reserva.cant_personas}</li>
+            <li><b>Total pagado:</b> ${reserva.valor_total:.0f}</li>
+            </ul>
 
-            Muchas gracias por preferirnos.
-            Bahía Bonita, Concón, Chile.
-            Si tiene alguna consulta, no dude en contactarnos al +56 9 3095 6242.       
+            <p><b> Muestra este código QR al llegar al check-in:</b></p>
+            <img src="cid:qr_code" alt="Código QR de reserva" style="width:200px;height:200px;" />
+            <br>
+
+            Muchas gracias por preferirnos.<br>
+            Bahía Bonita, Concón, Chile.<br>
+            Si tiene alguna consulta, no dude en contactarnos<br>
+            tel: +56 9 3095 6242.      
             """
-            email_cliente = cliente.persona.email
+            
 
             # Enviar el correo
-            send_mail(
-                asunto,
-                mensaje,
-                settings.DEFAULT_FROM_EMAIL,
-                [email_cliente],
-                fail_silently=False
+            email = EmailMultiAlternatives(
+                subject=asunto,
+                body=mensaje_html,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[cliente.persona.email],
             )
 
+            email.attach_alternative(mensaje_html, "text/html")            
+
+            # Adjuntar imagen como recurso embebido (inline)
+            qr_image = MIMEImage(qr_buffer.getvalue(), _subtype="png")
+            qr_image.add_header("Content-ID", "<qr_code>")  # <qr_code> se referencia en el HTML
+            qr_image.add_header("Content-Disposition", "inline", filename="qr.png")
+            email.attach(qr_image)
+
+            # Enviar
+            email.send()
+
+            
+            
+            
             # Guardar token como usado
             request.session["token_usado"] = token
             # Elimina los datos para no duplicar reservas

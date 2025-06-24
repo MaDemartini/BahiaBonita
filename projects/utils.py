@@ -4,6 +4,9 @@ from django.shortcuts import redirect
 import jwt
 from jwt.exceptions import ExpiredSignatureError, DecodeError
 from django.conf import settings
+import qrcode
+from io import BytesIO
+import base64
 
 
 def validar_dv(rut: str, dv: str) -> bool:
@@ -64,10 +67,17 @@ def verificar_token(request):
 def verificar_sesion_jwt(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
-        if not verificar_token(request):
+        try:
+            if not verificar_token(request):
+                request.session.flush()
+                messages.error(request, "Tu sesión ha caducado o es inválida.")
+                return redirect('login')  # Asegúrate de tener la ruta llamada 'login' definida en urls.py
+        except Exception as e:
+            # Manejo de errores si verificar_token falla o request no tiene session
             request.session.flush()
-            messages.error(request, "Tu sesión ha expirado o es inválida.")
+            messages.error(request, "Error de autenticación. Por favor inicia sesión.")
             return redirect('login')
+
         return view_func(request, *args, **kwargs)
     return _wrapped_view
 
@@ -89,3 +99,26 @@ def password_personal(persona):
     correo = persona.email[:2].lower() if persona.email else 'xx'
 
     return f"{iniciales}{anno}{correo}"
+
+##############################################
+#funcion para crear qr de reserva
+
+def generar_qr_bytes(data: str) -> BytesIO:
+    """
+    Genera un código QR a partir de un string y lo retorna como objeto BytesIO.
+    Este objeto puede usarse para adjuntar la imagen en correos o guardarla.
+
+    :param data: Texto o datos que se codificarán en el QR.
+    :return: Objeto BytesIO con la imagen PNG.
+    """
+    qr = qrcode.QRCode(box_size=10, border=4)
+    qr.add_data(data)
+    qr.make(fit=True)
+
+    img = qr.make_image(fill_color="black", back_color="white")
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
+    buffer.seek(0)  # Importante para que el lector lea desde el inicio
+    return buffer
+
+##############################################
