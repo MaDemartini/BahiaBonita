@@ -1,0 +1,27 @@
+execution:
+  - concurrency: 9
+    ramp-up: 20s
+    hold-for: 2m
+    scenario: logged_in_profile
+
+scenarios:
+  logged_in_profile:
+    requests:
+      - label: "Login usuario"
+        url: http://127.0.0.1:8000/api/login/
+        method: POST
+        headers:
+          Content-Type: application/json
+        body:
+          email: "usuario1@correo.com"
+          password: "passwordSeguro123"
+        extract-jsonpath:
+          auth_token: $.token
+        assert:
+          - contains: "token"
+        
+      - label: "Perfil del usuario"
+        url: http://127.0.0.1:8000/profile/
+        method: GET
+        headers:
+          Authorization: "Bearer {{auth_token}}"

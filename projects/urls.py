@@ -38,6 +38,7 @@ urlpatterns = [
     path('guardar_reserva/', views.guardar_reserva, name='guardar_reserva'),
 
     path('registro/', views.registerPage, name='registro'),
+    path('api/registro/', views.api_register, name='api_register'),
     path('login/', views.loginPage, name='login'),
     path('api/login/', api_login, name='api_login'),        
     

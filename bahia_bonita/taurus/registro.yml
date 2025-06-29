@@ -1,0 +1,34 @@
+execution:
+  - concurrency: 5
+    ramp-up: 15s
+    hold-for: 1m
+    scenario: registro_usuario
+
+data-sources:
+  - registro.csv
+
+scenarios:
+  registro_usuario:
+    data-sources:
+      - registro.csv
+    requests:
+      - url: http://127.0.0.1:8000/registro/
+        method: POST
+        headers:
+          Content-Type: application/json
+        body:
+          nombre: ${nombre}
+          s_nombre: ${s_nombre}
+          apellido: ${apellido}
+          s_apellido: ${s_apellido}
+          rut: ${rut}
+          dv: ${dv}
+          fecha_nacimiento: ${fecha_nacimiento}
+          direccion: ${direccion}
+          pais: ${pais}
+          ciudad: ${ciudad}
+          telefono: ${telefono}
+          email: ${email}
+          password: ${password}
+          re_password: ${re_password}
+        timeout: 30s

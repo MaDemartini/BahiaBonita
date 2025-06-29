@@ -1,15 +1,29 @@
 from rest_framework import serializers
+from django.contrib.auth.hashers import make_password
 from .models import (Contacto, Persona, Cliente, Administrador, PersonalAseo, Recepcionista, Departamento,
                      Reserva, CheckIn, Arriendo, Rol, TipoServicioAdicional,
                      ServicioAdicionalConsumido, Pago)
 
+#####################################################################
+
 class PersonaSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
     class Meta:
         model = Persona
-        fields = ['id_persona', 'rol', 'nombre', 's_nombre', 'apellido', 's_apellido', 'rut',
-                  'dv', 'fecha_nacimiento', 'direccion', 'telefono', 'email', 'password',
-                  'fecha_creacion', 'fecha_modificacion', 'fecha_eliminacion']
+        fields = [
+            'id_persona', 'rol', 'nombre', 's_nombre', 'apellido', 's_apellido', 'rut',
+            'dv', 'fecha_nacimiento', 'direccion', 'telefono', 'email', 'password',
+            'fecha_creacion', 'fecha_modificacion', 'fecha_eliminacion'
+        ]
         read_only_fields = ('fecha_creacion', 'fecha_modificacion', 'fecha_eliminacion',)
+
+    def create(self, validated_data):
+        # Aquí se hashea la contraseña antes de guardarla
+        validated_data['password'] = make_password(validated_data['password'])
+        return super().create(validated_data)
+    
+#####################################################################
 
 class ClienteSerializer(serializers.ModelSerializer):
     persona = PersonaSerializer(read_only=True)

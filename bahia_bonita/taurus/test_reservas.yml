@@ -1,0 +1,29 @@
+execution:
+  - concurrency: 15
+    ramp-up: 15s
+    hold-for: 30s
+    scenario: crear_reserva
+
+data-sources:
+  - reserva.csv
+
+scenarios:
+  crear_reserva:
+    data-sources:
+      - reserva.csv
+    requests:
+      - url: http://127.0.0.1:8000/api/reserva/
+        method: POST
+        headers:
+          Content-Type: application/json
+        body:
+          pagado: ${pagado}
+          fecha_reserva: ${fecha_reserva}
+          fecha_ingreso: ${fecha_ingreso}
+          fecha_salida: ${fecha_salida}
+          cant_personas: ${cant_personas}
+          valor_total: ${valor_total}
+          tipo_reserva: ${tipo_reserva}
+          cliente: ${cliente}
+          departamento: ${departamento}
+        timeout: 30s

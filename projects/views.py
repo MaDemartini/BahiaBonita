@@ -17,11 +17,14 @@ from django.views.decorators.http import require_GET
 from django.views.decorators.csrf import csrf_exempt
 from datetime import date, datetime, timedelta, timezone
 from projects.correos_automaticos import enviar_correo_bienvenida, enviar_correo_reserva
+from projects.serializers import PersonaSerializer
 from projects.utils import generar_qr_bytes, resumen_calendar_deptos, verificar_sesion_jwt
 from .models import Cliente, Departamento, Reserva, Persona, Administrador, PersonalAseo, Recepcionista, Rol  
 from .forms import ContactoForm, LoginForm, RegisterForm, AddDeptoForm, ReservaForm
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 
 # Create your views here.
 
@@ -206,8 +209,8 @@ def registerPage(request):
         form = RegisterForm(request.POST)
         if form.is_valid():            
             post_data = form.cleaned_data
-            post_data['password'] = make_password(form.cleaned_data['password'])
-            post_data.pop('re_password')
+            post_data.pop('re_password', None)
+            
             try:
                 rol_id = int(request.POST.get("rol"))
                 cliente_rol = Rol.objects.get(id_rol=rol_id)
@@ -217,6 +220,7 @@ def registerPage(request):
                 return render(request, 'register.html', {'form': form})
             response = postApiRegister(post_data)
             print("Respuesta API:", response)  # para depuración
+            
             if response.get("mensaje") == "Datos guardados exitosamente":           
                 
                 #datos para poder enviar el correo de bienvenida
@@ -240,6 +244,15 @@ def registerPage(request):
      
          
     return render(request, 'register.html', {'form': form})
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def api_register(request):
+    serializer = PersonaSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"mensaje": "Datos guardados exitosamente"}, status=201)
+    return Response(serializer.errors, status=400)
 
 
 #########################################################################

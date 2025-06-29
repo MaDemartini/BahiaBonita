@@ -1,5 +1,5 @@
 execution:
-  - concurrency: 500
+  - concurrency: 250
     iterations: 1
     ramp-up: 10s
     hold-for: 5s

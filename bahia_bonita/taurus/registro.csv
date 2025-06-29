@@ -1,0 +1,26 @@
+nombre,s_nombre,apellido,s_apellido,rut,dv,fecha_nacimiento,direccion,pais,ciudad,telefono,email,password
+Pedro,Andres,Gonzalez,Rojas,12345678,5,1994-06-12,"Av Libertad 123, Viña",Chile,Viña,+56981230001,pedro1@prueba.com,ClaveSegura123
+Maria,Josefa,Muñoz,Perez,87654321,K,1989-02-20,"Calle Condell 45, Valpo",Chile,Valparaíso,+56981230002,maria2@prueba.com,ClaveSegura123
+Carlos,Ignacio,Silva,Lopez,13579246,3,1992-08-05,"Av Argentina 200, Viña",Chile,Viña,+56981230003,carlos3@prueba.com,ClaveSegura123
+Daniela,Andrea,Ramirez,Soto,24681357,0,1996-11-30,"Los Pinos 12, Concón",Chile,Concón,+56981230004,daniela4@prueba.com,ClaveSegura123
+Francisco,Esteban,Torres,Saavedra,98765432,9,1987-01-17,"Av Matta 333, Quilpué",Chile,Quilpué,+56981230005,francisco5@prueba.com,ClaveSegura123
+Valentina,Camila,Reyes,Martinez,11223344,7,2000-03-25,"O'Higgins 88, Viña",Chile,Viña,+56981230006,valentina6@prueba.com,ClaveSegura123
+Juan,Alonso,Fernandez,Diaz,55667788,4,1988-05-14,"Av San Martin 300, Viña",Chile,Viña,+56981230007,juan7@prueba.com,ClaveSegura123
+Jose,Manuel,Hernandez,Rivera,66778899,2,1993-09-07,"Condell 500, Valpo",Chile,Valparaíso,+56981230008,jose8@prueba.com,ClaveSegura123
+Camila,Beatriz,Morales,Vera,77889900,1,1999-12-22,"Bellavista 11, Quilpué",Chile,Quilpué,+56981230009,camila9@prueba.com,ClaveSegura123
+Nicolas,Emilio,Castillo,Moya,88990011,9,1984-07-03,"Las Encinas 7, Concón",Chile,Concón,+56981230010,nicolas10@prueba.com,ClaveSegura123
+Isidora,Antonia,Sanchez,Navarro,99001122,8,1995-04-11,"Av Libertad 321, Viña",Chile,Viña,+56981230011,isidora11@prueba.com,ClaveSegura123
+Ricardo,Alexis,Molina,Bravo,10111213,6,1991-10-09,"Calle Victoria 89, Valpo",Chile,Valparaíso,+56981230012,ricardo12@prueba.com,ClaveSegura123
+Javiera,Constanza,Ortega,Fuentes,12131415,4,1986-01-25,"Los Pinos 77, Concón",Chile,Concón,+56981230013,javiera13@prueba.com,ClaveSegura123
+Diego,Felipe,Contreras,Vega,13141516,3,2002-06-18,"Av Peru 22, Viña",Chile,Viña,+56981230014,diego14@prueba.com,ClaveSegura123
+Paula,Andrea,Gutierrez,Mendez,14151617,1,1990-09-29,"O'Higgins 15, Quilpué",Chile,Quilpué,+56981230015,paula15@prueba.com,ClaveSegura123
+Matias,Enrique,Saez,Salazar,15161718,0,1997-02-13,"Libertad 100, Viña",Chile,Viña,+56981230016,matias16@prueba.com,ClaveSegura123
+Antonella,Daniela,Pizarro,Riquelme,16171819,8,1985-05-08,"Condell 40, Valpo",Chile,Valparaíso,+56981230017,antonella17@prueba.com,ClaveSegura123
+Alvaro,Ignacio,Araya,Escobar,17181920,6,1993-11-20,"Av Argentina 500, Viña",Chile,Viña,+56981230018,alvaro18@prueba.com,ClaveSegura123
+Fernanda,Carolina,Farias,Pena,18192021,4,1982-08-16,"Bellavista 90, Valpo",Chile,Valparaíso,+56981230019,fernanda19@prueba.com,ClaveSegura123
+Martin,Alonso,Vasquez,Aguilar,19202122,2,2001-04-03,"San Martin 120, Viña",Chile,Viña,+56981230020,martin20@prueba.com,ClaveSegura123
+Alejandra,Francisca,Lagos,Moreno,20212223,1,1998-07-19,"Av Matta 11, Quilpué",Chile,Quilpué,+56981230021,alejandra21@prueba.com,ClaveSegura123
+Sebastian,Jose,Carrasco,Sanhueza,21222324,K,1983-10-05,"Libertad 200, Viña",Chile,Viña,+56981230022,sebastian22@prueba.com,ClaveSegura123
+Carolina,Valeria,Venegas,Gallardo,22232425,9,1994-12-12,"O'Higgins 88, Viña",Chile,Viña,+56981230023,carolina23@prueba.com,ClaveSegura123
+Felipe,Nicolas,Fuenzalida,Correa,23242526,8,1986-03-18,"Calle Victoria 10, Valpo",Chile,Valparaíso,+56981230024,felipe24@prueba.com,ClaveSegura123
+Josefa,Daniela,Rojas,Flores,24252627,6,2000-05-22,"Av San Martin 303, Viña",Chile,Viña,+56981230025,josefa25@prueba.com,ClaveSegura123

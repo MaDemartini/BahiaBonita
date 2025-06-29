@@ -1,0 +1,16 @@
+execution:
+  - concurrency: 12           
+    ramp-up: 10s              
+    hold-for: 1m              
+    scenario: login_scenario
+
+scenarios:
+  login_scenario:
+    requests:
+      - url: http://127.0.0.1:8000/api/login/
+        method: POST
+        headers:
+          Content-Type: application/json
+        body:
+          email: "jaim.maureira@duocuc.cl"
+          password: "xxxxxx"

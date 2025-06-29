@@ -1,0 +1,11 @@
+execution:
+  - concurrency: 15         
+    ramp-up: 20s            
+    hold-for: 1m            
+    scenario: servicios_scenario
+
+scenarios:
+  servicios_scenario:
+    requests:
+      - url: http://127.0.0.1:8000/servicios/
+        method: GET

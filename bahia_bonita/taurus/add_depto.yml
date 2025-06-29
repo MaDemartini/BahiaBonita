@@ -1,0 +1,27 @@
+execution:
+  - concurrency: 5
+    ramp-up: 15s
+    hold-for: 20s
+    scenario: crear_departamento
+
+data-sources:
+  - departamentos.csv
+
+scenarios:
+  crear_departamento:
+    data-sources: 
+      - departamentos.csv
+    requests:
+      - url: http://127.0.0.1:8000/api/addDepto/
+        method: POST
+        headers:
+          Content-Type: application/json
+        body:
+          num_depto: ${num_depto}
+          cant_dormitorios: ${cant_dormitorios}
+          cant_banos: ${cant_banos}
+          piso: ${piso}
+          cant_personas: ${cant_personas}
+          valor_dia: ${valor_dia}
+          mantenimiento: ${mantenimiento}
+        timeout: 30s
