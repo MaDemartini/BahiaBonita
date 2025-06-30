@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+  <!-- Botón sándwich SOLO para gestion -->
+  <div id="sidebar" class="sidebar">
+    <a href="#" style="margin-left: 15px;">Inicio</a>
+    <a href="#" style="margin-left: 15px;">Agregar colaboradores  <i class="bi bi-caret-right-fill"></i></a>    
+  </div>
+
+  <!-- Contenido que se mueve TODO junto -->
+  <div id="main-content" class="main-content">
+    
+    <!-- Botón hamburguesa DENTRO del contenido -->
+    <div id="menuToggle" class="menu-btn">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    
+    {% block gestion_content %}{% endblock %}
+  </div>
+
+  <script src="{% static 'js/gestion_colab.js' %}"></script>
+{% endblock %}

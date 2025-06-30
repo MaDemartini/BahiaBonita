@@ -1,24 +1,7 @@
-{% extends "base.html" %}
+{% extends "base_gestion.html" %}
 {% load static %}
 
-{% block content %}
-
- <!-- Botón sándwich -->
-  <div class="menu-btn" onclick="toggleSidebar()">
-    <span></span>
-    <span></span>
-    <span></span>       
-  </div>
-  
-  
-
-  <!-- Menú lateral -->
-  <div id="sidebar" class="sidebar">
-    <a href="#">Inicio</a>
-    <a href="#">Gestión de colaboradores</a>
-    <a href="#">Reservas</a>
-    <a href="#">Cerrar sesión</a>
-  </div>
-
-<script src="{% static 'js/gestion_colab.js' %}"></script>
+{% block gestion_content %}
+  <h1>Gestión de Colaboradores</h1>
+  <p>Aquí va el contenido específico de la página de gestión de colaboradores.</p>
 {% endblock %}
