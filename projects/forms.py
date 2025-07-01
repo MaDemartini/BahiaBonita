@@ -43,27 +43,27 @@ class RegisterForm(forms.ModelForm):
 
 #funcion para validar rut y dv
 #se valida el rut incorrecto pero hay que agregar las alertas
-    def clean(self):
-        cleaned_data = super().clean()
-        rut = cleaned_data.get('rut')
-        dv = cleaned_data.get('dv')
-        password = cleaned_data.get('password')
-        re_password = cleaned_data.get('re_password')
+    # def clean(self):
+    #     cleaned_data = super().clean()
+    #     rut = cleaned_data.get('rut')
+    #     dv = cleaned_data.get('dv')
+    #     password = cleaned_data.get('password')
+    #     re_password = cleaned_data.get('re_password')
 
-        if not rut or not dv:
-            self.add_error('rut', "El RUT y el dígito verificador son obligatorios.")
-            return cleaned_data    
+    #     if not rut or not dv:
+    #         self.add_error('rut', "El RUT y el dígito verificador son obligatorios.")
+    #         return cleaned_data    
 
-        if not rut.isdigit():
-            self.add_error('rut', "El RUT debe contener solo números.")
+    #     if not rut.isdigit():
+    #         self.add_error('rut', "El RUT debe contener solo números.")
 
-        if not validar_dv(rut, dv):  # type: ignore
-            self.add_error('dv', "El dígito verificador no es válido.")
+    #     if not validar_dv(rut, dv):  # type: ignore
+    #         self.add_error('dv', "El dígito verificador no es válido.")
 
-        if password and re_password and password != re_password:
-            self.add_error('re_password', "Las contraseñas no coinciden.")
+    #     if password and re_password and password != re_password:
+    #         self.add_error('re_password', "Las contraseñas no coinciden.")
 
-        return cleaned_data     
+    #     return cleaned_data     
 
 
         

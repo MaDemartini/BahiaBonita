@@ -733,6 +733,7 @@ def profile(request):
 
 
 ##########################################################################
+
 #Subir imagen a supabase
 # def img_supabase(file, user_id):
 #     url = 

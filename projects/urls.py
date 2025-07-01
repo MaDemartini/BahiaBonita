@@ -3,7 +3,7 @@ from .api import PersonaViewSet, ClienteViewSet, AdministradorViewSet,Departamen
 from django.contrib import admin
 from django.urls import path, include
 from .views import api_login
-from projects import views  
+from projects import views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -19,18 +19,18 @@ router.register('api/contacto', ContactoViewSet, 'contacto')
 router.register('api/rol', RolViewSet, 'rol')
 
 
-urlpatterns = [   
+urlpatterns = [
 
     # HTML PAGES (Frontend)
     path('', views.index, name='index'),
     path('servicios/', views.servicios, name='servicios'),
     path('departamentos/', views.departamentos, name='departamentos'),
-    path('profile/', views.profile, name='profile'),
+    path('profile/', views.profile, name='profile'),    
     #logout
     path('logout/', views.logout, name='logout'),
     #gestion colaboradores
     path ('gestion_colab/', views.gestion_colab, name='gestion_colab'),
-    
+
     # La ruta con ID debe ir antes que la genérica
     path('crear_reserva/<int:departamento>/', views.crear_reserva, name='crear_reserva'),
     path('crear_reserva/', views.crear_reserva, name='crear_reserva'),
@@ -40,11 +40,11 @@ urlpatterns = [
     path('registro/', views.registerPage, name='registro'),
     path('api/registro/', views.api_register, name='api_register'),
     path('login/', views.loginPage, name='login'),
-    path('api/login/', api_login, name='api_login'),        
-    
+    path('api/login/', api_login, name='api_login'),
+
     path('administracion/', views.administracion, name='administracion'),
     path('estadisticas/', views.estadisticas, name='estadisticas'),
-   
+
     path('contacto/', views.contacto, name='contacto'),
 
     # Transbank
@@ -55,21 +55,21 @@ urlpatterns = [
 
     # API (Django REST Framework)
     path('', include(router.urls)),
-    
-    #reserva AJAX    
+
+    #reserva AJAX
     path('api/crear_reserva_ajax/', views.crear_reserva_ajax, name='crear_reserva_ajax'),
-    
-    # validar reservas    
+
+    # validar reservas
     path('validar_reserva/', views.validar_reserva, name='validar_reserva'),
-    
+
     # fechas reservadas para flatpickr
     path('reservas/<int:depto_id>/fechas/', views.fechas_reservadas, name='fechas_reservadas'),
-    
-    
+
+
     #API paises de rapidAPI geocities
     # path('api/paises/', views.get_paises, name='get_paises'),
     # path('api/ciudades/', views.get_ciudades, name='get_ciudades'),
-    
+
     # # API para obtener la clave de RapidAPI
     # path('api/get-rapidapi-key/', get_rapidapi_key, name='get_rapidapi_key'),
 

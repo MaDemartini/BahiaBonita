@@ -1,5 +1,5 @@
 from functools import wraps
-from pyexpat.errors import messages
+from django.contrib import messages
 from django.shortcuts import redirect
 import jwt
 from jwt.exceptions import ExpiredSignatureError, DecodeError
@@ -70,7 +70,7 @@ def verificar_sesion_jwt(view_func):
         try:
             if not verificar_token(request):
                 request.session.flush()
-                messages.error(request, "Tu sesión ha caducado o es inválida.")
+                messages.error(request, "No tienes los privilegios suficientes o no iniciaste sesión.")
                 return redirect('login')  # Asegúrate de tener la ruta llamada 'login' definida en urls.py
         except Exception as e:
             # Manejo de errores si verificar_token falla o request no tiene session

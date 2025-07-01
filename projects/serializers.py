@@ -19,7 +19,15 @@ class PersonaSerializer(serializers.ModelSerializer):
         read_only_fields = ('fecha_creacion', 'fecha_modificacion', 'fecha_eliminacion',)
 
     def create(self, validated_data):
-        # Aquí se hashea la contraseña antes de guardarla
+    # Asignar rol por defecto si no se envió
+        if 'rol' not in validated_data or validated_data['rol'] is None:
+            try:
+                cliente_rol = Rol.objects.get(nombre='Cliente')
+                validated_data['rol'] = cliente_rol
+            except Rol.DoesNotExist:
+                raise serializers.ValidationError("Rol 'Cliente' no existe en la base de datos")
+
+        # Hashear la contraseña
         validated_data['password'] = make_password(validated_data['password'])
         return super().create(validated_data)
     
