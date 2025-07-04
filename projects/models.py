@@ -64,20 +64,35 @@ class Prevision(models.Model):
     
 class Isapre(models.Model):
     id_isapre = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=50, unique=True)    
+    nombre = models.CharField(max_length=50, unique=True) 
+    
+class DiasSemana(models.TextChoices):
+    LUNES = 'MON', 'Lunes'
+    MARTES = 'TUE', 'Martes'
+    MIERCOLES = 'WED', 'Miércoles'
+    JUEVES = 'THU', 'Jueves'
+    VIERNES = 'FRI', 'Viernes'
+    SABADO = 'SAT', 'Sábado'
+    DOMINGO = 'SUN', 'Domingo'   
        
-    
-class Sueldo(models.Model):
-    id_sueldo = models.AutoField(primary_key=True)
-    monto = models.IntegerField()
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
-    
-    
 class HorasExtras(models.Model):
     id_horas_extras = models.AutoField(primary_key=True)
+    dia_hora_extra = models.CharField(max_length=3, choices=DiasSemana.choices, verbose_name="Día de hora extra")
     cantidad_horas = models.IntegerField()
     valor_hora = models.IntegerField()
     fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    
+class Sueldo(models.Model):
+    id_sueldo = models.AutoField(primary_key=True)
+    rol = models.ForeignKey(Rol, on_delete=models.CASCADE)    
+    profesion = models.BooleanField(default=False, null=True, blank=True)
+    horasExtras = models.ForeignKey(HorasExtras, on_delete=models.CASCADE, null=True, blank=True)
+    sueldo = models.IntegerField()
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    
+    
+
       
     
 class Contrato(models.Model):
@@ -94,7 +109,7 @@ class Contrato(models.Model):
 class Administrador(models.Model):
     id_administrador = models.AutoField(primary_key=True)    
     persona = models.ForeignKey(Persona, on_delete=models.CASCADE)
-    provision = models.ForeignKey(Prevision, on_delete=models.CASCADE, null=True, blank=True)
+    prevision = models.ForeignKey(Prevision, on_delete=models.CASCADE, null=True, blank=True)
     sueldo = models.ForeignKey(Sueldo, on_delete=models.CASCADE, null=True, blank=True)
     turno = models.ForeignKey(Turno, on_delete=models.CASCADE, null=True, blank=True) 
     contrato = models.ForeignKey(Contrato, on_delete=models.CASCADE, null=True, blank=True)   

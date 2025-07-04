@@ -65,6 +65,8 @@ urlpatterns = [
     # fechas reservadas para flatpickr
     path('reservas/<int:depto_id>/fechas/', views.fechas_reservadas, name='fechas_reservadas'),
 
+    # APi administradores
+    path('api/admin/', views.api_administradores, name='api_admin'),
 
     #API paises de rapidAPI geocities
     # path('api/paises/', views.get_paises, name='get_paises'),

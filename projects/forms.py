@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import Contacto, Persona, Departamento, Reserva
+from .models import Administrador, Contacto, Persona, Departamento, Reserva
 from .utils import validar_dv  # Asegúrate de tener esta función implementada
 from django.contrib.auth.hashers import make_password
 
@@ -146,14 +146,10 @@ class AddColaboradorForm(forms.ModelForm):
             'pais' : forms.TextInput(attrs={'class': 'form-control', 'id': 'pais'}),
             'ciudad' : forms.TextInput(attrs={'class': 'form-control', 'id': 'ciudad'}),            
             'telefono': forms.TextInput(attrs={'class': 'form-control','value': '+569'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control','placeholder': 'Email'}),
-            'password': forms.PasswordInput(attrs={'class': 'form-control','placeholder': 'Contraseña'}),
-            # No se debe mostrar el campo password en el formulario
-        } 
+            'email': forms.EmailInput(attrs={'class': 'form-control','placeholder': 'Email'}),            
+            } 
 
-    def save(self, commit=True):
-        persona = super().save(commit=False)
-        persona.password = make_password(self.cleaned_data['password'])
-        if commit:
-            persona.save()
-        return persona
+class AddAdministrador(forms.Models):
+    class Meta:
+        model = Administrador
+        fileds = ['fotoAdministrador', 'profesión', 'cert_antecedentes', 'tipo_prevision', 'sueldo']

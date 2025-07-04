@@ -17,14 +17,15 @@ from django.views.decorators.http import require_GET
 from django.views.decorators.csrf import csrf_exempt
 from datetime import date, datetime, timedelta, timezone
 from projects.correos_automaticos import enviar_correo_bienvenida, enviar_correo_reserva
-from projects.serializers import PersonaSerializer
+from projects.serializers import AdministradorSerializer, PersonaSerializer
+from projects.services import registrar_personal_hotel
 from projects.utils import generar_qr_bytes, resumen_calendar_deptos, verificar_sesion_jwt
 from .models import Cliente, Departamento, Reserva, Persona, Administrador, PersonalAseo, Recepcionista, Rol  
 from .forms import ContactoForm, LoginForm, RegisterForm, AddDeptoForm, ReservaForm
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from rest_framework import status
 
 # Create your views here.
 
@@ -878,7 +879,37 @@ def validar_reserva(request):
 
 def gestion_colab(request):
     return render(request, 'gestion_colab.html')
-    
+
+##################################################################  
+#logica para crear administradores mediante API
+@api_view(['GET', 'POST'])
+def api_administradores(request):
+    try:
+        # Llama al servicio con los datos del request
+        persona, password = registrar_personal_hotel(request.data, 'Administrador')
+        
+        # Serializa la persona creada para respuesta
+        persona_serialized = PersonaSerializer(persona)
+        
+        # Devuelve todo en la respuesta
+        return Response({
+            'mensaje': 'Administrador creado exitosamente.',
+            'persona': persona_serialized.data,
+            'password': password
+        }, status=status.HTTP_201_CREATED)
+
+    except ValueError as e:
+        # Maneja los errores de validación
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    except Exception as e:
+        # Maneja errores inesperados
+        return Response({
+            'error': 'Error interno del servidor.',
+            'details': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
         
         
