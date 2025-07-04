@@ -6,14 +6,17 @@ class Rol(models.Model):
     nombre = models.CharField(max_length=20, unique=True)    
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+            return self.nombre
 
 class Persona(models.Model):
     id_persona = models.AutoField(primary_key=True)
-    rol = models.ForeignKey(Rol, on_delete=models.CASCADE, null=True, blank=True)
+    rol = models.ForeignKey(Rol, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=20)
-    s_nombre = models.CharField(max_length=20)
+    s_nombre = models.CharField("Segundo Nombre", max_length=20, blank=True, null=True)
     apellido = models.CharField(max_length=20)
-    s_apellido = models.CharField(max_length=20)
+    s_apellido = models.CharField("Segundo Apellido",max_length=20)
     rut = models.CharField(max_length=12, unique=True)
     dv = models.CharField(max_length=1)
     fecha_nacimiento = models.DateField()
@@ -77,15 +80,15 @@ class DiasSemana(models.TextChoices):
        
 class HorasExtras(models.Model):
     id_horas_extras = models.AutoField(primary_key=True)
-    dia_hora_extra = models.CharField(max_length=3, choices=DiasSemana.choices, verbose_name="Día de hora extra")
-    cantidad_horas = models.IntegerField()
-    valor_hora = models.IntegerField()
+    dia_hora_extra = models.CharField(max_length=3, choices=DiasSemana.choices, verbose_name="Día de hora extra", blank=True, null=True)
+    cantidad_horas = models.IntegerField(blank=True, null=True)
+    valor_hora = models.IntegerField(blank=True, null=True)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
     
 class Sueldo(models.Model):
     id_sueldo = models.AutoField(primary_key=True)
-    rol = models.ForeignKey(Rol, on_delete=models.CASCADE)    
+    rol = models.ForeignKey(Rol, on_delete=models.CASCADE, null=True)    
     profesion = models.BooleanField(default=False, null=True, blank=True)
     horasExtras = models.ForeignKey(HorasExtras, on_delete=models.CASCADE, null=True, blank=True)
     sueldo = models.IntegerField()
@@ -108,35 +111,21 @@ class Contrato(models.Model):
 
 class Administrador(models.Model):
     id_administrador = models.AutoField(primary_key=True)    
-    persona = models.ForeignKey(Persona, on_delete=models.CASCADE)
-    prevision = models.ForeignKey(Prevision, on_delete=models.CASCADE, null=True, blank=True)
-    sueldo = models.ForeignKey(Sueldo, on_delete=models.CASCADE, null=True, blank=True)
-    turno = models.ForeignKey(Turno, on_delete=models.CASCADE, null=True, blank=True) 
-    contrato = models.ForeignKey(Contrato, on_delete=models.CASCADE, null=True, blank=True)   
-    fotoAdministrador = models.CharField(max_length=100, null=True, blank=True)
-    profesión = models.CharField(max_length=50, null=True, blank=True)
-    cert_antecedentes = models.CharField(max_length=100, null=True, blank=True)             
+    persona = models.ForeignKey(Persona, on_delete=models.CASCADE) 
     fecha_creacion = models.DateTimeField(auto_now=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)
-    fecha_eliminacion = models.DateTimeField(blank=True, null=True)
-    
-    def clean(self):
-        if self.sueldo is not None and self.sueldo < 0:
-            raise ValidationError("El sueldo no puede ser negativo.")
-    
-
+    fecha_eliminacion = models.DateTimeField(blank=True, null=True) 
+       
 class PersonalAseo(models.Model):
     id_personal_aseo = models.AutoField(primary_key=True)
-    persona = models.ForeignKey(Persona, on_delete=models.CASCADE)
-    turno = models.ForeignKey(Turno, on_delete=models.CASCADE, null=True, blank=True)        
+    persona = models.ForeignKey(Persona, on_delete=models.CASCADE)           
     fecha_creacion = models.DateTimeField(auto_now=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)
     fecha_eliminacion = models.DateTimeField(blank=True, null=True)
 
 class Recepcionista(models.Model):
     id_recepcionista = models.AutoField(primary_key=True)
-    persona = models.ForeignKey(Persona, on_delete=models.CASCADE)
-    turno = models.ForeignKey(Turno, on_delete=models.CASCADE, null=True, blank=True)         
+    persona = models.ForeignKey(Persona, on_delete=models.CASCADE)           
     fecha_creacion = models.DateTimeField(auto_now=True)
     fecha_modificacion = models.DateTimeField(auto_now=True)
     fecha_eliminacion = models.DateTimeField(blank=True, null=True)

@@ -1,0 +1,86 @@
+<br>
+<div class="p-3 border rounded" style="flex: 1;">
+    <h2 style="text-align: center;">Agregar Colaborador</h2>
+
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+
+        <!-- Rol -->
+        <div class="form-row">
+            <div class="form-rol">
+                {{ form.rol.label_tag }}
+                {{ form.rol }}
+            </div>
+        </div>
+
+        <!-- Nombre y Segundo Nombre -->
+        <div class="form-row">
+            <div class="form-half">
+                {{ form.nombre.label_tag }}
+                {{ form.nombre }}
+            </div>
+            <div class="form-half">
+                {{ form.s_nombre.label_tag }}
+                {{ form.s_nombre }}
+            </div>
+        </div>
+
+        <!-- Apellido y Segundo Apellido -->
+        <div class="form-row">
+            <div class="form-half">
+                {{ form.apellido.label_tag }}
+                {{ form.apellido }}
+            </div>
+            <div class="form-half">
+                {{ form.s_apellido.label_tag }}
+                {{ form.s_apellido }}
+            </div>
+        </div>
+
+        <!-- Rut y DV -->
+        <div class="form-row">
+            <div class="form-rut">
+                {{ form.rut.label_tag }}
+                {{ form.rut }}
+            </div>
+            <div class="form-dv">
+                {{ form.dv.label_tag }}
+                {{ form.dv }}
+            </div>
+        </div>
+
+        <!-- Fecha Nacimiento y Dirección -->
+        <div class="form-row">
+            <div class="form-fecha">
+                {{ form.fecha_nacimiento.label_tag }}
+                {{ form.fecha_nacimiento }}
+            </div>
+            <div class="form-direccion">
+                {{ form.direccion.label_tag }}
+                {{ form.direccion }}
+            </div>
+        </div>
+
+        <!-- País y Ciudad -->
+        <div class="form-row">
+            <div class="form-half">
+                {{ form.pais.label_tag }}
+                {{ form.pais }}
+            </div>
+            <div class="form-half">
+                {{ form.ciudad.label_tag }}
+                {{ form.ciudad }}
+            </div>
+        </div>
+
+        <!-- Teléfono -->
+        <div class="form-row">
+            <div class="form-telefono">
+                {{ form.telefono.label_tag }}
+                {{ form.telefono }}
+            </div>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+    </form>
+</div>

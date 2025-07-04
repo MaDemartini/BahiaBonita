@@ -6,6 +6,7 @@ from projects.utils import generar_qr_bytes
 
 
 
+
 def enviar_correo_bienvenida(nombre, apellido, s_apellido, correo):
     
     # Capitalizar nombre y apellidos (la primera letra es mayúscula)
@@ -96,5 +97,39 @@ def enviar_correo_reserva(nombre, apellido, s_apellido, correo, reserva):
 
     # Enviar
     email.send()
-  
+
+################################################
+# Función para enviar correo de bienvenida a colaboradores
+def correo_bienvenida_colab (nombre, apellido, s_apellido, email, password):
+    nombre = nombre.capitalize()
+    apellido = apellido.capitalize()
+    s_apellido = s_apellido.capitalize()
+    email = email.lower()
+
+    asunto = "Bienvenido a Bahía Bonita"
+    mensaje_html = f"""
+    <p>Estimado/a {nombre} {apellido} {s_apellido},</p>
+
+    <p>¡Bienvenido/a a Bahía Bonita!</p>
     
+    <p>Estamos encantados de tenerte con nosotros. Tu cuenta ha sido creada exitosamente.</p>
+    
+    <p><strong>Email:</strong> {email}</p>
+    <p><strong>Contraseña:</strong> {password}</p>
+
+    <p>Te invitamos a iniciar sesión y explorar todas las funcionalidades que ofrecemos.</p>
+    
+    Muchas gracias por unirte a nosotros.<br>
+    Bahía Bonita, Concón, Chile.<br>
+    Si tienes alguna consulta, no dudes en contactarnos<br>
+    Tel: +56 9 3095 6242
+    """
+
+    mensaje = EmailMultiAlternatives(
+        asunto,
+        "",  # mensaje de texto plano (vacío si solo HTML)
+        settings.EMAIL_HOST_USER,
+        [email]  # destinatario
+    )
+    mensaje.attach_alternative(mensaje_html, "text/html")
+    mensaje.send()

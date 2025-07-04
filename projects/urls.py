@@ -67,6 +67,10 @@ urlpatterns = [
 
     # APi administradores
     path('api/admin/', views.api_administradores, name='api_admin'),
+    
+    # formulario para agregar colaboradores    
+    path('administracion/agregar-colaborador-form/', views.formulario_agregar_colaborador, name='formulario_agregar_colaborador'),
+
 
     #API paises de rapidAPI geocities
     # path('api/paises/', views.get_paises, name='get_paises'),

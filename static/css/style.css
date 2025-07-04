@@ -633,3 +633,87 @@ y
     box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
 }
 /* ########################################### */
+
+.form-box {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.form-box input,
+.form-box select,
+.form-box textarea {
+  width: 100%;
+}
+
+/* formulario colaboradores */
+
+.form-grid {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.form-half {
+  flex: 1 1 48%;
+}
+
+.form-rol {
+  max-width: 250px;
+}
+
+.form-rut {
+  flex: 1 1 65%;
+  max-width: 200px;  /* Aproximadamente 8 caracteres */
+}
+
+.form-dv {
+  flex: 1 1 10%;
+  max-width: 50px;  /* Aproximadamente 1 carácter */
+}
+
+.form-fecha {
+  flex: 1 1 35%;
+  max-width: 200px;
+}
+
+.form-direccion {
+  flex: 1 1 60%;
+}
+
+.form-telefono {
+  max-width: 200px;
+}
+
+.form-row input,
+.form-row select {
+  width: 100%;
+  padding: 6px 10px;
+  box-sizing: border-box;
+}
+
+/* Responsive para móviles */
+@media (max-width: 600px) {
+  .form-row {
+    flex-direction: column;
+  }
+
+  .form-half,
+  .form-rol,
+  .form-rut,
+  .form-dv,
+  .form-fecha,
+  .form-direccion,
+  .form-telefono {
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
+}

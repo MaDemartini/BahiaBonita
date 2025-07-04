@@ -132,9 +132,10 @@ class ContactoForm(forms.ModelForm):
 class AddColaboradorForm(forms.ModelForm):
     class Meta:
         model = Persona
-        fields = ['nombre', 's_nombre', 'apellido', 's_apellido', 'rut', 'dv', 'fecha_nacimiento', 'direccion', 'pais',
-                  'ciudad', 'telefono', 'email', 'password']
+        fields = ['rol','nombre', 's_nombre', 'apellido', 's_apellido', 'rut', 'dv', 'fecha_nacimiento', 'direccion', 'pais',
+                  'ciudad', 'telefono']
         widgets = {
+            'rol': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Rol'}),
             'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre'}),
             's_nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Segundo nombre'}),
             'apellido': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Apellido'}),
@@ -145,11 +146,6 @@ class AddColaboradorForm(forms.ModelForm):
             'direccion': forms.TextInput(attrs={'class': 'form-control','placeholder': 'Dirección'}),
             'pais' : forms.TextInput(attrs={'class': 'form-control', 'id': 'pais'}),
             'ciudad' : forms.TextInput(attrs={'class': 'form-control', 'id': 'ciudad'}),            
-            'telefono': forms.TextInput(attrs={'class': 'form-control','value': '+569'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control','placeholder': 'Email'}),            
+            'telefono': forms.TextInput(attrs={'class': 'form-control','value': '+569'}),                                   
             } 
 
-class AddAdministrador(forms.Models):
-    class Meta:
-        model = Administrador
-        fileds = ['fotoAdministrador', 'profesión', 'cert_antecedentes', 'tipo_prevision', 'sueldo']

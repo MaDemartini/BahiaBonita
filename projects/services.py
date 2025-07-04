@@ -1,8 +1,9 @@
 #registro personal del hotel
-from projects.utils import password_personal
+from projects.utils import email_personal, password_personal
 from django.contrib.auth.hashers import make_password
-from projects.models import Administrador, Persona, Rol
+from projects.models import Administrador, Persona, PersonalAseo, Recepcionista, Rol
 from django.db import IntegrityError, transaction
+from .correos_automaticos import correo_bienvenida_colab
 
 @transaction.atomic #Así se evita que Persona se guarde si falla Administrador
 def registrar_personal_hotel(datos, rol_nombre):
@@ -22,8 +23,7 @@ def registrar_personal_hotel(datos, rol_nombre):
             apellido=datos['apellido'],
             s_apellido=datos.get('s_apellido'),
             rut=datos.get('rut'),
-            dv=datos.get('dv'),
-            email=datos['email'],
+            dv=datos.get('dv'),            
             fecha_nacimiento=datos['fecha_nacimiento'],
             direccion=datos.get('direccion'),
             pais=datos.get('pais'),
@@ -33,21 +33,33 @@ def registrar_personal_hotel(datos, rol_nombre):
         )
     except IntegrityError:
         raise ValueError("El email o RUT ya están registrados.")
-
+    
+    
+    # generar email
+    persona.email = email_personal(persona)    
     # Generar y guardar contraseña
     password_plana = password_personal(persona)
     persona.password = make_password(password_plana)
+    
     persona.save()
 
     # Crear el registro en la tabla Administrador
     if rol.nombre == 'Administrador':        
-        Administrador.objects.create(
-            persona=persona,
-            fotoAdministrador=datos.get('fotoAdministrador'),
-            profesión=datos.get('profesión'),
-            cert_antecedentes=datos.get('cert_antecedentes'),
-            tipo_prevision=datos.get('tipo_prevision'),
-            sueldo=datos.get('sueldo')
-        )
+        Administrador.objects.create(persona=persona)
+        
+    if rol.nombre == 'Recepcionista':
+        Recepcionista.objects.create( persona=persona)
+    
+    if rol.nombre == 'Personal Aseo':
+        PersonalAseo.objects.create(persona=persona)
+        
+    #datos para poder enviar el correo de bienvenida
+    nombre = persona.nombre
+    apellido = persona.apellido
+    s_apellido = persona.s_apellido
+    email = persona.email
+    password = password_plana
+    
+    correo_bienvenida_colab (nombre, apellido, s_apellido, email, password)
 
-    return persona, password_plana #podemos inviar la pass por email o mostrarla en la interfaz de usuario
+    return persona, password_plana, persona.email #podemos inviar la pass por email o mostrarla en la interfaz de usuario

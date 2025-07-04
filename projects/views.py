@@ -21,7 +21,7 @@ from projects.serializers import AdministradorSerializer, PersonaSerializer
 from projects.services import registrar_personal_hotel
 from projects.utils import generar_qr_bytes, resumen_calendar_deptos, verificar_sesion_jwt
 from .models import Cliente, Departamento, Reserva, Persona, Administrador, PersonalAseo, Recepcionista, Rol  
-from .forms import ContactoForm, LoginForm, RegisterForm, AddDeptoForm, ReservaForm
+from .forms import AddColaboradorForm, ContactoForm, LoginForm, RegisterForm, AddDeptoForm, ReservaForm
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
@@ -885,31 +885,81 @@ def gestion_colab(request):
 @api_view(['GET', 'POST'])
 def api_administradores(request):
     try:
-        # Llama al servicio con los datos del request
-        persona, password = registrar_personal_hotel(request.data, 'Administrador')
-        
-        # Serializa la persona creada para respuesta
-        persona_serialized = PersonaSerializer(persona)
-        
-        # Devuelve todo en la respuesta
-        return Response({
-            'mensaje': 'Administrador creado exitosamente.',
-            'persona': persona_serialized.data,
-            'password': password
-        }, status=status.HTTP_201_CREATED)
+        # POST
+        if request.method == 'POST':
+            persona, password, email = registrar_personal_hotel(request.data, 'Administrador')
+            persona_serialized = PersonaSerializer(persona)
+            
+            return Response({
+                'mensaje': 'Administrador creado exitosamente.',
+                'persona': persona_serialized.data,
+                'email': email,
+                'password': password
+            }, status=status.HTTP_201_CREATED)
+
+        # GET (si quieres soportar GET, por ejemplo listar todos)
+        if request.method == 'GET':
+            administradores = Administrador.objects.all()
+            personas = [a.persona for a in administradores]
+            serializer = PersonaSerializer(personas, many=True)
+            return Response(serializer.data)
 
     except ValueError as e:
-        # Maneja los errores de validación
-        return Response({
-            'error': str(e)
-        }, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     except Exception as e:
-        # Maneja errores inesperados
-        return Response({
-            'error': 'Error interno del servidor.',
-            'details': str(e)
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({'error': 'Error interno del servidor.', 'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+##################################################################
+# Vista para agregar colaboradores mediante API
+def agregar_colaborador_view(request):
+    if request.method == 'POST':
+        form = AddColaboradorForm(request.POST)
+        if form.is_valid():
+            datos = form.cleaned_data
+            payload = {
+                "rol": datos["rol"].id_rol,
+                "nombre": datos["nombre"],
+                "s_nombre": datos.get("s_nombre"),
+                "apellido": datos["apellido"],
+                "s_apellido": datos.get("s_apellido"),
+                "rut": datos.get("rut"),
+                "dv": datos.get("dv"),
+                "fecha_nacimiento": datos.get("fecha_nacimiento").isoformat() if datos.get("fecha_nacimiento") else None,
+                "direccion": datos.get("direccion"),
+                "pais": datos.get("pais"),
+                "ciudad": datos.get("ciudad"),
+                "telefono": datos.get("telefono")
+            }
+
+            try:
+                api_url = request.build_absolute_uri('/api/admin/')
+                response = requests.post(api_url, json=payload)
+
+                if response.status_code == 201:
+                    res_json = response.json()
+                    email = res_json.get('email', '')
+                    password = res_json.get('password', '')
+                    messages.success(request, f"Colaborador creado correctamente.\nEmail: {email}\nContraseña: {password}")
+                    return redirect('agregar_colaborador')
+                else:
+                    error_msg = response.json().get('error', 'Error desconocido en la API')
+                    form.add_error(None, f"Error al crear: {error_msg}")
+
+            except Exception as e:
+                form.add_error(None, f"Error al conectar con la API: {e}")
+
+    else:
+        form = AddColaboradorForm()
+
+    return render(request, 'partials/form_agregar_colaborador.html', {'form': form})
+
+###################################################################
+
+# Formulario para agregar colaboradores        
+def formulario_agregar_colaborador(request):
+    form = AddColaboradorForm()
+    return render(request, 'partials/form_agregar_colaborador.html', {'form': form})
             
         
         

@@ -1,33 +1,67 @@
-
-// funcion para hacer el boton burger
 document.addEventListener('DOMContentLoaded', () => {
-  const menuToggle = document.getElementById('menuToggle');
   const sidebar = document.getElementById('sidebar');
   const mainContent = document.getElementById('main-content');
+  const agregarLink = document.getElementById('link-agregar-colaboradores');
 
-  // Botón para abrir/cerrar
-  menuToggle.addEventListener('click', () => {
-    sidebar.classList.toggle('show');
-    mainContent.classList.toggle('shifted');
-  });
+  // -------------------------------
+  // FUNCIÓN: Configurar botón hamburguesa
+  // -------------------------------
+  function engancharMenuToggle() {
+    const menuToggle = document.getElementById('menuToggle');
+    if (!menuToggle) return;
 
-  // Cerrar al hacer clic fuera
+    menuToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      sidebar.classList.toggle('show');
+      mainContent.classList.toggle('shifted');
+    });
+  }
+
+  // -------------------------------
+  // Configurar botón hamburguesa inicial
+  // -------------------------------
+  engancharMenuToggle();
+
+  // -------------------------------
+  // Cerrar sidebar al hacer clic fuera
+  // -------------------------------
   document.addEventListener('click', (event) => {
-    // Si no está abierto, no hacer nada
     if (!sidebar.classList.contains('show')) return;
 
-    // Si clic en botón o sidebar, no cerrar
-    if (sidebar.contains(event.target) || menuToggle.contains(event.target)) return;
+    // Si clic dentro del sidebar o del menuToggle → no cerrar
+    if (sidebar.contains(event.target) || event.target.closest('#menuToggle')) return;
 
-    // Clic afuera -> cerrar
     sidebar.classList.remove('show');
     mainContent.classList.remove('shifted');
-    
   });
-  // sidebar.querySelectorAll('a').forEach(link => {
-  //   link.addEventListener('click', () => {
-  //     sidebar.classList.remove('show');
-  //     mainContent.classList.remove('shifted');
-  //   });
-  // });
+
+  // -------------------------------
+  // Manejar click en "Agregar colaboradores"
+  // -------------------------------
+  agregarLink.addEventListener('click', function (e) {
+    e.preventDefault();
+
+    fetch('/administracion/agregar-colaborador-form/')
+      .then(response => response.text())
+      .then(html => {
+        // Reemplaza el contenido
+        mainContent.innerHTML = `
+          <div id="menuToggle" class="menu-btn">
+            <span></span><span></span><span></span>
+          </div>
+          ${html}
+        `;
+
+        // Cierra el sidebar
+        sidebar.classList.remove('show');
+        mainContent.classList.remove('shifted');
+
+        //Engancha nuevamente el nuevo botón hamburguesa
+        engancharMenuToggle();
+      })
+      .catch(err => {
+        console.error('Error al cargar el formulario:', err);
+        mainContent.innerHTML = '<p>Error al cargar el formulario. Intenta nuevamente.</p>';
+      });
+  });
 });

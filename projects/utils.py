@@ -82,7 +82,7 @@ def verificar_sesion_jwt(view_func):
     return _wrapped_view
 
 #############################################
-#creación de password para personal
+#creación de password y email para personal
 
 def password_personal(persona):    
     iniciales = ''
@@ -99,6 +99,18 @@ def password_personal(persona):
     correo = persona.email[:2].lower() if persona.email else 'xx'
 
     return f"{iniciales}{anno}{correo}"
+
+def email_personal(persona):
+    iniciales = ''
+    if persona.nombre:
+        iniciales += persona.nombre.lower()
+    if persona.apellido:
+        iniciales += persona.apellido[:2].lower()
+    if persona.s_apellido:
+        iniciales += persona.s_apellido[:2].lower()
+        
+    return f"{iniciales}@bahiabonita.cl"
+        
 
 ##############################################
 #funcion para crear qr de reserva
