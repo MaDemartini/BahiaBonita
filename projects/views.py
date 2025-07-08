@@ -676,39 +676,85 @@ def logout(request):
 @verificar_sesion_jwt
 def profile(request):
     id_persona = request.session.get('usuario', {}).get('id')
-    
-    
-    # Verifica si el ID de persona está en la sesión
     print("ID PERSONA EN SESIÓN (profile):", id_persona)
-    
 
     if not id_persona:
         return render(request, 'profile.html', {
             'error': 'No hay sesión activa o falta el ID de persona.'
         })
 
+    # si es POST: actualizar datos del perfil
+    if request.method == 'POST':
+        try:
+            email = request.POST.get('email')
+            direccion = request.POST.get('direccion')
+            telefono = request.POST.get('telefono')
+            imagen = request.FILES.get('imagen_perfil')
+
+            print("[POST] Datos recibidos:", email, direccion, telefono, imagen)
+
+            url_imagen_perfil = None
+
+            # subir imagen a Supabase si el usuario subió una nueva
+            if imagen:
+                from .supabase_client import supabase
+
+                nombre_archivo = f"usuario_{id_persona}_{imagen.name}"
+                # Subir a Supabase
+                supabase.storage.from_('fotos_perfil_usuario').upload(nombre_archivo, imagen)
+                # Obtener URL pública
+                public_url = supabase.storage.from_('fotos_perfil_usuario').get_public_url(nombre_archivo)
+                url_imagen_perfil = public_url
+
+                print("[POST] Imagen subida a Supabase:", url_imagen_perfil)
+
+            # armar datos a enviar a tu API
+            data_actualizada = {
+                "id_persona": id_persona,
+                "email": email,
+                "direccion": direccion,
+                "telefono": telefono
+            }
+
+            if url_imagen_perfil:
+                data_actualizada["imagen_perfil"] = url_imagen_perfil
+
+            print("[POST] Payload para API:", data_actualizada)
+
+            # enviar actualización a tu API
+            update_url = f"{settings.URL_API_REGISTRO}/{id_persona}/"
+            response = requests.put(update_url, json=data_actualizada)
+
+            if response.status_code in (200, 204):
+                messages.success(request, "Perfil actualizado correctamente.")
+            else:
+                messages.error(request, f"No se pudo actualizar el perfil en la API. Código: {response.status_code}")
+
+        except Exception as e:
+            messages.error(request, f"Error al procesar el formulario: {str(e)}")
+
+        return redirect('profile')  # Redirige para cargar de nuevo con datos actualizados
+
+    # ⚡ Si es GET: mostrar el perfil
     try:
-        # Llama al endpoint con el ID de persona
         url = f"{settings.URL_API_REGISTRO}?id_persona={id_persona}"
         response = requests.get(url)
 
         if response.status_code == 200:
-            personas = response.json() 
-            print("Datos de persona obtenidos:", personas)  # para depuración 
-            
-            # Verifica si personas es una lista o un dic
+            personas = response.json()
+            print("[GET] Datos de persona obtenidos:", personas)
+
             if isinstance(personas, list):
                 persona = next((p for p in personas if str(p.get('id_persona')) == str(id_persona)), None)
             elif isinstance(personas, dict):
-                # Por si la API cambia y devuelve un único dic en lugar de lista
                 persona = personas if str(personas.get("id_persona")) == str(id_persona) else None
             else:
                 persona = None
 
             if not persona:
                 return render(request, 'profile.html', {
-                    'error': 'No se encontró una persona con ese nombre.'
-                })         
+                    'error': 'No se encontró una persona con ese ID.'
+                })
 
             return render(request, 'profile.html', {
                 'nombre': persona.get('nombre'),
@@ -720,6 +766,7 @@ def profile(request):
                 'fecha_nacimiento': persona.get('fecha_nacimiento'),
                 'ciudad': persona.get('ciudad'),
                 'pais': persona.get('pais'),
+                'imagen_perfil': persona.get('imagen_perfil'),
                 'reservas': list(Reserva.objects.filter(cliente__persona__id_persona=id_persona).order_by('-fecha_reserva')),
             })
         else:

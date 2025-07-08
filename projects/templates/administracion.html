@@ -320,65 +320,8 @@
           </form>
         </div>
       </div>
-    </div>
+    </div>   
     
-    <div class="modal fade" id="modalAgregarColaborador" tabindex="-1"
-      aria-labelledby="modalEditarLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <form id="formEditar">
-            <div class="modal-header">
-              <h5 class="modal-title">Agregar colaborador</h5>
-              <button type="button" class="btn-close"
-                data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-              <input type="hidden" id="addColab-id">
-              <div class="mb-3">
-                <label>Rol</label>
-                <select class="form-select" aria-label="Default select example">
-                  <option selected>Administrador</option>
-                  <option value="1">Recepcionista</option>
-                  <option value="2">Personal de aseo</option>
-                  
-                </select>
-              </div>
-              <div class="mb-3">
-                <label>Dormitorios</label>
-                <input type="number" id="editar-dormitorios"
-                  class="form-control">
-              </div>
-              <div class="mb-3">
-                <label>Baños</label>
-                <input type="number" id="editar-banos" class="form-control">
-              </div>
-              <div class="mb-3">
-                <label>Piso</label>
-                <input type="number" id="editar-piso" class="form-control">
-              </div>
-              <div class="mb-3">
-                <label>Capacidad</label>
-                <input type="number" id="editar-personas"
-                  class="form-control">
-              </div>
-              <div class="mb-3">
-                <label>Valor por día</label>
-                <input type="number" id="editar-valor" class="form-control">
-              </div>
-              <div class="form-check">
-                <input type="checkbox" id="editar-mant"
-                  class="form-check-input">
-                <label class="form-check-label">En mantenimiento</label>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Guardar
-                cambios</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
     
 
 {% endblock %}
